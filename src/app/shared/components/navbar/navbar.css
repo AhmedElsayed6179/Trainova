@@ -1,0 +1,195 @@
+/* ══════════════════════════════════════
+   NAVBAR.CSS — Trainova
+   ══════════════════════════════════════ */
+
+.navbar {
+  z-index: 1050;
+  direction: ltr !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(13, 17, 23, 0.92) !important;
+  border-bottom: 1px solid rgba(245, 166, 35, 0.1);
+}
+
+/* ── USER AVATAR ── */
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary);
+  transition: var(--transition-fast);
+}
+
+.user-avatar:hover {
+  border-color: var(--primary-light);
+  transform: scale(1.05);
+}
+
+.dropdown-toggle::after {
+  border-color: var(--primary) transparent transparent transparent;
+}
+
+/* ── LANGUAGE BUTTON ── */
+.lang-btn {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 5px 12px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 20px !important;
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.lang-btn:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+/* ══════════════════════════════════════
+   MOBILE NAVBAR  (≤ 991px)
+   ══════════════════════════════════════ */
+@media (max-width: 991px) {
+
+  /* ── Dropdown container ── */
+  .navbar-collapse {
+    max-height: calc(100svh - 70px);
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(245, 166, 35, 0.4) transparent;
+
+    background: rgba(11, 14, 22, 0.98);
+    border-radius: 16px;
+    padding: 12px 10px 16px;
+    margin-top: 10px;
+    border: 1px solid rgba(245, 166, 35, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+  }
+
+  /* scrollbar webkit */
+  .navbar-collapse::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .navbar-collapse::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .navbar-collapse::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.35);
+    border-radius: 10px;
+  }
+
+  /* ── Nav items ── */
+  .navbar-nav .nav-item {
+    width: 100%;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 10px 14px !important;
+    border-radius: 10px;
+    margin-bottom: 2px;
+    font-size: 0.93rem;
+    color: rgba(255, 255, 255, 0.75) !important;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link.active {
+    background: rgba(245, 166, 35, 0.1);
+    color: var(--primary) !important;
+  }
+
+  /* ── Auth buttons ── */
+  .navbar-nav .nav-item:has(.btn-outline-warning),
+  .navbar-nav .nav-item:has(.btn-warning) {
+    width: 100%;
+  }
+
+  .navbar-nav .btn-outline-warning,
+  .navbar-nav .btn-warning {
+    width: 100%;
+    padding: 10px !important;
+    border-radius: 10px !important;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  /* ── User dropdown ── */
+  .navbar-nav .dropdown-toggle {
+    width: 100%;
+    padding: 10px 14px !important;
+    border-radius: 10px;
+    background: rgba(245, 166, 35, 0.07);
+    border: 1px solid rgba(245, 166, 35, 0.15);
+  }
+
+  .dropdown-menu {
+    position: static !important;
+    transform: none !important;
+    width: 100%;
+    margin-top: 6px !important;
+    border-radius: 12px;
+    background: rgba(13, 17, 23, 0.95);
+    border: 1px solid rgba(245, 166, 35, 0.15);
+    box-shadow: none;
+  }
+
+  /* ── Utility row (theme + lang) ── */
+  .mobile-utils-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 4px 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-top: 8px;
+  }
+
+  .mobile-utils-row .lang-btn {
+    flex: 1;
+    text-align: center;
+    width: 100%;
+    padding: 8px 12px !important;
+  }
+
+  .navbar-nav .ms-1 {
+    margin-left: 0 !important;
+  }
+
+  /* Hide desktop-only utility items inside nav */
+  .navbar-nav .nav-item:has(.btn-theme-toggle),
+  .navbar-nav .nav-item:has(.lang-btn) {
+    display: none;
+  }
+}
+
+/* ── Toggler ── */
+.navbar-toggler {
+  padding: 6px 10px;
+  border: 1px solid rgba(245, 166, 35, 0.3) !important;
+  border-radius: 10px !important;
+  color: var(--primary) !important;
+  transition: all 0.2s ease;
+}
+
+.navbar-toggler:hover {
+  background: rgba(245, 166, 35, 0.1);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.2) !important;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28245%2C 166%2C 35%2C 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}

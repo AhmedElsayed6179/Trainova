@@ -1,0 +1,325 @@
+<!-- ═══════════════════════════════
+     EXERCISES PAGE
+     ═══════════════════════════════ -->
+<div class="ex-page page-wrapper">
+
+  <!-- ── HERO ── -->
+  <section class="ex-hero">
+    <div class="ex-hero-glow"></div>
+    <div class="ex-hero-dots"></div>
+    <div class="container position-relative" style="z-index:2">
+      <div class="row align-items-center gy-5">
+
+        <div class="col-lg-6 animate-fade-up">
+          <div class="ex-eyebrow">
+            <i class="fas fa-dumbbell"></i>
+            {{ 'EXERCISES.HERO_LABEL' | translate }}
+          </div>
+          <h1 class="ex-hero-title">
+            {{ 'EXERCISES.HERO_TITLE' | translate }}
+          </h1>
+          <p class="ex-hero-sub">{{ 'EXERCISES.HERO_SUB' | translate }}</p>
+          <div class="ex-hero-stats">
+            <div class="ex-hero-stat">
+              <span class="ex-hero-stat-n">{{ allExercises.length }}</span>
+              <span class="ex-hero-stat-l">{{ 'EXERCISES.STAT_TOTAL' | translate }}</span>
+            </div>
+            <div class="ex-hero-divider"></div>
+            <div class="ex-hero-stat">
+              <span class="ex-hero-stat-n">5</span>
+              <span class="ex-hero-stat-l">{{ 'EXERCISES.STAT_CATEGORIES' | translate }}</span>
+            </div>
+            <div class="ex-hero-divider"></div>
+            <div class="ex-hero-stat">
+              <span class="ex-hero-stat-n">3</span>
+              <span class="ex-hero-stat-l">{{ 'EXERCISES.STAT_LEVELS' | translate }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 animate-fade-up d-none d-lg-block" style="animation-delay:.15s">
+          <div class="ex-hero-visual">
+            <div class="ex-visual-ring ex-ring-1"></div>
+            <div class="ex-visual-ring ex-ring-2"></div>
+            <div class="ex-visual-center">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+            <div class="ex-visual-orb" *ngFor="let cat of categories.slice(1); let i = index"
+              [class]="'ex-orb-' + (i+1)" [style.background]="cat.color + '14'"
+              [style.border]="'1.5px solid ' + cat.color + '30'">
+              <i [class]="cat.icon" [style.color]="cat.color"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STICKY FILTER BAR ── -->
+  <div class="ex-filter-bar">
+    <div class="container">
+      <div class="ex-filter-inner">
+
+        <!-- Search -->
+        <div class="ex-search">
+          <i class="fas fa-search ex-search-icon"></i>
+          <input type="text" class="ex-search-input" [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()"
+            placeholder="{{ 'EXERCISES.SEARCH_PLACEHOLDER' | translate }}">
+          <button class="ex-search-clear" *ngIf="searchQuery" (click)="searchQuery=''; applyFilters()">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Difficulty filter -->
+        <div class="ex-diff-filter">
+          <button *ngFor="let d of difficulties" class="ex-diff-btn" [class.active]="selectedDifficulty === d"
+            (click)="setDifficulty(d)">
+            {{ d === 'all' ? ('EXERCISES.ALL_LEVELS' | translate) : ('EXERCISES.DIFFICULTY.' + d.toUpperCase() |
+            translate) }}
+          </button>
+        </div>
+
+        <!-- Result count -->
+        <div class="ex-result-badge">
+          <span class="ex-result-n">{{ totalCount }}</span>
+          <span class="ex-result-l">{{ 'EXERCISES.RESULTS' | translate }}</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CATEGORY TABS ── -->
+  <div class="container mt-4">
+    <div class="ex-cat-row">
+      <button *ngFor="let cat of categories" class="ex-cat-btn" [class.active]="selectedCategory === cat.key"
+        [style.--c]="cat.color" (click)="setCategory(cat.key)">
+        <span class="ex-cat-icon-wrap" [style.background]="cat.color + '15'"
+          [style.border]="'1px solid ' + cat.color + '30'">
+          <i [class]="cat.icon" [style.color]="cat.color"></i>
+        </span>
+        <span class="ex-cat-label">
+          {{ ('EXERCISES.CATEGORIES.' + cat.key.toUpperCase()) | translate }}
+        </span>
+        <span class="ex-cat-count" *ngIf="cat.key !== 'all'">{{ getCategoryCount(cat.key) }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── EXERCISE GRID ── -->
+  <div class="container mt-4 pb-6">
+
+    <!-- Empty -->
+    <div class="ex-empty" *ngIf="filteredExercises.length === 0">
+      <div class="ex-empty-icon"><i class="fas fa-magnifying-glass"></i></div>
+      <h4>{{ 'EXERCISES.NO_RESULTS' | translate }}</h4>
+      <p>{{ 'EXERCISES.NO_RESULTS_SUB' | translate }}</p>
+      <button class="btn btn-warning mt-2"
+        (click)="searchQuery=''; selectedCategory='all'; selectedDifficulty='all'; applyFilters()">
+        <i class="fas fa-rotate-left me-2"></i>{{ 'EXERCISES.RESET_FILTERS' | translate }}
+      </button>
+    </div>
+
+    <!-- Grid -->
+    <div class="ex-grid" *ngIf="filteredExercises.length > 0">
+      <div class="ex-card animate-fade-up" *ngFor="let ex of filteredExercises; let i = index"
+        [style.animation-delay]="(i * 0.055) + 's'" (click)="openModal(ex)">
+
+        <!-- Top accent line -->
+        <div class="ex-card-accent" [style.background]="getCategoryColor(ex.category)"></div>
+
+        <!-- Header row -->
+        <div class="ex-card-top">
+          <span class="ex-card-cat-badge" [style.color]="getCategoryColor(ex.category)"
+            [style.background]="getCategoryColor(ex.category) + '15'"
+            [style.border-color]="getCategoryColor(ex.category) + '30'">
+            <i [class]="getCategoryIcon(ex.category)"></i>
+            {{ ('EXERCISES.CATEGORIES.' + ex.category.toUpperCase()) | translate }}
+          </span>
+          <span class="ex-card-diff-dot" [style.background]="getDifficultyColor(ex.difficulty)"
+            [title]="ex.difficulty"></span>
+        </div>
+
+        <!-- Illustration area -->
+        <div class="ex-card-art">
+          <div class="ex-card-art-icon">
+            <i class="fas fa-person-running"></i>
+          </div>
+          <div class="ex-card-calories">
+            <i class="fas fa-fire-flame-curved"></i>
+            ~{{ ex.calories }} kcal/set
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="ex-card-info">
+          <h4 class="ex-card-name">{{ getName(ex) }}</h4>
+
+          <div class="ex-card-muscles">
+            <span *ngFor="let m of getMuscles(ex).slice(0,3)" class="ex-muscle-chip">{{ m }}</span>
+          </div>
+
+          <div class="ex-card-stats">
+            <div class="ex-card-stat">
+              <i class="fas fa-layer-group"></i>
+              <span>{{ ex.sets }} sets</span>
+            </div>
+            <div class="ex-card-stat">
+              <i class="fas fa-repeat"></i>
+              <span>{{ ex.reps }}</span>
+            </div>
+            <div class="ex-card-stat">
+              <i class="fas fa-stopwatch"></i>
+              <span>{{ ex.restTime }}s</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="ex-card-foot">
+          <span class="ex-diff-tag" [style.color]="getDifficultyColor(ex.difficulty)"
+            [style.background]="getDifficultyColor(ex.difficulty) + '15'">
+            <i class="fas fa-signal"></i>{{ 'EXERCISES.DIFFICULTY.' + ex.difficulty.toUpperCase() | translate }}
+          </span>
+          <span class="ex-equip-tag">
+            <i class="fas fa-toolbox"></i>{{ getEquipment(ex) }}
+          </span>
+        </div>
+
+        <!-- Hover veil -->
+        <div class="ex-card-veil">
+          <i class="fas fa-circle-info"></i>
+          <span>{{ 'EXERCISES.VIEW_DETAILS' | translate }}</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     DETAIL MODAL
+     ═══════════════════════════════ -->
+<div class="ex-overlay" [class.open]="isModalOpen" (click)="closeModal()">
+  <div class="ex-modal" *ngIf="selectedExercise" (click)="$event.stopPropagation()">
+
+    <button class="ex-modal-x" (click)="closeModal()">
+      <i class="fas fa-xmark"></i>
+    </button>
+
+    <!-- Modal header -->
+    <div class="ex-modal-head" [style.--mclr]="getCategoryColor(selectedExercise.category)">
+      <div class="ex-modal-head-glow"
+        [style.background]="'radial-gradient(ellipse at 80% 50%, ' + getCategoryColor(selectedExercise.category) + '20 0%, transparent 65%)'">
+      </div>
+      <div class="ex-modal-head-content">
+        <span class="ex-modal-cat" [style.color]="getCategoryColor(selectedExercise.category)"
+          [style.background]="getCategoryColor(selectedExercise.category) + '18'">
+          <i [class]="getCategoryIcon(selectedExercise.category)"></i>
+          {{ ('EXERCISES.CATEGORIES.' + selectedExercise.category.toUpperCase()) | translate }}
+        </span>
+        <h2 class="ex-modal-title">{{ getName(selectedExercise) }}</h2>
+        <div class="ex-modal-meta">
+          <span class="ex-diff-tag lg" [style.color]="getDifficultyColor(selectedExercise.difficulty)"
+            [style.background]="getDifficultyColor(selectedExercise.difficulty) + '18'">
+            <i class="fas fa-signal"></i>{{ 'EXERCISES.DIFFICULTY.' + selectedExercise.difficulty.toUpperCase() |
+            translate }}
+          </span>
+          <span class="ex-equip-tag lg">
+            <i class="fas fa-toolbox"></i>{{ getEquipment(selectedExercise) }}
+          </span>
+          <span class="ex-equip-tag lg">
+            <i class="fas fa-fire-flame-curved"></i>~{{ selectedExercise.calories }} kcal/set
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal body -->
+    <div class="ex-modal-body">
+
+      <!-- Stats row -->
+      <div class="ex-modal-stats">
+        <div class="ex-mstat">
+          <div class="ex-mstat-ico"><i class="fas fa-layer-group"></i></div>
+          <div class="ex-mstat-val">{{ selectedExercise.sets }}</div>
+          <div class="ex-mstat-lbl">{{ 'WORKOUT.SETS' | translate }}</div>
+        </div>
+        <div class="ex-mstat">
+          <div class="ex-mstat-ico"><i class="fas fa-repeat"></i></div>
+          <div class="ex-mstat-val">{{ selectedExercise.reps }}</div>
+          <div class="ex-mstat-lbl">{{ 'WORKOUT.REPS' | translate }}</div>
+        </div>
+        <div class="ex-mstat">
+          <div class="ex-mstat-ico"><i class="fas fa-stopwatch"></i></div>
+          <div class="ex-mstat-val">{{ selectedExercise.restTime }}s</div>
+          <div class="ex-mstat-lbl">{{ 'WORKOUT.REST' | translate }}</div>
+        </div>
+        <div class="ex-mstat">
+          <div class="ex-mstat-ico"><i class="fas fa-fire-flame-curved"></i></div>
+          <div class="ex-mstat-val">~{{ selectedExercise.calories }}</div>
+          <div class="ex-mstat-lbl">kcal/set</div>
+        </div>
+      </div>
+
+      <!-- Muscles -->
+      <div class="ex-modal-section">
+        <h6 class="ex-msec-title">
+          <i class="fas fa-crosshairs"></i>
+          {{ 'EXERCISES.MUSCLES' | translate }}
+        </h6>
+        <div class="ex-muscle-pills">
+          <span *ngFor="let m of getMuscles(selectedExercise)" class="ex-muscle-pill">{{ m }}</span>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Instructions -->
+        <div class="col-md-7">
+          <div class="ex-modal-section">
+            <h6 class="ex-msec-title">
+              <i class="fas fa-list-ol"></i>
+              {{ 'EXERCISES.INSTRUCTIONS' | translate }}
+            </h6>
+            <ol class="ex-steps">
+              <li *ngFor="let step of getInstructions(selectedExercise); let i = index" class="ex-step">
+                <span class="ex-step-n">{{ i + 1 }}</span>
+                <span class="ex-step-text">{{ step }}</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="col-md-5" *ngIf="getTips(selectedExercise).length > 0">
+          <div class="ex-modal-section">
+            <h6 class="ex-msec-title">
+              <i class="fas fa-lightbulb"></i>
+              {{ 'EXERCISES.TIPS' | translate }}
+            </h6>
+            <ul class="ex-tips">
+              <li *ngFor="let tip of getTips(selectedExercise)" class="ex-tip">
+                <i class="fas fa-check-circle"></i>
+                <span>{{ tip }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="ex-modal-foot">
+      <a routerLink="/workout" class="btn btn-warning" (click)="closeModal()">
+        <i class="fas fa-bolt me-2"></i>
+        {{ 'EXERCISES.START_TRAINING' | translate }}
+      </a>
+      <button class="btn btn-outline-secondary" (click)="closeModal()">
+        {{ 'EXERCISES.CLOSE' | translate }}
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,133 @@
+<div class="auth-page">
+
+  <!-- ══ LEFT: Visual Panel ══ -->
+  <div class="auth-visual">
+    <div class="auth-visual-bg"></div>
+    <div class="auth-visual-grid"></div>
+    <div class="auth-visual-content">
+
+      <div class="auth-logo">
+        <div class="auth-logo-icon"><i class="fas fa-bolt"></i></div>
+        <span class="auth-logo-text">TRAINOVA</span>
+      </div>
+
+      <h1 class="auth-visual-headline">
+        TRAIN<br><em>SMARTER</em><br>WIN BIGGER
+      </h1>
+
+      <p class="auth-visual-sub">
+        {{ 'Home.BANNER_SUBTITLE' | translate }}
+      </p>
+
+      <div class="auth-stats-row">
+        <div class="auth-stat">
+          <div class="auth-stat-val">30</div>
+          <div class="auth-stat-lbl">{{ 'Home.STAT_DAYS' | translate }}</div>
+        </div>
+        <div class="auth-stat">
+          <div class="auth-stat-val">4+</div>
+          <div class="auth-stat-lbl">{{ 'Home.STAT_GOALS' | translate }}</div>
+        </div>
+        <div class="auth-stat">
+          <div class="auth-stat-val">∞</div>
+          <div class="auth-stat-lbl">{{ 'Home.STAT_ENERGY' | translate }}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: Form Panel ══ -->
+  <div class="auth-form-panel">
+    <div class="auth-form-wrap">
+
+      <!-- Mobile brand (hidden on desktop) -->
+      <div class="auth-mobile-brand">
+        <div class="auth-mobile-brand-icon"><i class="fas fa-bolt"></i></div>
+        <span class="auth-mobile-brand-text">TRAINOVA</span>
+      </div>
+
+      <div class="auth-heading">
+        <h1>{{ 'Login.LOGIN_BUTTON' | translate }}</h1>
+        <p>
+          {{ 'Login.SUBTITLE' | translate }}
+          &nbsp;·&nbsp;
+          {{ 'Login.NO_ACCOUNT' | translate }}
+          <a routerLink="/register">{{ 'Login.REGISTER_NOW' | translate }}</a>
+        </p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <!-- Username / Email -->
+        <div class="af">
+          <label>{{ 'Login.USERNAME_OR_EMAIL' | translate }}<span class="req">*</span></label>
+          <div class="ai" [class.err]="hasError('identifier','required') || hasError('identifier','minlength')"
+            [class.ok]="loginForm.get('identifier')?.valid && loginForm.get('identifier')?.touched">
+            <i class="fas fa-user ai-ico"></i>
+            <input type="text" formControlName="identifier"
+              placeholder="{{ 'Login.IDENTIFIER_PLACEHOLDER' | translate }}">
+            <i class="fas fa-check-circle ai-ok"
+              *ngIf="loginForm.get('identifier')?.valid && loginForm.get('identifier')?.touched"></i>
+          </div>
+          <div class="ae" *ngIf="hasError('identifier','required')">
+            <i class="fas fa-exclamation-circle"></i>{{ 'Login.ERRORS.IDENTIFIER_REQUIRED' | translate }}
+          </div>
+          <div class="ae" *ngIf="hasError('identifier','minlength')">
+            <i class="fas fa-exclamation-circle"></i>{{ 'Login.ERRORS.IDENTIFIER_MINLENGTH' | translate }}
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="af">
+          <label>{{ 'Login.PASSWORD' | translate }}<span class="req">*</span></label>
+          <div class="ai" [class.err]="hasError('password','required') || hasError('password','minlength')">
+            <i class="fas fa-lock ai-ico"></i>
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+              placeholder="{{ 'Login.PASSWORD_PLACEHOLDER' | translate }}">
+            <button type="button" class="ai-eye" (click)="togglePasswordVisibility()">
+              <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+          <div class="ae" *ngIf="hasError('password','required')">
+            <i class="fas fa-exclamation-circle"></i>{{ 'Login.ERRORS.PASSWORD_REQUIRED' | translate }}
+          </div>
+          <div class="ae" *ngIf="hasError('password','minlength')">
+            <i class="fas fa-exclamation-circle"></i>{{ 'Login.ERRORS.PASSWORD_MINLENGTH' | translate }}
+          </div>
+        </div>
+
+        <!-- Remember / Forgot -->
+        <div class="auth-row">
+          <label class="auth-chk">
+            <input type="checkbox" formControlName="rememberMe">
+            <span>{{ 'Login.REMEMBER_ME' | translate }}</span>
+          </label>
+          <a routerLink="/forgot-password" class="auth-fgt">{{ 'Login.FORGOT_PASSWORD' | translate }}</a>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="auth-sub" [disabled]="loginForm.invalid || isLoading">
+          <div class="auth-sub-inner">
+            <ng-container *ngIf="!isLoading">
+              {{ 'Login.LOGIN_BUTTON' | translate }}
+              <i class="fas fa-arrow-right"></i>
+            </ng-container>
+            <ng-container *ngIf="isLoading">
+              <span class="auth-spin"></span>
+              {{ 'Login.LOADING' | translate }}
+            </ng-container>
+          </div>
+        </button>
+
+      </form>
+
+      <div class="auth-switch">
+        {{ 'Login.NO_ACCOUNT' | translate }}
+        <a routerLink="/register">{{ 'Login.REGISTER_NOW' | translate }}</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>

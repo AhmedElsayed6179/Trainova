@@ -1,0 +1,188 @@
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+import { ApiService } from '../../../core/services/api.service';
+import { Router, RouterLink } from '@angular/router';
+import { Subject, debounceTime, distinctUntilChanged, forkJoin, takeUntil } from 'rxjs';
+
+@Component({
+  selector: 'app-register',
+  templateUrl: './register.html',
+  styleUrls: ['./register.css'],
+  standalone: true,
+  imports: [FormsModule, CommonModule, TranslatePipe, ReactiveFormsModule, RouterLink]
+})
+export class Register implements OnInit, OnDestroy {
+  registerForm: FormGroup;
+  showPassword = false;
+  showConfirmPassword = false;
+  usernameExists = false;
+  emailExists = false;
+  phoneExists = false;
+  isLoading = false;
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private fb: FormBuilder,
+    private translate: TranslateService,
+    private apiService: ApiService,
+    private router: Router,
+    private ngZone: NgZone
+  ) {
+    this.registerForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      age: [null, [Validators.required, Validators.min(10), Validators.max(70)]],
+      gender: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9_]+$/)]],
+      password: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)]],
+      confirmPassword: ['', Validators.required],
+      weight: [null, [Validators.required, Validators.min(20), Validators.max(300)]],
+      height: [null, [Validators.required, Validators.min(50), Validators.max(300)]],
+      phone: ['', [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)]],
+      goal: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  ngOnInit() {
+    this.setupUsernameValidation();
+    this.setupEmailValidation();
+    this.setupPhoneValidation();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  passwordMatchValidator(group: FormGroup) {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { notMatching: true };
+  }
+
+  setupUsernameValidation() {
+    this.registerForm.get('username')?.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(username => {
+        if (username && username.length >= 3 && !this.registerForm.get('username')?.errors) {
+          this.apiService.checkUsername(username).subscribe({
+            next: (r) => { this.usernameExists = r.exists; },
+            error: () => { this.usernameExists = false; }
+          });
+        } else { this.usernameExists = false; }
+      });
+  }
+
+  setupEmailValidation() {
+    this.registerForm.get('email')?.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(email => {
+        if (email && email.includes('@') && !this.registerForm.get('email')?.errors) {
+          this.apiService.checkEmail(email).subscribe({
+            next: (r) => { this.emailExists = r.exists; },
+            error: () => { this.emailExists = false; }
+          });
+        } else { this.emailExists = false; }
+      });
+  }
+
+  setupPhoneValidation() {
+    this.registerForm.get('phone')?.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(phone => {
+        if (phone && phone.length === 11 && !this.registerForm.get('phone')?.errors) {
+          this.apiService.checkPhone(phone).subscribe({
+            next: (r) => { this.phoneExists = r.exists; },
+            error: () => { this.phoneExists = false; }
+          });
+        } else { this.phoneExists = false; }
+      });
+  }
+
+  hasError(controlName: string, errorName: string): boolean {
+    const control = this.registerForm.get(controlName);
+    return !!control && control.touched && control.hasError(errorName);
+  }
+
+  isValid(controlName: string): boolean {
+    const control = this.registerForm.get(controlName);
+    return !!control && control.touched && control.valid;
+  }
+
+  isInvalid(controlName: string): boolean {
+    const control = this.registerForm.get(controlName);
+    return !!control && control.touched && control.invalid;
+  }
+
+  onSubmit() {
+    if (this.registerForm.invalid) {
+      this.markAllFieldsAsTouched();
+      forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Register.ERRORS.FORM_INVALID') })
+        .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+      return;
+    }
+
+    if (this.usernameExists) {
+      forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Register.ERRORS.USERNAME_EXISTS') })
+        .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+      return;
+    }
+
+    if (this.emailExists) {
+      forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Register.ERRORS.EMAIL_EXISTS') })
+        .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+      return;
+    }
+
+    if (this.phoneExists) {
+      forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Register.ERRORS.PHONE_EXISTS') })
+        .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+      return;
+    }
+
+    this.isLoading = true;
+    const formData = { ...this.registerForm.value };
+    delete formData.confirmPassword;
+
+    this.apiService.registerUser(formData).subscribe({
+      next: (response) => {
+        this.ngZone.run(() => { this.isLoading = false; });
+
+        if (response.success) {
+          forkJoin({
+            title: this.translate.get('SUCCESS'),
+            text: this.translate.get('Register.SUCCESS_MESSAGE'),
+            confirmText: this.translate.get('Register.GO_TO_LOGIN')
+          }).subscribe(t => {
+            Swal.fire({ icon: 'success', title: t.title, text: t.text, confirmButtonColor: '#ffc107', confirmButtonText: t.confirmText })
+              .then(() => this.router.navigate(['/auth/login']));
+          });
+
+        } else {
+          let errorKey = 'Register.ERRORS.REGISTRATION_FAILED';
+          if (response.error === 'email_exists') { errorKey = 'Register.ERRORS.EMAIL_EXISTS'; this.emailExists = true; }
+          else if (response.error === 'username_exists') { errorKey = 'Register.ERRORS.USERNAME_EXISTS'; this.usernameExists = true; }
+          else if (response.error === 'phone_exists') { errorKey = 'Register.ERRORS.PHONE_EXISTS'; this.phoneExists = true; }
+
+          forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get(errorKey) })
+            .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+        }
+      },
+      error: () => {
+        this.ngZone.run(() => { this.isLoading = false; });
+        forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Register.ERRORS.CONNECTION_ERROR') })
+          .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+      }
+    });
+  }
+
+  private markAllFieldsAsTouched() {
+    Object.keys(this.registerForm.controls).forEach(key => {
+      const control = this.registerForm.get(key);
+      if (control?.invalid) control.markAsTouched();
+    });
+  }
+}

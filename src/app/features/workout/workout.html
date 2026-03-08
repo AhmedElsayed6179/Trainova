@@ -1,0 +1,327 @@
+<!-- Loading State -->
+<div class="loading-container" *ngIf="!user">
+  <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;" role="status"></div>
+  <span style="color: var(--text-muted);">{{ 'WORKOUT.LOADING' | translate }}</span>
+</div>
+
+<!-- Workout Content -->
+<div class="workout-container page-wrapper" *ngIf="user">
+
+  <!-- ── Header ── -->
+  <div class="workout-header mb-4 animate-fade-up">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h1 class="workout-title">
+          <i class="fas fa-fire" style="color: var(--primary);"></i>
+          {{ 'WORKOUT.TITLE' | translate }}
+        </h1>
+        <p class="workout-subtitle">
+          {{ 'WORKOUT.SUBTITLE' | translate }}
+          <strong style="color: var(--primary);">{{ user.name }}</strong>!
+        </p>
+      </div>
+
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <!-- Active timer -->
+        <div class="workout-timer-badge" *ngIf="isWorkoutActive">
+          <i class="fas fa-stopwatch"></i>
+          {{ formatTime(workoutTimer) }}
+        </div>
+
+        <!-- Days completed counter -->
+        <div *ngIf="!isWorkoutActive" style="text-align: right;">
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:3rem; color:var(--primary); line-height:1;">
+            {{ completedDays.size }}
+          </div>
+          <div style="color:rgba(255,255,255,0.5); font-size:0.8rem; text-transform:uppercase; letter-spacing:2px;">
+            / 30 {{ 'WORKOUT.DAYS_COMPLETED' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day Navigation -->
+    <div class="day-navigation mt-3 pt-3" style="border-top: 1px solid rgba(255,255,255,0.1);">
+      <div class="d-flex align-items-center justify-content-between gap-3">
+
+        <button class="btn-nav-day" (click)="navigateToPreviousDay()" [disabled]="selectedDay <= 1 || isWorkoutActive"
+          [class.disabled]="selectedDay <= 1 || isWorkoutActive">
+          <i class="fas fa-chevron-left me-1"></i>
+          {{ 'WORKOUT.PREV_DAY' | translate }}
+        </button>
+
+        <div class="day-nav-info">
+          <span style="color:rgba(255,255,255,0.5); font-size:0.8rem; text-transform:uppercase; letter-spacing:2px;">
+            {{ 'WORKOUT.DAY' | translate }}
+          </span>
+          <span
+            style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--primary); margin:0 8px; line-height:1;">
+            {{ selectedDay }}
+          </span>
+          <span style="color:rgba(255,255,255,0.5); font-size:0.8rem;">/ 30</span>
+        </div>
+
+        <button class="btn-nav-day btn-nav-next" (click)="navigateToNextDay()"
+          [disabled]="selectedDay >= 30 || isWorkoutActive || !canAccessDay(selectedDay + 1)"
+          [class.disabled]="selectedDay >= 30 || isWorkoutActive || !canAccessDay(selectedDay + 1)">
+          {{ 'WORKOUT.NEXT_DAY_BTN' | translate }}
+          <i class="fas fa-chevron-right ms-1"></i>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 30-Day Progress Grid ── -->
+  <div class="days-progress-section animate-fade-up" style="animation-delay:0.1s">
+    <div class="section-header">
+      <h5 class="section-title mb-0">
+        <i class="fas fa-calendar-alt"></i>
+        {{ 'WORKOUT.30_DAYS_CHALLENGE' | translate }}
+      </h5>
+      <span class="progress-badge">
+        {{ completedDays.size }}/30 {{ 'WORKOUT.DAYS_COMPLETED' | translate }}
+      </span>
+    </div>
+
+    <!-- Overall progress bar -->
+    <div class="progress mb-4" style="height: 8px;">
+      <div class="progress-bar" [style.width.%]="(completedDays.size / 30) * 100"></div>
+    </div>
+
+    <!-- Days grid -->
+    <div class="days-grid">
+      <div class="day-card" *ngFor="let day of days" [class.completed]="getDayStatus(day) === 'completed'"
+        [class.current]="getDayStatus(day) === 'current'" [class.locked]="getDayStatus(day) === 'locked'"
+        [class.available]="getDayStatus(day) === 'available'" (click)="selectDay(day)" [title]="'Day ' + day">
+
+        <div class="day-number">{{ day }}</div>
+
+        <div class="day-status">
+          <i class="fas" [ngClass]="{
+            'fa-check-circle': getDayStatus(day) === 'completed',
+            'fa-play-circle':  getDayStatus(day) === 'current',
+            'fa-lock':         getDayStatus(day) === 'locked',
+            'fa-circle':       getDayStatus(day) === 'available'
+          }"></i>
+        </div>
+
+        <div class="day-progress-stats" *ngIf="hasExercises(day) && getDayStatus(day) !== 'completed'">
+          {{ getCompletedCount(day) }}/{{ getTotalCount(day) }}
+        </div>
+
+        <!-- Reset button (completed days only) -->
+        <button class="btn-reset-day" *ngIf="getDayStatus(day) === 'completed'"
+          (click)="resetDay(day); $event.stopPropagation()" [title]="'WORKOUT.RESET_DAY' | translate">
+          <i class="fas fa-undo"></i>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Selected Day: Exercise Overview ── -->
+  <div class="selected-day-exercises mt-4 animate-fade-up" *ngIf="selectedDay && dayExercises[selectedDay]"
+    style="animation-delay:0.2s">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="section-title mb-0">
+          <i class="fas fa-list"></i>
+          {{ 'WORKOUT.DAY_EXERCISES' | translate:{ day: selectedDay } }}
+        </h5>
+        <span *ngIf="currentDay?.completed" class="badge"
+          style="background:rgba(40,167,69,0.12); color:#28a745; border-radius:20px; padding:8px 14px;">
+          <i class="fas fa-check-circle me-1"></i>
+          {{ 'WORKOUT.DAY_COMPLETED' | translate }}
+        </span>
+      </div>
+
+      <div class="card-body">
+
+        <!-- Loading -->
+        <div class="text-center py-5" *ngIf="isLoadingDay">
+          <div class="spinner-border text-warning mb-3"></div>
+          <p style="color:var(--text-muted);">{{ 'WORKOUT.LOADING_EXERCISES' | translate }}</p>
+        </div>
+
+        <!-- Exercises Grid -->
+        <div class="exercises-grid" *ngIf="!isLoadingDay">
+          <div class="exercise-mini-card" *ngFor="let exercise of dayExercises[selectedDay]; let i = index"
+            [class.completed]="exercise.completed" (click)="showExerciseDetails(exercise)">
+
+            <div class="exercise-mini-header">
+              <span class="exercise-mini-number">{{ i + 1 }}</span>
+              <i class="fas fa-check-circle text-success fa-lg" *ngIf="exercise.completed"></i>
+            </div>
+
+            <h6 class="exercise-mini-title">{{ exercise.name }}</h6>
+
+            <div class="exercise-mini-details">
+              <span class="badge">
+                <i class="fas fa-layer-group me-1"></i>{{ exercise.sets }} sets
+              </span>
+              <span class="badge">
+                <i class="fas fa-repeat me-1"></i>{{ exercise.reps }}
+              </span>
+            </div>
+
+            <div class="exercise-mini-image" *ngIf="exercise.gifUrl">
+              <img [src]="exercise.gifUrl" [alt]="exercise.name" loading="lazy"
+                (error)="$any($event.target).style.display='none'">
+            </div>
+          </div>
+
+          <!-- No exercises -->
+          <div class="text-center py-5" *ngIf="dayExercises[selectedDay].length === 0" style="grid-column:1/-1;">
+            <i class="fas fa-dumbbell fa-3x mb-3" style="color:var(--border);"></i>
+            <p style="color:var(--text-muted);">{{ 'WORKOUT.NO_EXERCISES' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Start Button -->
+        <div class="text-center mt-4" *ngIf="!isWorkoutActive && !isLoadingDay && currentDay && !currentDay.completed">
+          <button class="btn btn-warning btn-lg px-5" (click)="startWorkout()">
+            <i class="fas fa-play me-2"></i>
+            {{ 'WORKOUT.START_WORKOUT' | translate }}
+          </button>
+        </div>
+
+        <!-- Day Completed Banner -->
+        <div class="mt-4" *ngIf="currentDay?.completed && !isLoadingDay">
+          <div class="day-complete-banner">
+            <i class="fas fa-trophy"></i>
+            <div>
+              <strong>{{ 'WORKOUT.DAY_COMPLETED' | translate }}</strong>
+              <small>{{ 'WORKOUT.DAY_COMPLETED_TEXT' | translate }}</small>
+            </div>
+          </div>
+          <div class="text-center mt-3" *ngIf="selectedDay < 30">
+            <button class="btn btn-outline-warning" (click)="selectDay(selectedDay + 1)">
+              <i class="fas fa-arrow-right me-2"></i>
+              {{ 'WORKOUT.NEXT_DAY' | translate }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Active Workout ── -->
+  <div class="current-workout-section mt-4 animate-fade-up" *ngIf="currentDay && isWorkoutActive"
+    style="animation-delay:0.3s">
+    <div class="card">
+
+      <!-- Card header: progress -->
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="section-title mb-0">
+            <i class="fas fa-dumbbell"></i>
+            {{ 'WORKOUT.DAY' | translate }} {{ selectedDay }}
+          </h5>
+          <span class="progress-badge">
+            {{ completedExercises }}/{{ totalExercises }} {{ 'WORKOUT.COMPLETED' | translate }}
+          </span>
+        </div>
+        <div class="progress" style="height:8px;">
+          <div class="progress-bar" [style.width.%]="progressPercentage"></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <!-- ── Rest Timer ── -->
+        <div class="rest-timer mb-4" *ngIf="isResting">
+          <div style="position:relative; z-index:1;">
+            <div
+              style="color:var(--primary); font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:8px;">
+              <i class="fas fa-clock me-2"></i>{{ 'WORKOUT.REST_TIME' | translate }}
+            </div>
+            <span class="rest-timer-count">{{ formatTime(restTimer) }}</span>
+            <div class="rest-timer-label">{{ 'WORKOUT.SECONDS_LEFT' | translate }}</div>
+            <button class="btn-skip-rest" (click)="skipRest()">
+              <i class="fas fa-forward"></i>
+              {{ 'WORKOUT.SKIP_REST' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Exercise List ── -->
+        <div class="exercises-list">
+          <div class="exercise-card" *ngFor="let exercise of currentDay.exercises; let i = index"
+            [class.active]="i === currentExerciseIndex && !isResting" [class.completed]="exercise.completed">
+
+            <div class="exercise-header">
+              <div class="exercise-number">{{ i + 1 }}</div>
+              <div class="exercise-info flex-grow-1">
+                <h6>{{ exercise.name }}</h6>
+                <div class="exercise-details">
+                  <span class="badge">
+                    <i class="fas fa-layer-group me-1"></i>
+                    {{ exercise.sets }} {{ 'WORKOUT.SETS' | translate }}
+                  </span>
+                  <span class="badge">
+                    <i class="fas fa-repeat me-1"></i>
+                    {{ exercise.reps }} {{ 'WORKOUT.REPS' | translate }}
+                  </span>
+                  <span class="badge">
+                    <i class="fas fa-clock me-1"></i>
+                    {{ exercise.restTime }}s {{ 'WORKOUT.REST' | translate }}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <!-- Done icon -->
+                <i class="fas fa-check-circle text-success fa-2x" *ngIf="exercise.completed"></i>
+
+                <!-- Complete button (current active exercise) -->
+                <button class="btn btn-warning btn-sm"
+                  *ngIf="!exercise.completed && i === currentExerciseIndex && !isResting"
+                  (click)="completeExercise(exercise)">
+                  <i class="fas fa-check me-1"></i>
+                  {{ 'WORKOUT.COMPLETE' | translate }}
+                </button>
+              </div>
+            </div>
+
+            <!-- GIF -->
+            <img [src]="exercise.gifUrl" [alt]="exercise.name" class="exercise-gif" *ngIf="exercise.gifUrl"
+              loading="lazy" (error)="$any($event.target).style.display='none'">
+
+            <!-- Instruction -->
+            <div class="mt-2" *ngIf="exercise.instructions && exercise.instructions.length > 0">
+              <small style="color:var(--text-muted);">
+                <i class="fas fa-info-circle me-1"></i>
+                {{ exercise.instructions![0] }}
+              </small>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Complete Day Button ── -->
+        <div class="btn-complete-day-wrap" *ngIf="completedExercises === totalExercises && totalExercises > 0">
+          <button class="btn btn-success btn-lg px-5" (click)="completeDay()">
+            <i class="fas fa-trophy me-2"></i>
+            {{ 'WORKOUT.COMPLETE_DAY' | translate }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Motivation Quote ── -->
+  <div class="motivation-section mt-4 mb-4 animate-fade-up" style="animation-delay:0.4s">
+    <div class="card">
+      <div class="card-body text-center py-4">
+        <i class="fas fa-quote-left fa-2x mb-3" style="color:var(--primary); opacity:0.6;"></i>
+        <p class="mb-0" style="font-size:1rem; font-style:italic;">
+          {{ 'WORKOUT.MOTIVATION_QUOTE' | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>

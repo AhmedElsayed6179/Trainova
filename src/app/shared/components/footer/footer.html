@@ -1,0 +1,185 @@
+<footer class="tf">
+
+  <!-- Top border glow -->
+  <div class="tf-topline"></div>
+
+  <div class="container">
+
+    <!-- ── MAIN GRID ── -->
+    <div class="tf-main">
+
+      <!-- Brand column -->
+      <div class="tf-brand">
+        <a routerLink="/" class="tf-logo">
+          <div class="tf-logo-ico"><i class="fas fa-bolt"></i></div>
+          <span class="tf-logo-txt">TRAINOVA</span>
+        </a>
+        <p class="tf-desc">
+          {{ 'Footer.TAGLINE' | translate }}
+        </p>
+
+        <!-- 30-Day mini badge -->
+        <div class="tf-challenge-pill">
+          <div class="tf-challenge-icon"><i class="fas fa-fire"></i></div>
+          <div>
+            <span class="tf-challenge-n">30</span>
+            <span class="tf-challenge-l">{{ 'Footer.CHALLENGE_LABEL' | translate }}</span>
+          </div>
+          <a routerLink="/register" class="tf-challenge-cta">
+            {{ 'Footer.CHALLENGE_BTN' | translate }} →
+          </a>
+        </div>
+
+        <!-- Socials -->
+        <div class="tf-socials">
+          <a href="#" class="tf-social" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="tf-social" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="tf-social" aria-label="Twitter / X">
+            <i class="fab fa-x-twitter"></i>
+          </a>
+          <a href="#" class="tf-social" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a href="https://github.com/AhmedMohamed" target="_blank" class="tf-social" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Nav columns -->
+      <div class="tf-nav-grid">
+
+        <!-- Pages -->
+        <div class="tf-nav-col">
+          <h6 class="tf-nav-head">{{ 'Footer.NAV_TITLE' | translate }}</h6>
+          <ul class="tf-nav-list">
+            <li>
+              <a routerLink="/" class="tf-nav-link">
+                <i class="fas fa-house"></i>
+                {{ 'Navbar.HOME' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/exercises" class="tf-nav-link">
+                <i class="fas fa-dumbbell"></i>
+                {{ 'Navbar.EXERCISES' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/about" class="tf-nav-link">
+                <i class="fas fa-circle-info"></i>
+                {{ 'Navbar.ABOUT' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/workout" class="tf-nav-link">
+                <i class="fas fa-fire"></i>
+                {{ 'Navbar.WORKOUT' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/dashboard" class="tf-nav-link">
+                <i class="fas fa-chart-line"></i>
+                {{ 'Navbar.DASHBOARD' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/contact" class="tf-nav-link">
+                <i class="fas fa-envelope"></i>
+                {{ 'Footer.CONTACT' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/privacy" class="tf-nav-link">
+                <i class="fas fa-shield-halved"></i>
+                {{ 'Footer.PRIVACY' | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Goals -->
+        <div class="tf-nav-col">
+          <h6 class="tf-nav-head">{{ 'Footer.GOALS_TITLE' | translate }}</h6>
+          <ul class="tf-nav-list">
+            <li>
+              <a routerLink="/exercises/abs" class="tf-nav-link">
+                <i class="fas fa-circle-dot"></i>
+                {{ 'Register.GOALS.ABS' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/exercises/legs" class="tf-nav-link">
+                <i class="fas fa-person-running"></i>
+                {{ 'Register.GOALS.LEGS' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/exercises/full-body" class="tf-nav-link">
+                <i class="fas fa-person"></i>
+                {{ 'Register.GOALS.FULL_BODY' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/exercises/back" class="tf-nav-link">
+                <i class="fas fa-arrows-up-down"></i>
+                {{ 'Register.GOALS.BACK' | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Account -->
+        <div class="tf-nav-col">
+          <h6 class="tf-nav-head">{{ 'Footer.ACCOUNT_TITLE' | translate }}</h6>
+          <ul class="tf-nav-list">
+            <li>
+              <a routerLink="/login" class="tf-nav-link">
+                <i class="fas fa-right-to-bracket"></i>
+                {{ 'Navbar.LOGIN' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/register" class="tf-nav-link">
+                <i class="fas fa-user-plus"></i>
+                {{ 'Navbar.REGISTER' | translate }}
+              </a>
+            </li>
+            <li>
+              <a routerLink="/profile" class="tf-nav-link">
+                <i class="fas fa-user-circle"></i>
+                {{ 'Navbar.PROFILE' | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ── BOTTOM BAR ── -->
+    <div class="tf-bottom">
+      <span class="tf-copy">
+        © {{ currentYear }} TRAINOVA.
+        {{ 'Footer.ALL_RIGHTS' | translate }}
+      </span>
+
+      <div class="tf-badges">
+        <span class="tf-badge"><i class="fas fa-shield-halved"></i> Secure</span>
+        <span class="tf-badge"><i class="fas fa-mobile-screen-button"></i> Mobile-First</span>
+        <span class="tf-badge"><i class="fas fa-language"></i> EN / AR</span>
+      </div>
+
+      <a href="https://github.com/AhmedMohamed" target="_blank" class="tf-credit">
+        {{ 'Footer.CREDIT' | translate }}
+      </a>
+    </div>
+
+  </div>
+
+</footer>

@@ -1,0 +1,166 @@
+<!-- ═══════════════════════════════
+     CONTACT PAGE
+     ═══════════════════════════════ -->
+<div class="contact-page page-wrapper">
+
+  <!-- Hero -->
+  <section class="contact-hero">
+    <div class="contact-hero-glow"></div>
+    <div class="container position-relative" style="z-index:2">
+      <div class="animate-fade-up text-center">
+        <div class="contact-eyebrow">
+          <i class="fas fa-envelope"></i>
+          {{ 'CONTACT.LABEL' | translate }}
+        </div>
+        <h1 class="contact-hero-title">{{ 'CONTACT.TITLE' | translate }}</h1>
+        <p class="contact-hero-sub">{{ 'CONTACT.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container contact-content">
+    <div class="row g-5 justify-content-center">
+
+      <!-- Info Cards -->
+      <div class="col-lg-4">
+        <div class="contact-info-wrap animate-fade-up">
+
+          <div class="contact-info-card">
+            <div class="contact-info-icon">
+              <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <div>
+              <h6 class="contact-info-title">{{ 'CONTACT.INFO.EMAIL_TITLE' | translate }}</h6>
+              <p class="contact-info-val">support&#64;trainova.app</p>
+            </div>
+          </div>
+
+          <div class="contact-info-card">
+            <div class="contact-info-icon">
+              <i class="fab fa-instagram"></i>
+            </div>
+            <div>
+              <h6 class="contact-info-title">{{ 'CONTACT.INFO.SOCIAL_TITLE' | translate }}</h6>
+              <p class="contact-info-val">&#64;trainova.app</p>
+            </div>
+          </div>
+
+          <div class="contact-info-card">
+            <div class="contact-info-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div>
+              <h6 class="contact-info-title">{{ 'CONTACT.INFO.HOURS_TITLE' | translate }}</h6>
+              <p class="contact-info-val">{{ 'CONTACT.INFO.HOURS_VAL' | translate }}</p>
+            </div>
+          </div>
+
+          <!-- Decorative quote -->
+          <div class="contact-quote">
+            <i class="fas fa-quote-left"></i>
+            <p>{{ 'CONTACT.QUOTE' | translate }}</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="col-lg-7">
+        <div class="contact-form-card animate-fade-up" style="animation-delay:.15s">
+
+          <h4 class="contact-form-title">{{ 'CONTACT.FORM.TITLE' | translate }}</h4>
+
+          <!-- Error Alert -->
+          <div class="contact-error-alert" *ngIf="errorMessage">
+            <i class="fas fa-exclamation-circle"></i>
+            <div>
+              <strong>{{ 'CONTACT.FORM.ERROR_TITLE' | translate }}</strong>
+              <p>{{ errorMessage }}</p>
+            </div>
+          </div>
+
+          <!-- Success Alert -->
+          <div class="contact-success-alert" *ngIf="submitted">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <strong>{{ 'CONTACT.FORM.SUCCESS_TITLE' | translate }}</strong>
+              <p>{{ 'CONTACT.FORM.SUCCESS_TEXT' | translate }}</p>
+            </div>
+          </div>
+
+          <form (ngSubmit)="onSubmit()" *ngIf="!submitted">
+            <div class="row g-3">
+
+              <div class="col-md-6">
+                <div class="contact-field">
+                  <label class="contact-label">
+                    <i class="fas fa-user"></i>
+                    {{ 'CONTACT.FORM.NAME' | translate }}
+                  </label>
+                  <input type="text" class="contact-input" [(ngModel)]="form.name" name="name"
+                    placeholder="{{ 'CONTACT.FORM.NAME_PH' | translate }}" required>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="contact-field">
+                  <label class="contact-label">
+                    <i class="fas fa-envelope"></i>
+                    {{ 'CONTACT.FORM.EMAIL' | translate }}
+                  </label>
+                  <input type="email" class="contact-input" [(ngModel)]="form.email" name="email"
+                    placeholder="{{ 'CONTACT.FORM.EMAIL_PH' | translate }}" required>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="contact-field">
+                  <label class="contact-label">
+                    <i class="fas fa-tag"></i>
+                    {{ 'CONTACT.FORM.SUBJECT' | translate }}
+                  </label>
+                  <select class="contact-input contact-select" [(ngModel)]="form.subject" name="subject">
+                    <option value="">{{ 'CONTACT.FORM.SUBJECT_PH' | translate }}</option>
+                    <option value="general">{{ 'CONTACT.FORM.SUBJECT_GENERAL' | translate }}</option>
+                    <option value="bug">{{ 'CONTACT.FORM.SUBJECT_BUG' | translate }}</option>
+                    <option value="feature">{{ 'CONTACT.FORM.SUBJECT_FEATURE' | translate }}</option>
+                    <option value="account">{{ 'CONTACT.FORM.SUBJECT_ACCOUNT' | translate }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="contact-field">
+                  <label class="contact-label">
+                    <i class="fas fa-comment-dots"></i>
+                    {{ 'CONTACT.FORM.MESSAGE' | translate }}
+                  </label>
+                  <textarea style="resize: none;" class="contact-input contact-textarea" [(ngModel)]="form.message" name="message" rows="5"
+                    placeholder="{{ 'CONTACT.FORM.MESSAGE_PH' | translate }}" required></textarea>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <button type="submit" class="btn-contact-submit" [disabled]="isSubmitting">
+                  <span *ngIf="!isSubmitting">
+                    <i class="fas fa-paper-plane me-2"></i>
+                    {{ 'CONTACT.FORM.SEND' | translate }}
+                  </span>
+                  <span *ngIf="isSubmitting">
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    {{ 'CONTACT.FORM.SENDING' | translate }}
+                  </span>
+                </button>
+              </div>
+
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

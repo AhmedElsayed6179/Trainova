@@ -1,0 +1,202 @@
+<!-- HERO SECTION -->
+<section class="home-hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-grid-overlay"></div>
+
+  <div class="container hero-content">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 animate-fade-up">
+
+        <!-- Guest View -->
+        <ng-container *ngIf="!isLoggedIn">
+          <span class="hero-eyebrow">
+            <i class="fas fa-bolt"></i>
+            {{ 'Home.EYEBROW' | translate }}
+          </span>
+
+          <h1 class="hero-title">
+            {{ 'Home.HERO_LINE1' | translate }}<br>
+            <span class="highlight">{{ 'Home.HERO_LINE2' | translate }}</span><br>
+            {{ 'Home.HERO_LINE3' | translate }}
+          </h1>
+
+          <p class="hero-subtitle">{{ 'Home.BANNER_SUBTITLE' | translate }}</p>
+
+          <div class="hero-cta-group">
+            <a routerLink="/register" class="btn-hero-primary">
+              <i class="fas fa-rocket"></i>
+              {{ 'Home.GET_STARTED' | translate }}
+            </a>
+            <a routerLink="/exercises" class="btn-hero-secondary">
+              <i class="fas fa-play-circle"></i>
+              {{ 'Home.BROWSE_EXERCISES' | translate }}
+            </a>
+          </div>
+
+          <div class="hero-stats stagger-children">
+            <div class="hero-stat-item">
+              <div class="hero-stat-number">30</div>
+              <div class="hero-stat-label">{{ 'Home.STAT_DAYS' | translate }}</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-number">4+</div>
+              <div class="hero-stat-label">{{ 'Home.STAT_GOALS' | translate }}</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-number">∞</div>
+              <div class="hero-stat-label">{{ 'Home.STAT_ENERGY' | translate }}</div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Logged-in View -->
+        <ng-container *ngIf="isLoggedIn">
+          <span class="hero-eyebrow">
+            <i class="fas fa-fire"></i>
+            {{ 'Home.LOGGED_EYEBROW' | translate }}
+          </span>
+
+          <h1 class="hero-title">
+            {{ 'Home.LOGGED_TITLE_1' | translate }}<br>
+            <span class="highlight">{{ 'Home.LOGGED_TITLE_2' | translate }}</span><br>
+            {{ 'Home.LOGGED_TITLE_3' | translate }}
+          </h1>
+
+          <p class="hero-subtitle">{{ 'Home.LOGGED_SUBTITLE' | translate }}</p>
+
+          <div class="hero-cta-group">
+            <a routerLink="/workout" class="btn-hero-primary">
+              <i class="fas fa-dumbbell"></i>
+              {{ 'Home.GO_TO_WORKOUT' | translate }}
+            </a>
+            <a routerLink="/dashboard" class="btn-hero-secondary">
+              <i class="fas fa-chart-line"></i>
+              {{ 'Home.VIEW_PROGRESS' | translate }}
+            </a>
+          </div>
+
+          <div class="hero-stats stagger-children">
+            <div class="hero-stat-item">
+              <div class="hero-stat-number">{{ currentUser?.completed_days || 0 }}</div>
+              <div class="hero-stat-label">{{ 'Home.DAYS_DONE' | translate }}</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-number">{{ currentUser?.current_streak || 0 }}</div>
+              <div class="hero-stat-label">{{ 'Home.CURRENT_STREAK' | translate }}</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-number">{{ currentUser?.total_workouts || 0 }}</div>
+              <div class="hero-stat-label">{{ 'Home.TOTAL_WORKOUTS' | translate }}</div>
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+
+      <div class="col-lg-6 d-flex justify-content-center animate-fade-up" style="animation-delay: 0.2s">
+        <div class="hero-card-float">
+          <div class="hero-card-header">
+            <div class="hero-card-icon">
+              <i class="fas fa-trophy" style="color:#000"></i>
+            </div>
+            <div>
+              <div class="hero-card-title">{{ 'Home.CARD_TITLE' | translate }}</div>
+              <div class="hero-card-subtitle">{{ 'Home.CARD_SUB' | translate }}</div>
+            </div>
+          </div>
+
+          <div class="day-progress-mini">
+            <div class="day-dot done" *ngFor="let d of doneArr"></div>
+            <div class="day-dot today"></div>
+            <div class="day-dot" *ngFor="let d of remainArr"></div>
+          </div>
+
+          <div class="progress-ring">
+            <div style="flex:1">
+              <div class="ring-label">{{ 'Home.CARD_PROGRESS' | translate }}</div>
+              <div class="ring-value">{{ cardDoneDays }} / 30 {{ 'Home.CARD_DAYS' | translate }}</div>
+            </div>
+            <div style="font-size: 2.5rem; color: var(--primary);">🔥</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="section-label">{{ 'Home.WHY_LABEL' | translate }}</span>
+      <h2 class="section-heading">{{ 'Home.FEATURES_TITLE' | translate }}</h2>
+    </div>
+
+    <div class="row g-4 stagger-children">
+      <div class="col-md-4" *ngFor="let feature of features">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="{{ feature.icon }}"></i>
+          </div>
+          <h5 class="feature-title">{{ feature.title | translate }}</h5>
+          <p class="feature-desc">{{ feature.desc | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES SECTION -->
+<section class="categories-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="section-label">{{ 'Home.CATEGORIES_LABEL' | translate }}</span>
+      <h2 class="section-heading">{{ 'Home.EXERCISE_HIGHLIGHT' | translate }}</h2>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-6 col-md-3" *ngFor="let ex of exercises">
+        <div class="category-card" (click)="goToCategory(ex.cat)">
+          <img [src]="ex.img" [alt]="ex.name | translate" class="category-img" onerror="this.style.display='none'">
+          <div class="category-overlay">
+            <div class="category-name">{{ ex.name | translate }}</div>
+            <div class="category-count">
+              <i class="fas fa-dumbbell me-1"></i>{{ ex.count }} {{ 'Home.EXERCISES' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section">
+  <div class="container text-center position-relative">
+
+    <ng-container *ngIf="!isLoggedIn">
+      <h2 class="cta-title">
+        {{ 'Home.CTA_LINE1' | translate }}<br>
+        <span>{{ 'Home.CTA_LINE2' | translate }}</span>
+      </h2>
+      <p class="text-white-50 mt-3 mb-4" style="font-size: 1.1rem;">{{ 'Home.CTA_SUB' | translate }}</p>
+      <a routerLink="/register" class="btn-hero-primary">
+        <i class="fas fa-user-plus"></i>
+        {{ 'Home.JOIN_NOW' | translate }}
+      </a>
+    </ng-container>
+
+    <ng-container *ngIf="isLoggedIn">
+      <h2 class="cta-title">
+        {{ 'Home.CTA_LOGGED_LINE1' | translate }}<br>
+        <span>{{ 'Home.CTA_LOGGED_LINE2' | translate }}</span>
+      </h2>
+      <p class="text-white-50 mt-3 mb-4" style="font-size: 1.1rem;">{{ 'Home.CTA_LOGGED_SUB' | translate }}</p>
+      <a routerLink="/workout" class="btn-hero-primary">
+        <i class="fas fa-dumbbell"></i>
+        {{ 'Home.GO_TO_WORKOUT' | translate }}
+      </a>
+    </ng-container>
+
+  </div>
+</section>

@@ -1,0 +1,276 @@
+<div class="auth-page">
+
+  <!-- ══ LEFT: Visual Panel ══ -->
+  <div class="auth-visual">
+    <div class="auth-visual-bg"></div>
+    <div class="auth-visual-grid"></div>
+    <div class="auth-visual-content">
+
+      <div class="auth-logo">
+        <div class="auth-logo-icon"><i class="fas fa-bolt"></i></div>
+        <span class="auth-logo-text">TRAINOVA</span>
+      </div>
+
+      <h1 class="auth-visual-headline">
+        YOUR<br><em>30-DAY</em><br>CHALLENGE
+      </h1>
+
+      <p class="auth-visual-sub">
+        {{ 'Home.BANNER_SUBTITLE' | translate }}
+      </p>
+
+      <div class="auth-stats-row">
+        <div class="auth-stat">
+          <div class="auth-stat-val">30</div>
+          <div class="auth-stat-lbl">{{ 'Home.STAT_DAYS' | translate }}</div>
+        </div>
+        <div class="auth-stat">
+          <div class="auth-stat-val">5</div>
+          <div class="auth-stat-lbl">{{ 'Home.STAT_GOALS' | translate }}</div>
+        </div>
+        <div class="auth-stat">
+          <div class="auth-stat-val">FREE</div>
+          <div class="auth-stat-lbl">Forever</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: Form Panel ══ -->
+  <div class="auth-form-panel">
+    <div class="auth-form-wrap register-form-wrap">
+
+      <!-- Mobile brand -->
+      <div class="auth-mobile-brand">
+        <div class="auth-mobile-brand-icon"><i class="fas fa-bolt"></i></div>
+        <span class="auth-mobile-brand-text">TRAINOVA</span>
+      </div>
+
+      <div class="auth-heading">
+        <h1>{{ 'Register.TITLE' | translate }}</h1>
+        <p>
+          {{ 'Register.ALREADY_HAVE_ACCOUNT' | translate }}
+          <a routerLink="/login">{{ 'Register.LOGIN' | translate }}</a>
+        </p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <!-- Personal Info Section -->
+        <div class="auth-sect"><i class="fas fa-user"></i> Personal Info</div>
+
+        <div class="ag2">
+
+          <!-- Name -->
+          <div class="af">
+            <label>{{ 'Register.NAME' | translate }}<span class="req">*</span></label>
+            <div class="ai" [class.err]="isInvalid('name')" [class.ok]="isValid('name')">
+              <i class="fas fa-id-card ai-ico"></i>
+              <input type="text" formControlName="name" placeholder="{{ 'Register.NAME' | translate }}">
+              <i class="fas fa-check-circle ai-ok" *ngIf="isValid('name')"></i>
+            </div>
+            <div class="ae" *ngIf="hasError('name','required')">{{ 'Register.ERRORS.name.required' | translate }}</div>
+            <div class="ae" *ngIf="hasError('name','minlength')">{{ 'Register.ERRORS.name.minlength' | translate }}
+            </div>
+          </div>
+
+          <!-- Age -->
+          <div class="af">
+            <label>{{ 'Register.AGE' | translate }}<span class="req">*</span></label>
+            <div class="ai" [class.err]="isInvalid('age')" [class.ok]="isValid('age')">
+              <i class="fas fa-calendar ai-ico"></i>
+              <input type="number" formControlName="age" min="10" max="70" placeholder="25">
+              <i class="fas fa-check-circle ai-ok" *ngIf="isValid('age')"></i>
+            </div>
+            <div class="ae" *ngIf="hasError('age','required')">{{ 'Register.ERRORS.age.required' | translate }}</div>
+            <div class="ae" *ngIf="hasError('age','min') || hasError('age','max')">{{ 'Register.ERRORS.age.min' |
+              translate }}</div>
+          </div>
+
+        </div>
+
+        <div class="ag2">
+
+          <!-- Gender -->
+          <div class="af">
+            <label>{{ 'Register.GENDER' | translate }}<span class="req">*</span></label>
+            <div class="ai" [class.err]="isInvalid('gender')" [class.ok]="isValid('gender')">
+              <i class="fas fa-venus-mars ai-ico"></i>
+              <select formControlName="gender">
+                <option value="">{{ 'Register.SELECT_GENDER' | translate }}</option>
+                <option value="male">{{ 'Register.Male' | translate }}</option>
+                <option value="female">{{ 'Register.Female' | translate }}</option>
+                <option value="other">{{ 'Register.Other' | translate }}</option>
+              </select>
+              <i class="fas fa-chevron-down ai-arr"></i>
+            </div>
+            <div class="ae" *ngIf="hasError('gender','required')">{{ 'Register.ERRORS.gender.required' | translate }}
+            </div>
+          </div>
+
+          <!-- Goal -->
+          <div class="af">
+            <label>{{ 'Register.GOAL' | translate }}<span class="req">*</span></label>
+            <div class="ai" [class.err]="isInvalid('goal')" [class.ok]="isValid('goal')">
+              <i class="fas fa-bullseye ai-ico"></i>
+              <select formControlName="goal">
+                <option value="">{{ 'Register.SELECT_GOAL' | translate }}</option>
+                <option value="abs">{{ 'Register.GOALS.ABS' | translate }}</option>
+                <option value="legs">{{ 'Register.GOALS.LEGS' | translate }}</option>
+                <option value="full-body">{{ 'Register.GOALS.FULL_BODY' | translate }}</option>
+                <option value="back">{{ 'Register.GOALS.BACK' | translate }}</option>
+                <option value="all">{{ 'Register.GOALS.ALL' | translate }}</option>
+              </select>
+              <i class="fas fa-chevron-down ai-arr"></i>
+            </div>
+            <div class="ae" *ngIf="hasError('goal','required')">{{ 'Register.ERRORS.goal.required' | translate }}</div>
+          </div>
+
+        </div>
+
+        <!-- Account Section -->
+        <div class="auth-sect"><i class="fas fa-shield-alt"></i> Account Details</div>
+
+        <!-- Email -->
+        <div class="af">
+          <label>{{ 'Register.EMAIL' | translate }}<span class="req">*</span></label>
+          <div class="ai" [class.err]="isInvalid('email') || emailExists" [class.ok]="isValid('email') && !emailExists">
+            <i class="fas fa-envelope ai-ico"></i>
+            <input type="email" formControlName="email" placeholder="you@example.com">
+            <i class="fas fa-check-circle ai-ok" *ngIf="isValid('email') && !emailExists"></i>
+          </div>
+          <div class="ae" *ngIf="hasError('email','required')">{{ 'Register.ERRORS.email.required' | translate }}</div>
+          <div class="ae" *ngIf="hasError('email','email') || hasError('email','pattern')">{{
+            'Register.ERRORS.email.email' | translate }}</div>
+          <div class="ae" *ngIf="emailExists">{{ 'Register.EMAIL_EXISTS' | translate }}</div>
+        </div>
+
+        <!-- Username -->
+        <div class="af">
+          <label>{{ 'Register.USERNAME' | translate }}<span class="req">*</span></label>
+          <div class="ai" [class.err]="isInvalid('username') || usernameExists"
+            [class.ok]="isValid('username') && !usernameExists">
+            <i class="fas fa-at ai-ico"></i>
+            <input type="text" formControlName="username" placeholder="username_123">
+            <i class="fas fa-check-circle ai-ok" *ngIf="isValid('username') && !usernameExists"></i>
+          </div>
+          <div class="ae" *ngIf="hasError('username','required')">{{ 'Register.ERRORS.username.required' | translate }}
+          </div>
+          <div class="ae" *ngIf="hasError('username','minlength')">{{ 'Register.ERRORS.username.minlength' | translate
+            }}</div>
+          <div class="ae" *ngIf="hasError('username','pattern')">{{ 'Register.ERRORS.username.pattern' | translate }}
+          </div>
+          <div class="ae" *ngIf="usernameExists">{{ 'Register.USERNAME_EXISTS' | translate }}</div>
+        </div>
+
+        <!-- Body Section -->
+        <div class="auth-sect"><i class="fas fa-dumbbell"></i> Body Stats</div>
+
+        <div class="ag2">
+
+          <!-- Height -->
+          <div class="af">
+            <label>{{ 'Register.HEIGHT' | translate }}<span class="req">*</span></label>
+            <div class="ai" [class.err]="isInvalid('height')" [class.ok]="isValid('height')">
+              <i class="fas fa-ruler-vertical ai-ico"></i>
+              <input type="number" formControlName="height" placeholder="175">
+              <span class="ai-sfx">cm</span>
+            </div>
+            <div class="ae" *ngIf="hasError('height','required')">{{ 'Register.ERRORS.height.required' | translate }}
+            </div>
+          </div>
+
+          <!-- Weight -->
+          <div class="af">
+            <label>{{ 'Register.WEIGHT' | translate }}<span class="req">*</span></label>
+            <div class="ai" [class.err]="isInvalid('weight')" [class.ok]="isValid('weight')">
+              <i class="fas fa-weight ai-ico"></i>
+              <input type="number" formControlName="weight" placeholder="70">
+              <span class="ai-sfx">kg</span>
+            </div>
+            <div class="ae" *ngIf="hasError('weight','required')">{{ 'Register.ERRORS.weight.required' | translate }}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Phone -->
+        <div class="af">
+          <label>{{ 'Register.PHONE' | translate }}<span class="req">*</span></label>
+          <div class="ai" [class.err]="isInvalid('phone') || phoneExists" [class.ok]="isValid('phone') && !phoneExists">
+            <i class="fas fa-phone ai-ico"></i>
+            <input type="text" formControlName="phone" placeholder="01XXXXXXXXX" maxlength="11">
+            <i class="fas fa-check-circle ai-ok" *ngIf="isValid('phone') && !phoneExists"></i>
+          </div>
+          <div class="ae" *ngIf="hasError('phone','pattern')">{{ 'Register.ERRORS.phone.pattern' | translate }}</div>
+          <div class="ae" *ngIf="phoneExists">{{ 'Register.PHONE_EXISTS' | translate }}</div>
+          <span class="ah">{{ 'Register.PHONE_FORMAT' | translate }}</span>
+        </div>
+
+        <!-- Security Section -->
+        <div class="auth-sect"><i class="fas fa-lock"></i> Security</div>
+
+        <!-- Password -->
+        <div class="af">
+          <label>{{ 'Register.PASSWORD' | translate }}<span class="req">*</span></label>
+          <div class="ai" [class.err]="isInvalid('password')" [class.ok]="isValid('password')">
+            <i class="fas fa-lock ai-ico"></i>
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+              placeholder="{{ 'Register.PASSWORD' | translate }}">
+            <button type="button" class="ai-eye" (click)="showPassword = !showPassword">
+              <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+          <div class="ae" *ngIf="hasError('password','pattern')">{{ 'Register.ERRORS.password.pattern' | translate }}
+          </div>
+          <span class="ah">{{ 'Register.PASSWORD_TOOLTIP' | translate }}</span>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="af">
+          <label>{{ 'Register.CONFIRM_PASSWORD' | translate }}<span class="req">*</span></label>
+          <div class="ai"
+            [class.err]="registerForm.hasError('notMatching') && registerForm.get('confirmPassword')?.touched"
+            [class.ok]="!registerForm.hasError('notMatching') && isValid('confirmPassword')">
+            <i class="fas fa-shield-alt ai-ico"></i>
+            <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
+              placeholder="{{ 'Register.CONFIRM_PASSWORD' | translate }}">
+            <i class="fas fa-check-circle ai-ok"
+              *ngIf="!registerForm.hasError('notMatching') && isValid('confirmPassword')"></i>
+            <button type="button" class="ai-eye" (click)="showConfirmPassword = !showConfirmPassword">
+              <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+          <div class="ae" *ngIf="registerForm.hasError('notMatching') && registerForm.get('confirmPassword')?.touched">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ 'Register.ERRORS.confirmPassword.notMatching' | translate }}
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="auth-sub"
+          [disabled]="registerForm.invalid || isLoading || usernameExists || emailExists || phoneExists">
+          <div class="auth-sub-inner">
+            <ng-container *ngIf="!isLoading">
+              {{ 'Register.SUBMIT' | translate }}
+              <i class="fas fa-rocket"></i>
+            </ng-container>
+            <ng-container *ngIf="isLoading">
+              <span class="auth-spin"></span>
+              {{ 'Register.LOADING' | translate }}
+            </ng-container>
+          </div>
+        </button>
+
+      </form>
+
+      <div class="auth-switch">
+        {{ 'Register.ALREADY_HAVE_ACCOUNT' | translate }}
+        <a routerLink="/login">{{ 'Register.LOGIN' | translate }}</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>

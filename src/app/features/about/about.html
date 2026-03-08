@@ -1,0 +1,224 @@
+<!-- ════════════════════════════
+     TRAINOVA — ABOUT PAGE
+     ════════════════════════════ -->
+
+<!-- ── HERO ── -->
+<div class="about-hero">
+  <section class="ab-hero">
+    <div class="ab-hero-grid"></div>
+    <div class="ab-hero-glow"></div>
+    <div class="container ab-hero-content">
+      <span class="ab-eyebrow">
+        <i class="fas fa-bolt me-2"></i>{{ 'About.EYEBROW' | translate }}
+      </span>
+      <h1 class="ab-hero-title">{{ 'About.HERO_TITLE' | translate }}</h1>
+      <p class="ab-hero-sub">{{ 'About.HERO_SUB' | translate }}</p>
+
+      <div class="ab-hero-cta">
+
+        <!-- Guest -->
+        <ng-container *ngIf="!isLoggedIn">
+          <a routerLink="/register" class="ab-btn-primary">
+            <i class="fas fa-rocket me-2"></i>{{ 'Home.GET_STARTED' | translate }}
+          </a>
+        </ng-container>
+
+        <!-- Logged in -->
+        <ng-container *ngIf="isLoggedIn">
+          <a routerLink="/workout" class="ab-btn-primary">
+            <i class="fas fa-dumbbell me-2"></i>{{ 'Home.GO_TO_WORKOUT' | translate }}
+          </a>
+        </ng-container>
+
+        <a routerLink="/exercises/abs" class="ab-btn-secondary">
+          <i class="fas fa-dumbbell me-2"></i>{{ 'Home.BROWSE_EXERCISES' | translate }}
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS STRIP ── -->
+  <section class="ab-stats-strip">
+    <div class="container">
+      <div class="ab-stats-grid">
+        <div class="ab-stat" *ngFor="let s of stats">
+          <div class="ab-stat-val">{{ s.value }}</div>
+          <div class="ab-stat-lbl">{{ s.labelKey | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MISSION ── -->
+  <section class="ab-mission">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <span class="ab-section-label">{{ 'About.MISSION_LABEL' | translate }}</span>
+          <h2 class="ab-section-title">{{ 'About.MISSION_TITLE' | translate }}</h2>
+          <p class="ab-body-text">{{ 'About.MISSION_P1' | translate }}</p>
+          <p class="ab-body-text">{{ 'About.MISSION_P2' | translate }}</p>
+          <div class="ab-mission-list">
+            <div class="ab-mission-item">
+              <i class="fas fa-check-circle"></i>
+              <span>{{ 'About.MISSION_POINT1' | translate }}</span>
+            </div>
+            <div class="ab-mission-item">
+              <i class="fas fa-check-circle"></i>
+              <span>{{ 'About.MISSION_POINT2' | translate }}</span>
+            </div>
+            <div class="ab-mission-item">
+              <i class="fas fa-check-circle"></i>
+              <span>{{ 'About.MISSION_POINT3' | translate }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 d-flex justify-content-center">
+          <div class="ab-mission-visual">
+            <div class="ab-visual-ring outer"></div>
+            <div class="ab-visual-ring inner"></div>
+            <div class="ab-visual-center">
+              <i class="fas fa-bolt"></i>
+              <span>TRAINOVA</span>
+            </div>
+            <div class="ab-visual-orbit" style="--deg: 0deg">
+              <div class="ab-orbit-dot"><i class="fas fa-dumbbell"></i></div>
+            </div>
+            <div class="ab-visual-orbit" style="--deg: 90deg">
+              <div class="ab-orbit-dot"><i class="fas fa-fire"></i></div>
+            </div>
+            <div class="ab-visual-orbit" style="--deg: 180deg">
+              <div class="ab-orbit-dot"><i class="fas fa-chart-line"></i></div>
+            </div>
+            <div class="ab-visual-orbit" style="--deg: 270deg">
+              <div class="ab-orbit-dot"><i class="fas fa-trophy"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── VALUES ── -->
+  <section class="ab-values">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="ab-section-label">{{ 'About.VALUES_LABEL' | translate }}</span>
+        <h2 class="ab-section-title">{{ 'About.VALUES_TITLE' | translate }}</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3" *ngFor="let v of values; let i = index">
+          <div class="ab-value-card" [style.animation-delay]="(i * 0.1) + 's'">
+            <div class="ab-value-icon">
+              <i [class]="v.icon"></i>
+            </div>
+            <h5 class="ab-value-title">{{ v.titleKey | translate }}</h5>
+            <p class="ab-value-desc">{{ v.descKey | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STORY TIMELINE ── -->
+  <section class="ab-story">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="ab-section-label">{{ 'About.STORY_LABEL' | translate }}</span>
+        <h2 class="ab-section-title">{{ 'About.STORY_TITLE' | translate }}</h2>
+      </div>
+      <div class="ab-timeline">
+        <div class="ab-timeline-item left">
+          <div class="ab-tl-dot"></div>
+          <div class="ab-tl-card">
+            <span class="ab-tl-year">2024</span>
+            <h6 class="ab-tl-title">{{ 'About.TL1_TITLE' | translate }}</h6>
+            <p class="ab-tl-text">{{ 'About.TL1_TEXT' | translate }}</p>
+          </div>
+        </div>
+        <div class="ab-timeline-item right">
+          <div class="ab-tl-dot"></div>
+          <div class="ab-tl-card">
+            <span class="ab-tl-year">2025</span>
+            <h6 class="ab-tl-title">{{ 'About.TL2_TITLE' | translate }}</h6>
+            <p class="ab-tl-text">{{ 'About.TL2_TEXT' | translate }}</p>
+          </div>
+        </div>
+        <div class="ab-timeline-item left">
+          <div class="ab-tl-dot pulse"></div>
+          <div class="ab-tl-card highlight">
+            <span class="ab-tl-year">{{ 'About.TL3_YEAR' | translate }}</span>
+            <h6 class="ab-tl-title">{{ 'About.TL3_TITLE' | translate }}</h6>
+            <p class="ab-tl-text">{{ 'About.TL3_TEXT' | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TEAM ── -->
+  <section class="ab-team">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="ab-section-label">{{ 'About.TEAM_LABEL' | translate }}</span>
+        <h2 class="ab-section-title">{{ 'About.TEAM_TITLE' | translate }}</h2>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="ab-team-card" *ngFor="let m of team">
+          <div class="ab-team-avatar-wrap">
+            <img [src]="m.avatar" [alt]="m.name" class="ab-team-avatar" onerror="this.src='team/Ahmed.png'">
+            <div class="ab-team-avatar-glow"></div>
+          </div>
+          <h5 class="ab-team-name">{{ m.name }}</h5>
+          <p class="ab-team-role">{{ m.roleKey | translate }}</p>
+          <a [href]="m.github" target="_blank" class="ab-team-github">
+            <i class="fab fa-github me-1"></i> GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="ab-cta">
+    <div class="ab-cta-glow"></div>
+    <div class="container text-center position-relative">
+
+      <!-- Guest CTA -->
+      <ng-container *ngIf="!isLoggedIn">
+        <h2 class="ab-cta-title">
+          {{ 'About.CTA_LINE1' | translate }}<br>
+          <span>{{ 'About.CTA_LINE2' | translate }}</span>
+        </h2>
+        <p class="ab-cta-sub">{{ 'About.CTA_SUB' | translate }}</p>
+        <div class="ab-hero-cta">
+          <a routerLink="/register" class="ab-btn-primary">
+            <i class="fas fa-user-plus me-2"></i>{{ 'Home.JOIN_NOW' | translate }}
+          </a>
+          <a routerLink="/contact" class="ab-btn-secondary">
+            <i class="fas fa-envelope me-2"></i>{{ 'About.CONTACT_US' | translate }}
+          </a>
+        </div>
+      </ng-container>
+
+      <!-- Logged-in CTA -->
+      <ng-container *ngIf="isLoggedIn">
+        <h2 class="ab-cta-title">
+          {{ 'Home.CTA_LOGGED_LINE1' | translate }}<br>
+          <span>{{ 'Home.CTA_LOGGED_LINE2' | translate }}</span>
+        </h2>
+        <p class="ab-cta-sub">{{ 'Home.CTA_LOGGED_SUB' | translate }}</p>
+        <div class="ab-hero-cta">
+          <a routerLink="/workout" class="ab-btn-primary">
+            <i class="fas fa-dumbbell me-2"></i>{{ 'Home.GO_TO_WORKOUT' | translate }}
+          </a>
+          <a routerLink="/dashboard" class="ab-btn-secondary">
+            <i class="fas fa-chart-line me-2"></i>{{ 'Home.VIEW_PROGRESS' | translate }}
+          </a>
+        </div>
+      </ng-container>
+
+    </div>
+  </section>
+</div>

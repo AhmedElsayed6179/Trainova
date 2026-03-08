@@ -1,0 +1,158 @@
+<section class="ec-hero">
+  <div class="ec-hero-bg"></div>
+  <div class="container ec-hero-content">
+    <button class="ec-back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+      {{ 'ExerciseCard.BACK_BTN' | translate }}
+    </button>
+
+    <div class="ec-hero-badge">
+      <i [class]="categoryIconClass"></i>
+    </div>
+
+    <h1 class="ec-hero-title">{{ categoryTitleKey | translate }}</h1>
+    <p class="ec-hero-sub">
+      {{ filteredExercises.length }} {{ 'ExerciseCard.EXERCISES_COUNT' | translate }}
+    </p>
+
+    <!-- Category tabs -->
+    <div class="ec-cat-tabs">
+      <a routerLink="/exercises/abs" class="ec-cat-tab" [class.active]="category === 'abs'">
+        <i class="fas fa-circle-dot me-1"></i>{{ 'Home.EXERCISE_ABS' | translate }}
+      </a>
+      <a routerLink="/exercises/legs" class="ec-cat-tab" [class.active]="category === 'legs'">
+        <i class="fas fa-person-running me-1"></i>{{ 'Home.EXERCISE_LEGS' | translate }}
+      </a>
+      <a routerLink="/exercises/back" class="ec-cat-tab" [class.active]="category === 'back'">
+        <i class="fas fa-arrows-up-down me-1"></i>{{ 'Home.EXERCISE_BACK' | translate }}
+      </a>
+      <a routerLink="/exercises/full-body" class="ec-cat-tab" [class.active]="category === 'full-body'">
+        <i class="fas fa-person me-1"></i>{{ 'Home.EXERCISE_FULLBODY' | translate }}
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Exercise Grid -->
+<section class="ec-section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" *ngFor="let ex of filteredExercises; let i = index">
+        <div class="ec-card" (click)="openExercise(ex)" [style.animation-delay]="(i * 0.08) + 's'">
+
+          <!-- Image -->
+          <div class="ec-card-img-wrap">
+            <img [src]="ex.img" [alt]="ex.name | translate" class="ec-card-img"
+              onerror="this.src='assets/exercise-placeholder.jpg'">
+            <div class="ec-card-img-overlay">
+              <button class="ec-view-btn">
+                <i class="fas fa-eye me-1"></i>{{ 'ExerciseCard.VIEW' | translate }}
+              </button>
+            </div>
+            <span class="ec-difficulty-badge" [ngClass]="getDifficultyClass(ex.difficulty)">
+              {{ ex.difficultyKey | translate }}
+            </span>
+          </div>
+
+          <!-- Body -->
+          <div class="ec-card-body">
+            <h5 class="ec-card-title">{{ ex.name | translate }}</h5>
+            <p class="ec-card-muscles">
+              <i class="fas fa-crosshairs me-1" style="color: var(--primary);"></i>
+              {{ ex.muscles | translate }}
+            </p>
+
+            <div class="ec-card-stats">
+              <div class="ec-stat">
+                <span class="ec-stat-val">{{ ex.sets }}</span>
+                <span class="ec-stat-lbl">{{ 'ExerciseCard.SETS' | translate }}</span>
+              </div>
+              <div class="ec-stat-divider"></div>
+              <div class="ec-stat">
+                <span class="ec-stat-val">{{ ex.reps }}</span>
+                <span class="ec-stat-lbl">{{ 'ExerciseCard.REPS' | translate }}</span>
+              </div>
+              <div class="ec-stat-divider"></div>
+              <div class="ec-stat">
+                <i class="fas fa-dumbbell" style="color: var(--primary); font-size: 1.1rem;"></i>
+                <span class="ec-stat-lbl">{{ 'ExerciseCard.BODYWEIGHT' | translate }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="ec-empty" *ngIf="filteredExercises.length === 0">
+      <i class="fas fa-dumbbell ec-empty-icon"></i>
+      <p>{{ 'ExerciseCard.NO_EXERCISES' | translate }}</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ DETAIL MODAL ══ -->
+<div class="ec-modal-backdrop" *ngIf="selectedExercise" (click)="closeModal()">
+  <div class="ec-modal" (click)="$event.stopPropagation()">
+
+    <button class="ec-modal-close" (click)="closeModal()">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="ec-modal-img-wrap">
+      <img [src]="selectedExercise.img" [alt]="selectedExercise.name | translate" class="ec-modal-img"
+        onerror="this.src='assets/exercise-placeholder.jpg'">
+      <div class="ec-modal-img-overlay"></div>
+      <span class="ec-difficulty-badge lg" [ngClass]="getDifficultyClass(selectedExercise.difficulty)">
+        {{ selectedExercise.difficultyKey | translate }}
+      </span>
+    </div>
+
+    <div class="ec-modal-body">
+      <h2 class="ec-modal-title">{{ selectedExercise.name | translate }}</h2>
+      <p class="ec-modal-muscles">
+        <i class="fas fa-crosshairs me-2" style="color: var(--primary);"></i>
+        {{ selectedExercise.muscles | translate }}
+      </p>
+
+      <div class="ec-modal-stats">
+        <div class="ec-modal-stat">
+          <span class="ec-modal-stat-val">{{ selectedExercise.sets }}</span>
+          <span class="ec-modal-stat-lbl">{{ 'ExerciseCard.SETS' | translate }}</span>
+        </div>
+        <div class="ec-modal-stat">
+          <span class="ec-modal-stat-val">{{ selectedExercise.reps }}</span>
+          <span class="ec-modal-stat-lbl">{{ 'ExerciseCard.REPS' | translate }}</span>
+        </div>
+        <div class="ec-modal-stat">
+          <span class="ec-modal-stat-val"><i class="fas fa-home"></i></span>
+          <span class="ec-modal-stat-lbl">{{ 'ExerciseCard.BODYWEIGHT' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="ec-modal-section">
+        <h6 class="ec-modal-section-title">
+          <i class="fas fa-list-ol me-2" style="color: var(--primary);"></i>
+          {{ 'ExerciseCard.INSTRUCTIONS' | translate }}
+        </h6>
+        <p class="ec-modal-text">{{ selectedExercise.instructions | translate }}</p>
+      </div>
+
+      <div class="ec-modal-section">
+        <h6 class="ec-modal-section-title">
+          <i class="fas fa-lightbulb me-2" style="color: var(--primary);"></i>
+          {{ 'ExerciseCard.TIPS' | translate }}
+        </h6>
+        <p class="ec-modal-text">{{ selectedExercise.tips | translate }}</p>
+      </div>
+
+      <button class="ec-modal-cta" routerLink="/workout" (click)="closeModal()">
+        <i class="fas fa-fire me-2"></i>
+        {{ 'ExerciseCard.START_TRAINING' | translate }}
+      </button>
+    </div>
+
+  </div>
+</div>

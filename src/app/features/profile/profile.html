@@ -1,0 +1,557 @@
+<!-- Loading -->
+<div class="profile-loading page-wrapper" *ngIf="!user">
+  <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;"></div>
+  <span>{{ 'Profile.LOADING' | translate }}</span>
+</div>
+
+<!-- Profile Content -->
+<div class="profile-container page-wrapper" *ngIf="user">
+
+  <!-- ══════════════════════════════════════════
+       PROFILE HERO
+  ══════════════════════════════════════════ -->
+  <div class="profile-hero animate-fade-up mb-4">
+
+    <!-- Decorative background elements -->
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-watermark">TRAINOVA</div>
+
+    <div class="hero-inner">
+
+      <!-- Avatar -->
+      <div class="hero-avatar-col">
+        <div class="profile-avatar-wrap">
+          <div *ngIf="isImageLoading || isUploading" class="avatar-skeleton">
+            <div class="spinner-border text-warning"></div>
+          </div>
+          <img [src]="profileImage" class="profile-avatar" [class.d-none]="isImageLoading || isUploading"
+            (load)="isImageLoading = false" (error)="profileImage='default-avatar.jpg'; isImageLoading=false"
+            alt="Profile">
+          <div class="avatar-ring"></div>
+          <div class="avatar-edit-btn" *ngIf="isEditing" (click)="fileInput.click()">
+            <i class="fas fa-camera"></i>
+          </div>
+        </div>
+        <input type="file" #fileInput style="display:none" (change)="onImageSelected($event)" accept="image/*">
+
+        <!-- Photo Options (edit mode) -->
+        <div class="photo-options" *ngIf="isEditing">
+          <button class="btn-photo" (click)="fileInput.click()" [disabled]="isUploading">
+            <i class="fas fa-upload"></i> {{ 'Profile.UPLOAD' | translate }}
+          </button>
+          <button class="btn-photo" (click)="takePhoto()" [disabled]="isUploading">
+            <i class="fas fa-camera"></i> {{ 'Profile.TAKE_PHOTO' | translate }}
+          </button>
+          <button class="btn-photo danger" (click)="deleteImage()" [disabled]="isUploading || !user.profileImage">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Identity -->
+      <div class="hero-identity">
+        <div class="hero-name-row">
+          <h2 class="profile-name">{{ user.name }}</h2>
+          <span class="profile-goal-badge">
+            <i class="fas fa-bullseye"></i>
+            {{ getGoalName(user.goal) }}
+          </span>
+        </div>
+        <div class="profile-username">@{{ user.username }}</div>
+
+        <!-- ── Stats Grid ── -->
+        <div class="hero-stats-grid mt-3">
+          <!-- Workout Days -->
+          <div class="hstat-card">
+            <div class="hstat-icon" style="background:rgba(13,110,253,0.12); color:#4e8ef7;">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="hstat-body">
+              <span class="hstat-num">{{ formatNumber(userStats.completed_days) }}</span>
+              <span class="hstat-lbl">{{ 'Profile.STATS.WORKOUT_DAYS' | translate }}</span>
+            </div>
+          </div>
+          <!-- Total Workouts -->
+          <div class="hstat-card">
+            <div class="hstat-icon" style="background:rgba(25,135,84,0.12); color:#2ecc71;">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+            <div class="hstat-body">
+              <span class="hstat-num">{{ formatNumber(userStats.total_workouts) }}</span>
+              <span class="hstat-lbl">{{ 'Profile.STATS.TOTAL_WORKOUTS' | translate }}</span>
+            </div>
+          </div>
+          <!-- Streak -->
+          <div class="hstat-card hstat-card--fire">
+            <div class="hstat-icon" style="background:rgba(245,166,35,0.15); color:#ffc107;">
+              <i class="fas fa-fire"></i>
+            </div>
+            <div class="hstat-body">
+              <span class="hstat-num">{{ userStats.current_streak || 0 }}<span class="fire-emoji">🔥</span></span>
+              <span class="hstat-lbl">{{ 'Profile.STATS.STREAK' | translate }}</span>
+            </div>
+          </div>
+          <!-- This Month -->
+          <div class="hstat-card">
+            <div class="hstat-icon" style="background:rgba(13,202,240,0.12); color:#0dcaf0;">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="hstat-body">
+              <span class="hstat-num">{{ formatNumber(userStats.monthly || 0) }}</span>
+              <span class="hstat-lbl">{{ 'Profile.STATS.THIS_MONTH' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Button -->
+      <div class="hero-actions-col">
+        <button class="btn-edit-profile" (click)="toggleEdit()" [disabled]="isUploading" [class.active]="isEditing">
+          <i class="fas" [ngClass]="isEditing ? 'fa-times' : 'fa-pen'"></i>
+          <span>{{ (isEditing ? 'Profile.CANCEL' : 'Profile.EDIT') | translate }}</span>
+        </button>
+        <div class="editing-pill mt-2" *ngIf="isEditing">
+          <span class="editing-dot"></span> Editing
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       QUICK ACTIONS
+  ══════════════════════════════════════════ -->
+  <div class="quick-actions stagger-children mb-4">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <a class="action-card" routerLink="/workout">
+          <div class="action-icon"><i class="fas fa-play"></i></div>
+          <div>
+            <div class="action-title">{{ 'Profile.START_WORKOUT' | translate }}</div>
+            <div class="action-subtitle">{{ 'Profile.START_WORKOUT_DESC' | translate }}</div>
+          </div>
+          <i class="fas fa-arrow-right action-arrow"></i>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a class="action-card" routerLink="/dashboard">
+          <div class="action-icon" style="background:rgba(13,202,240,0.12); color:#0dcaf0;">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <div>
+            <div class="action-title">{{ 'Profile.VIEW_DASHBOARD' | translate }}</div>
+            <div class="action-subtitle">{{ 'Profile.VIEW_DASHBOARD_DESC' | translate }}</div>
+          </div>
+          <i class="fas fa-arrow-right action-arrow"></i>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a class="action-card" routerLink="/exercises">
+          <div class="action-icon" style="background:rgba(25,135,84,0.12); color:#198754;">
+            <i class="fas fa-dumbbell"></i>
+          </div>
+          <div>
+            <div class="action-title">{{ 'Profile.BROWSE_EXERCISES' | translate }}</div>
+            <div class="action-subtitle">{{ 'Profile.BROWSE_EXERCISES_DESC' | translate }}</div>
+          </div>
+          <i class="fas fa-arrow-right action-arrow"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       CHARTS ROW — WEEKLY + CATEGORY
+  ══════════════════════════════════════════ -->
+  <div class="row g-4 mb-4 animate-fade-up">
+
+    <!-- Weekly Progress -->
+    <div class="col-md-7">
+      <div class="chart-panel h-100">
+        <div class="chart-panel-header">
+          <div class="chart-panel-icon" style="background:rgba(245,166,35,0.12);">
+            <i class="fas fa-chart-bar" style="color:var(--primary);"></i>
+          </div>
+          <div>
+            <h6 class="chart-panel-title">{{ 'Profile.CHARTS.WEEKLY' | translate }}</h6>
+            <span class="chart-panel-sub">{{ 'Profile.CHARTS.WEEKLY_SUB' | translate }}</span>
+          </div>
+          <!-- Inline total -->
+          <div class="chart-panel-total ms-auto">
+            <span class="chart-total-num">{{ weeklyData.reduce((a,b) => a+b, 0) }}</span>
+            <span class="chart-total-lbl">{{ 'Profile.WORKOUTS' | translate }}</span>
+          </div>
+        </div>
+        <div class="chart-panel-body">
+          <div style="position: relative; height: 200px;">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+          <div class="chart-empty-msg" *ngIf="weeklyData.reduce((a,b) => a + b, 0) === 0">
+            <i class="fas fa-chart-bar"></i>
+            <span>{{ 'Profile.NO_WEEKLY_DATA' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Distribution -->
+    <div class="col-md-5">
+      <div class="chart-panel h-100">
+        <div class="chart-panel-header">
+          <div class="chart-panel-icon" style="background:rgba(13,202,240,0.12);">
+            <i class="fas fa-chart-pie" style="color:#0dcaf0;"></i>
+          </div>
+          <div>
+            <h6 class="chart-panel-title">{{ 'Profile.CHARTS.CATEGORIES' | translate }}</h6>
+            <span class="chart-panel-sub">{{ 'Profile.CHARTS.CATEGORIES_SUB' | translate }}</span>
+          </div>
+        </div>
+        <div class="chart-panel-body">
+          <div style="position: relative; height: 200px;">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PERSONAL INFO FORM
+  ══════════════════════════════════════════ -->
+  <div class="pf-section animate-fade-up mb-4">
+
+    <div class="pf-section-header">
+      <div class="pf-section-icon">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <div>
+        <h5 class="pf-section-title">{{ 'Profile.PERSONAL_INFO' | translate }}</h5>
+        <span class="pf-section-desc">{{ 'Profile.PERSONAL_INFO_DESC' | translate }}</span>
+      </div>
+      <div class="ms-auto" *ngIf="isEditing">
+        <span class="pf-editing-chip"><i class="fas fa-lock-open me-1"></i>{{ 'Profile.EDIT_MODE' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="pf-section-body">
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+        <div class="pf-fields-grid">
+
+          <!-- Full Name -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Register.NAME' | translate }}</label>
+            <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
+              [class.pf-input-error]="hasError('name','required') || hasError('name','minlength')">
+              <span class="pf-input-icon"><i class="fas fa-user"></i></span>
+              <input type="text" class="pf-input" formControlName="name" [placeholder]="'Register.NAME' | translate">
+            </div>
+            <span class="pf-error" *ngIf="hasError('name','required') || hasError('name','minlength')">
+              {{ getErrorMessage('name') | translate }}
+            </span>
+          </div>
+
+          <!-- Username -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Register.USERNAME' | translate }}</label>
+            <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
+              [class.pf-input-error]="hasError('username','required')">
+              <span class="pf-input-icon"><i class="fas fa-at"></i></span>
+              <input type="text" class="pf-input" formControlName="username"
+                [placeholder]="'Register.USERNAME' | translate">
+            </div>
+            <span class="pf-error" *ngIf="hasError('username','required') || hasError('username','pattern')">
+              {{ getErrorMessage('username') | translate }}
+            </span>
+          </div>
+
+          <!-- Age -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Register.AGE' | translate }}</label>
+            <div class="pf-input-wrap" [class.pf-input-active]="isEditing">
+              <span class="pf-input-icon"><i class="fas fa-birthday-cake"></i></span>
+              <input type="number" class="pf-input" formControlName="age" [placeholder]="'Register.AGE' | translate">
+            </div>
+            <span class="pf-error" *ngIf="hasError('age','min') || hasError('age','max')">
+              {{ getErrorMessage('age') | translate }}
+            </span>
+          </div>
+
+          <!-- Gender -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Register.GENDER' | translate }}</label>
+            <div class="pf-input-wrap pf-select-wrap" [class.pf-input-active]="isEditing">
+              <span class="pf-input-icon"><i class="fas fa-venus-mars"></i></span>
+              <select class="pf-input pf-select" formControlName="gender">
+                <option value="male">{{ 'Register.Male' | translate }}</option>
+                <option value="female">{{ 'Register.Female' | translate }}</option>
+              </select>
+              <i class="fas fa-chevron-down pf-select-arrow"></i>
+            </div>
+          </div>
+
+          <!-- Weight -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Register.WEIGHT' | translate }}</label>
+            <div class="pf-input-wrap" [class.pf-input-active]="isEditing">
+              <span class="pf-input-icon"><i class="fas fa-weight"></i></span>
+              <input type="number" class="pf-input" formControlName="weight"
+                [placeholder]="'Register.WEIGHT' | translate">
+              <span class="pf-input-suffix">kg</span>
+            </div>
+          </div>
+
+          <!-- Height -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Register.HEIGHT' | translate }}</label>
+            <div class="pf-input-wrap" [class.pf-input-active]="isEditing">
+              <span class="pf-input-icon"><i class="fas fa-ruler-vertical"></i></span>
+              <input type="number" class="pf-input" formControlName="height"
+                [placeholder]="'Register.HEIGHT' | translate">
+              <span class="pf-input-suffix">cm</span>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Register.PHONE' | translate }}</label>
+            <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
+              [class.pf-input-error]="hasError('phone','pattern')">
+              <span class="pf-input-icon"><i class="fas fa-phone"></i></span>
+              <input type="tel" class="pf-input" formControlName="phone" [placeholder]="'Register.PHONE' | translate">
+            </div>
+            <span class="pf-error" *ngIf="hasError('phone','pattern')">
+              {{ getErrorMessage('phone') | translate }}
+            </span>
+          </div>
+
+          <!-- Goal -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Register.GOAL' | translate }}</label>
+            <div class="pf-input-wrap pf-select-wrap" [class.pf-input-active]="isEditing">
+              <span class="pf-input-icon"><i class="fas fa-bullseye"></i></span>
+              <select class="pf-input pf-select" formControlName="goal">
+                <option value="abs">{{ 'Register.GOALS.ABS' | translate }}</option>
+                <option value="legs">{{ 'Register.GOALS.LEGS' | translate }}</option>
+                <option value="full-body">{{ 'Register.GOALS.FULL_BODY' | translate }}</option>
+                <option value="all">{{ 'Register.GOALS.ALL' | translate }}</option>
+              </select>
+              <i class="fas fa-chevron-down pf-select-arrow"></i>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Save Button -->
+        <div class="pf-save-row" *ngIf="isEditing">
+          <button type="submit" class="pf-btn-save" [disabled]="isLoading || profileForm.invalid">
+            <span *ngIf="!isLoading">
+              <i class="fas fa-check me-2"></i>
+              {{ 'Profile.SAVE' | translate }}
+            </span>
+            <span *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin me-2"></i>
+              {{ 'Profile.SAVING' | translate }}
+            </span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       CHANGE PASSWORD
+  ══════════════════════════════════════════ -->
+  <div class="pf-section pf-section--password animate-fade-up mb-4">
+
+    <div class="pf-section-header pf-section-header--clickable" (click)="togglePasswordEdit()">
+      <div class="pf-section-icon pf-section-icon--lock">
+        <i class="fas fa-lock"></i>
+      </div>
+      <div>
+        <h5 class="pf-section-title">{{ 'Profile.CHANGE_PASSWORD' | translate }}</h5>
+        <span class="pf-section-desc">{{ 'Profile.CHANGE_PASSWORD_DESC' | translate }}</span>
+      </div>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <span class="pf-toggle-btn" [class.pf-toggle-btn--open]="isEditingPassword">
+          <i class="fas fa-chevron-down" style="transition: transform 0.3s ease;"
+            [style.transform]="isEditingPassword ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+        </span>
+      </div>
+    </div>
+
+    <!-- Password Form (collapsible) -->
+    <div class="pf-collapsible" [class.pf-collapsible--open]="isEditingPassword">
+      <div class="pf-section-body pf-section-body--pw">
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+
+          <!-- Current Password -->
+          <div class="pf-field-group pf-field-group--full mb-4">
+            <label class="pf-label">{{ 'Profile.CURRENT_PASSWORD' | translate }}</label>
+            <div class="pf-input-wrap pf-input-active">
+              <span class="pf-input-icon"><i class="fas fa-lock"></i></span>
+              <input [type]="showPassword ? 'text' : 'password'" class="pf-input" formControlName="currentPassword"
+                placeholder="••••••••">
+              <button class="pf-eye-btn" type="button" (click)="togglePasswordVisibility('current')">
+                <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- New + Confirm row -->
+          <div class="pf-fields-grid pf-fields-grid--2col">
+
+            <div class="pf-field-group">
+              <label class="pf-label">{{ 'Profile.NEW_PASSWORD' | translate }}</label>
+              <div class="pf-input-wrap pf-input-active"
+                [class.pf-input-error]="hasError('newPassword','pattern', passwordForm)">
+                <span class="pf-input-icon"><i class="fas fa-key"></i></span>
+                <input [type]="showNewPassword ? 'text' : 'password'" class="pf-input" formControlName="newPassword"
+                  placeholder="••••••••">
+                <button class="pf-eye-btn" type="button" (click)="togglePasswordVisibility('new')">
+                  <i class="fas" [ngClass]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </button>
+              </div>
+              <span class="pf-error" *ngIf="hasError('newPassword','pattern', passwordForm)">
+                {{ getErrorMessage('newPassword', passwordForm) | translate }}
+              </span>
+            </div>
+
+            <div class="pf-field-group">
+              <label class="pf-label">{{ 'Profile.CONFIRM_NEW_PASSWORD' | translate }}</label>
+              <div class="pf-input-wrap pf-input-active"
+                [class.pf-input-error]="passwordForm.hasError('notMatching') && passwordForm.get('confirmPassword')?.touched">
+                <span class="pf-input-icon"><i class="fas fa-check-double"></i></span>
+                <input [type]="showConfirmPassword ? 'text' : 'password'" class="pf-input"
+                  formControlName="confirmPassword" placeholder="••••••••">
+                <button class="pf-eye-btn" type="button" (click)="togglePasswordVisibility('confirm')">
+                  <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </button>
+              </div>
+              <span class="pf-error"
+                *ngIf="passwordForm.hasError('notMatching') && passwordForm.get('confirmPassword')?.touched">
+                {{ 'Register.ERRORS.confirmPassword.notMatching' | translate }}
+              </span>
+            </div>
+
+          </div>
+
+          <!-- Requirements hint -->
+          <div class="pw-hint">
+            <i class="fas fa-info-circle"></i>
+            {{ 'Register.PASSWORD_TOOLTIP' | translate }}
+          </div>
+
+          <!-- Strength indicator -->
+          <div class="pw-strength-row" *ngIf="passwordForm.get('newPassword')?.value">
+            <div class="pw-strength-bar">
+              <div class="pw-strength-fill" [style.width]="getPasswordStrength() + '%'"
+                [class.strength-weak]="getPasswordStrength() <= 33"
+                [class.strength-medium]="getPasswordStrength() > 33 && getPasswordStrength() <= 66"
+                [class.strength-strong]="getPasswordStrength() > 66">
+              </div>
+            </div>
+            <span class="pw-strength-label" [class.text-danger]="getPasswordStrength() <= 33"
+              [class.text-warning]="getPasswordStrength() > 33 && getPasswordStrength() <= 66"
+              [class.text-success]="getPasswordStrength() > 66">
+              {{ getPasswordStrengthLabel() | translate }}
+            </span>
+          </div>
+
+          <button type="submit" class="pf-btn-save mt-4" [disabled]="isLoading || passwordForm.invalid">
+            <span *ngIf="!isLoading">
+              <i class="fas fa-save me-2"></i>
+              {{ 'Profile.SAVE' | translate }}
+            </span>
+            <span *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin me-2"></i>
+              {{ 'Profile.SAVING' | translate }}
+            </span>
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       DANGER ZONE
+  ══════════════════════════════════════════ -->
+  <div class="danger-zone-section animate-fade-up mt-2 mb-4">
+
+    <div class="danger-zone-trigger" (click)="toggleDangerZone()" [class.open]="showDangerZone">
+      <div class="danger-zone-trigger-left">
+        <div class="danger-zone-icon-wrap">
+          <i class="fas fa-skull-crossbones"></i>
+        </div>
+        <div>
+          <div class="danger-zone-title">{{ 'Profile.DELETE_ACCOUNT' | translate }}</div>
+          <div class="danger-zone-subtitle">{{ 'Profile.DELETE_ACCOUNT_WARNING' | translate }}</div>
+        </div>
+      </div>
+      <div class="danger-zone-chevron">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </div>
+
+    <div class="danger-zone-body" [class.visible]="showDangerZone">
+      <div class="danger-zone-inner">
+
+        <div class="danger-bullets mb-4">
+          <div class="danger-bullet">
+            <i class="fas fa-times-circle"></i>
+            <span>{{ 'Profile.DELETE_BULLET_1' | translate }}</span>
+          </div>
+          <div class="danger-bullet">
+            <i class="fas fa-times-circle"></i>
+            <span>{{ 'Profile.DELETE_BULLET_2' | translate }}</span>
+          </div>
+          <div class="danger-bullet">
+            <i class="fas fa-times-circle"></i>
+            <span>{{ 'Profile.DELETE_BULLET_3' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="danger-confirm-wrap mb-4">
+          <label class="danger-confirm-label">
+            {{ 'Profile.DELETE_ACCOUNT_CONFIRM_LABEL' | translate }}
+            <span class="danger-username-chip">{{ user.username }}</span>
+          </label>
+          <div class="danger-input-wrap">
+            <i class="fas fa-at danger-input-icon"></i>
+            <input type="text" class="danger-input" [(ngModel)]="deleteConfirmUsername" [placeholder]="user.username"
+              autocomplete="off">
+          </div>
+          <div class="danger-match-indicator" *ngIf="deleteConfirmUsername">
+            <ng-container *ngIf="deleteConfirmUsername === user.username">
+              <i class="fas fa-check-circle text-danger"></i>
+              <span>{{ 'Profile.DELETE_MATCH' | translate }}</span>
+            </ng-container>
+            <ng-container *ngIf="deleteConfirmUsername !== user.username">
+              <i class="fas fa-times-circle" style="color:rgba(255,255,255,0.3)"></i>
+              <span style="color:rgba(255,255,255,0.4)">{{ 'Profile.DELETE_NO_MATCH' | translate }}</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <button class="btn-delete-account" type="button"
+          [disabled]="isDeletingAccount || deleteConfirmUsername !== user.username" (click)="deleteAccount()">
+          <span class="btn-delete-content" *ngIf="!isDeletingAccount">
+            <i class="fas fa-trash-alt"></i>
+            {{ 'Profile.DELETE_ACCOUNT_BTN' | translate }}
+          </span>
+          <span class="btn-delete-content" *ngIf="isDeletingAccount">
+            <i class="fas fa-spinner fa-spin"></i>
+            {{ 'Profile.DELETE_ACCOUNT_DELETING' | translate }}
+          </span>
+          <div class="btn-delete-glow"></div>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+</div>

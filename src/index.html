@@ -1,13 +1,123 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <title>Trainova</title>
+  <title>Trainova – Train Smarter, Not Harder</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.svg">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.trainova.app/" />
+
+  <!-- Theme color -->
+  <meta name="theme-color" content="#F5A623">
+
+  <!-- Google Site Verification -->
+  <meta name="google-site-verification" content="REPLACE_WITH_YOUR_VERIFICATION_CODE" />
+
+  <!-- Primary Meta -->
+  <meta name="description"
+    content="Your ultimate fitness companion. Track workouts, build custom training plans, and crush your goals — whether you're just starting out or a seasoned athlete." />
+  <meta name="keywords"
+    content="fitness app, workout tracker, training plans, exercise, gym, calories, strength training, cardio" />
+  <meta name="author" content="Trainova" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+  <meta property="og:site_name" content="Trainova" />
+  <meta name="application-name" content="Trainova" />
+  <meta property="og:title" content="Trainova – Train Smarter, Not Harder" />
+  <meta property="og:description"
+    content="Trainova helps you train smarter. Build personalized workout plans, track your progress, and stay consistent — all in one powerful app." />
+  <meta property="og:image" content="https://www.trainova.app/icons/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://www.trainova.app/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@trainova_app" />
+  <meta name="twitter:title" content="Trainova – Train Smarter, Not Harder" />
+  <meta name="twitter:description"
+    content="Train smarter with Trainova. Personalized workout plans & progress tracking for every fitness level." />
+  <meta name="twitter:image" content="https://www.trainova.app/icons/og-image.png" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!-- Apple PWA -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trainova">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+  <!-- Service Worker is registered by Angular (provideServiceWorker in app.config.ts) -->
+
+  <!-- JSON-LD: WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Trainova",
+    "alternateName": "Trainova App",
+    "url": "https://www.trainova.app/",
+    "description": "Your ultimate fitness companion. Track workouts, build custom training plans, and crush your goals.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.trainova.app/exercises?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Trainova",
+    "url": "https://www.trainova.app/",
+    "logo": "https://www.trainova.app/icons/icon-512x512.png",
+    "sameAs": [
+      "https://www.instagram.com/trainova.app"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@trainova.app",
+      "contactType": "customer support"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Trainova",
+    "operatingSystem": "Web, iOS, Android",
+    "applicationCategory": "HealthApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "url": "https://www.trainova.app/"
+  }
+  </script>
+
 </head>
+
 <body>
   <app-root></app-root>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
+
 </html>

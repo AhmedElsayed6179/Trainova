@@ -1,0 +1,141 @@
+<nav class="navbar navbar-expand-lg fixed-top py-2">
+  <div class="container">
+
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/">
+      <i class="fas fa-bolt me-2" style="color: var(--primary);"></i>
+      TRAINOVA
+    </a>
+
+    <!-- Toggler -->
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+      aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+
+        <!-- ── Main Links ── -->
+        <li class="nav-item">
+          <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+            (click)="closeNavOnMobile()">
+            <i class="fas fa-home me-1"></i>{{ 'Navbar.HOME' | translate }}
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/exercises" class="nav-link" routerLinkActive="active" (click)="closeNavOnMobile()">
+            <i class="fas fa-dumbbell me-1"></i>{{ 'Navbar.EXERCISES' | translate }}
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/about" class="nav-link" routerLinkActive="active" (click)="closeNavOnMobile()">
+            <i class="fas fa-circle-info me-1"></i>{{ 'Navbar.ABOUT' | translate }}
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/contact" class="nav-link" routerLinkActive="active" (click)="closeNavOnMobile()">
+            <i class="fas fa-envelope me-1"></i>{{ 'Navbar.CONTACT' | translate }}
+          </a>
+        </li>
+
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <a routerLink="/dashboard" class="nav-link" routerLinkActive="active" (click)="closeNavOnMobile()">
+            <i class="fas fa-chart-line me-1"></i>{{ 'Navbar.DASHBOARD' | translate }}
+          </a>
+        </li>
+
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <a routerLink="/workout" class="nav-link" routerLinkActive="active" (click)="closeNavOnMobile()">
+            <i class="fas fa-fire me-1"></i>{{ 'Navbar.WORKOUT' | translate }}
+          </a>
+        </li>
+
+        <!-- ── DESKTOP ONLY: Lang ── -->
+        <li class="nav-item d-none d-lg-flex align-items-center">
+          <button class="lang-btn btn" (click)="toggleLang()">
+            {{ currentLang === 'AR' ? '🇪🇬 AR' : '🇺🇸 EN' }}
+          </button>
+        </li>
+
+        <!-- ── Guest Buttons ── -->
+        <ng-container *ngIf="!isLoggedIn">
+          <li class="nav-item">
+            <a routerLink="/login" class="btn btn-sm btn-outline-warning px-3" (click)="closeNavOnMobile()">
+              {{ 'Navbar.LOGIN' | translate }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/register" class="btn btn-sm btn-warning px-3" (click)="closeNavOnMobile()">
+              {{ 'Navbar.REGISTER' | translate }}
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- ── User Dropdown ── -->
+        <ng-container *ngIf="isLoggedIn">
+          <li class="nav-item dropdown ms-1">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 px-2" href="#" id="userDropdown"
+              role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img [src]="profileImage" class="user-avatar" alt="Profile" onerror="this.src='default-avatar.jpg'">
+              <span class="fw-600 d-none d-lg-inline" style="font-size: 0.9rem;">
+                {{ currentUser?.name || currentUser?.username }}
+              </span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end animate-fade-in">
+              <li>
+                <div class="px-3 py-2 mb-1" style="border-bottom: 1px solid var(--border);">
+                  <div style="font-weight: 700; font-size: 0.95rem;color: white;">{{ currentUser?.name }}</div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);">{{ currentUser?.email }}</div>
+                </div>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/profile" (click)="closeNavOnMobile()">
+                  <i class="fas fa-user-circle me-2" style="color: var(--primary);"></i>
+                  {{ 'Navbar.PROFILE' | translate }}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard" (click)="closeNavOnMobile()">
+                  <i class="fas fa-chart-bar me-2" style="color: var(--primary);"></i>
+                  {{ 'Navbar.DASHBOARD' | translate }}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/workout" (click)="closeNavOnMobile()">
+                  <i class="fas fa-dumbbell me-2" style="color: var(--primary);"></i>
+                  {{ 'Navbar.WORKOUT' | translate }}
+                </a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li>
+                <a class="dropdown-item text-danger" href="#" (click)="logout(); $event.preventDefault()">
+                  <i class="fas fa-sign-out-alt me-2"></i>
+                  {{ 'Navbar.LOGOUT' | translate }}
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ng-container>
+
+        <li class="nav-item d-flex d-lg-none" style="width: 100%;">
+          <div class="mobile-utils-row w-100">
+
+            <!-- Language toggle -->
+            <button class="lang-btn btn" (click)="toggleLang()">
+              <i class="fas fa-language me-1"></i>
+              {{ currentLang === 'AR' ? 'عربي' : 'English' }}
+            </button>
+
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,89 @@
+<!-- ═══════════════════════════════
+     PRIVACY POLICY PAGE
+     ═══════════════════════════════ -->
+<div class="privacy-page page-wrapper">
+
+  <!-- Hero -->
+  <section class="contact-hero">
+    <div class="contact-hero-glow"></div>
+    <div class="container position-relative" style="z-index:2">
+      <div class="animate-fade-up text-center">
+        <div class="contact-eyebrow">
+          <i class="fas fa-shield-halved"></i>
+          {{ 'PRIVACY.LABEL' | translate }}
+        </div>
+        <h1 class="contact-hero-title">{{ 'PRIVACY.TITLE' | translate }}</h1>
+        <p class="contact-hero-sub">{{ 'PRIVACY.SUBTITLE' | translate }}</p>
+        <p class="privacy-updated">{{ 'PRIVACY.LAST_UPDATED' | translate }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <div class="container privacy-content">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="privacy-card animate-fade-up">
+
+          <div class="privacy-section">
+            <div class="privacy-section-icon"><i class="fas fa-database"></i></div>
+            <div>
+              <h3 class="privacy-section-title">{{ 'PRIVACY.SECTIONS.COLLECT_TITLE' | translate }}</h3>
+              <p class="privacy-section-text">{{ 'PRIVACY.SECTIONS.COLLECT_TEXT' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="privacy-section">
+            <div class="privacy-section-icon"><i class="fas fa-gears"></i></div>
+            <div>
+              <h3 class="privacy-section-title">{{ 'PRIVACY.SECTIONS.USE_TITLE' | translate }}</h3>
+              <p class="privacy-section-text">{{ 'PRIVACY.SECTIONS.USE_TEXT' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="privacy-section">
+            <div class="privacy-section-icon"><i class="fas fa-lock"></i></div>
+            <div>
+              <h3 class="privacy-section-title">{{ 'PRIVACY.SECTIONS.STORAGE_TITLE' | translate }}</h3>
+              <p class="privacy-section-text">{{ 'PRIVACY.SECTIONS.STORAGE_TEXT' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="privacy-section">
+            <div class="privacy-section-icon"><i class="fas fa-cookie-bite"></i></div>
+            <div>
+              <h3 class="privacy-section-title">{{ 'PRIVACY.SECTIONS.COOKIES_TITLE' | translate }}</h3>
+              <p class="privacy-section-text">{{ 'PRIVACY.SECTIONS.COOKIES_TEXT' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="privacy-section">
+            <div class="privacy-section-icon"><i class="fas fa-user-shield"></i></div>
+            <div>
+              <h3 class="privacy-section-title">{{ 'PRIVACY.SECTIONS.RIGHTS_TITLE' | translate }}</h3>
+              <p class="privacy-section-text">{{ 'PRIVACY.SECTIONS.RIGHTS_TEXT' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="privacy-section" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+            <div class="privacy-section-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <h3 class="privacy-section-title">{{ 'PRIVACY.SECTIONS.CONTACT_TITLE' | translate }}</h3>
+              <p class="privacy-section-text">{{ 'PRIVACY.SECTIONS.CONTACT_TEXT' | translate }}</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="text-center mt-4">
+          <a routerLink="/contact" class="btn-contact-submit"
+            style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;width:auto;padding:12px 32px;">
+            <i class="fas fa-envelope"></i>
+            {{ 'Footer.CONTACT' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
