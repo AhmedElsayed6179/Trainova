@@ -532,11 +532,23 @@ export class Profile implements OnInit, AfterViewInit {
   }
 
   getGoalName(goal: string): string {
-    const goals: any = {
-      abs: 'Profile.GOALS.ABS', legs: 'Profile.GOALS.LEGS',
-      'full-body': 'Profile.GOALS.FULL_BODY', all: 'Profile.GOALS.ALL'
+    const keys: any = {
+      abs: 'Profile.GOALS.ABS',
+      legs: 'Profile.GOALS.LEGS',
+      'full-body': 'Profile.GOALS.FULL_BODY',
+      back: 'Profile.GOALS.BACK',
+      all: 'Profile.GOALS.ALL'
     };
-    return goals[goal] ? this.translate.instant(goals[goal]) : goal;
+    const fallback: any = {
+      abs: 'Abs & Core',
+      legs: 'Legs',
+      'full-body': 'Full Body',
+      back: 'Back & Shoulders',
+      all: 'All Areas'
+    };
+    if (!keys[goal]) return goal;
+    const translated = this.translate.instant(keys[goal]);
+    return (translated && translated !== keys[goal]) ? translated : fallback[goal];
   }
 
   hasError(controlName: string, errorName: string, form: FormGroup = this.profileForm): boolean {
