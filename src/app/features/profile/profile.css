@@ -843,6 +843,23 @@ body:not(.dark-mode) .pf-input-suffix {
   cursor: pointer;
   appearance: none;
   padding-right: 32px !important;
+  background-color: transparent !important;
+  color: var(--text-primary);
+}
+
+/* Fix native select option popup colors */
+.pf-select option {
+  background-color: #1a1f2e;
+  color: #ffffff;
+}
+
+body:not(.dark-mode) .pf-select option {
+  background-color: #ffffff;
+  color: #0d1117;
+}
+
+body:not(.dark-mode) .pf-select {
+  color: #0d1117;
 }
 
 .pf-select-arrow {

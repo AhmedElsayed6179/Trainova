@@ -276,6 +276,8 @@ export class Dashboard implements OnInit, OnDestroy {
     return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
   }
 
+  objectKeys(obj: any): string[] { return obj ? Object.keys(obj) : []; }
+
   startWorkout() {
     window.location.href = '/workout';
   }

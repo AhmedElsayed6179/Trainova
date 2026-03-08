@@ -84,12 +84,24 @@
               <span class="fw-600 d-none d-lg-inline" style="font-size: 0.9rem;">
                 {{ currentUser?.name || currentUser?.username }}
               </span>
+              <span class="d-none d-lg-flex align-items-center gap-1 ms-1"
+                style="font-size:0.75rem; color:var(--text-muted); border-left:1px solid var(--border); padding-left:8px;">
+                <i class="fas fa-fire" style="color:var(--primary); font-size:0.7rem;"></i>
+                {{ currentUser?.current_streak || 0 }}
+              </span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end animate-fade-in">
               <li>
                 <div class="px-3 py-2 mb-1" style="border-bottom: 1px solid var(--border);">
                   <div style="font-weight: 700; font-size: 0.95rem;color: white;">{{ currentUser?.name }}</div>
                   <div style="font-size: 0.8rem; color: var(--text-muted);">{{ currentUser?.email }}</div>
+                  <div class="d-flex align-items-center gap-2 mt-1" style="font-size:0.75rem; color:var(--text-muted);">
+                    <span><i class="fas fa-fire me-1" style="color:var(--primary);"></i>{{ currentUser?.current_streak
+                      || 0 }} day streak</span>
+                    <span style="opacity:0.4;">•</span>
+                    <span><i class="fas fa-dumbbell me-1" style="color:var(--primary);"></i>{{
+                      currentUser?.total_workouts || 0 }} workouts</span>
+                  </div>
                 </div>
               </li>
               <li>

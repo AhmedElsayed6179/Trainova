@@ -95,8 +95,7 @@
             <i class="fas fa-calendar-day"></i>
             {{ 'DASHBOARD.TODAY_WORKOUT' | translate }}
             <!-- ✅ Show which day it is -->
-            <span *ngIf="todayWorkout"
-              style="font-size:0.8rem; color:var(--primary); font-family:'Rajdhani',sans-serif;
+            <span *ngIf="todayWorkout" style="font-size:0.8rem; color:var(--primary); font-family:'Rajdhani',sans-serif;
                      font-weight:700; margin-left:8px; letter-spacing:1px;">
               Day {{ todayWorkout.daynumber }}
             </span>
@@ -105,8 +104,7 @@
           <!-- Progress % badge -->
           <div class="d-flex align-items-center gap-2" *ngIf="todayWorkout">
             <!-- Completed badge -->
-            <span *ngIf="todayWorkout.completed"
-              style="background:rgba(40,167,69,0.12); color:#28a745; font-size:0.75rem;
+            <span *ngIf="todayWorkout.completed" style="background:rgba(40,167,69,0.12); color:#28a745; font-size:0.75rem;
                      padding:4px 10px; border-radius:20px; font-weight:700; border:1px solid rgba(40,167,69,0.3);">
               <i class="fas fa-check me-1"></i>Done
             </span>
@@ -132,14 +130,12 @@
             <div class="exercises-list">
               <div class="exercise-item d-flex align-items-center"
                 *ngFor="let exercise of todayWorkout.exercises; let i = index">
-                <div class="exercise-number"
-                  [style.background]="exercise.completed ? 'rgba(40,167,69,0.12)' : ''"
+                <div class="exercise-number" [style.background]="exercise.completed ? 'rgba(40,167,69,0.12)' : ''"
                   [style.color]="exercise.completed ? '#28a745' : ''">
                   {{ i + 1 }}
                 </div>
                 <div class="exercise-info flex-grow-1">
-                  <h6 class="mb-0"
-                    [style.text-decoration]="exercise.completed ? 'line-through' : 'none'"
+                  <h6 class="mb-0" [style.text-decoration]="exercise.completed ? 'line-through' : 'none'"
                     [style.opacity]="exercise.completed ? '0.6' : '1'">
                     {{ exercise.exercise_name }}
                   </h6>
@@ -148,8 +144,7 @@
                     {{ exercise.reps }} {{ 'DASHBOARD.REPS' | translate }}
                   </small>
                 </div>
-                <i class="fas"
-                  [ngClass]="exercise.completed ? 'fa-check-circle text-success' : 'fa-circle'"
+                <i class="fas" [ngClass]="exercise.completed ? 'fa-check-circle text-success' : 'fa-circle'"
                   [style.color]="exercise.completed ? '' : 'var(--border-strong)'"></i>
               </div>
             </div>
@@ -163,7 +158,8 @@
               </small>
               <button class="btn btn-warning btn-sm" (click)="startWorkout()">
                 <i class="fas fa-arrow-right me-1"></i>
-                {{ todayWorkout.completed ? ('DASHBOARD.VIEW_WORKOUT' | translate) : ('DASHBOARD.CONTINUE_WORKOUT' | translate) }}
+                {{ todayWorkout.completed ? ('DASHBOARD.VIEW_WORKOUT' | translate) : ('DASHBOARD.CONTINUE_WORKOUT' |
+                translate) }}
               </button>
             </div>
           </ng-container>
@@ -210,9 +206,15 @@
                 {{ 'DASHBOARD.CHARTS.CATEGORIES' | translate }}
               </h5>
             </div>
-            <div class="card-body">
-              <div class="chart-container" style="height: 160px;">
+            <div class="chart-panel-body" style="position: relative;">
+              <div style="position: relative; height: 160px;">
                 <canvas id="categoryChart"></canvas>
+              </div>
+              <div *ngIf="!categoryData || objectKeys(categoryData).length === 0" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
+                       justify-content:center; gap:8px;">
+                <i class="fas fa-chart-pie" style="font-size:2rem; color:rgba(245,166,35,0.25);"></i>
+                <span style="color:var(--text-muted); font-size:0.82rem;">{{ 'DASHBOARD.NO_CATEGORY_DATA' | translate
+                  }}</span>
               </div>
             </div>
           </div>
