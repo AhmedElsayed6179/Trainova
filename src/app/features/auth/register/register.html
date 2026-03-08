@@ -58,7 +58,7 @@
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
         <!-- Personal Info Section -->
-        <div class="auth-sect"><i class="fas fa-user"></i> Personal Info</div>
+        <div class="auth-sect"><i class="fas fa-user"></i> {{ 'Register.SECTION_PERSONAL' | translate }}</div>
 
         <div class="ag2">
 
@@ -130,7 +130,7 @@
         </div>
 
         <!-- Account Section -->
-        <div class="auth-sect"><i class="fas fa-shield-alt"></i> Account Details</div>
+        <div class="auth-sect"><i class="fas fa-shield-alt"></i> {{ 'Register.SECTION_ACCOUNT' | translate }}</div>
 
         <!-- Email -->
         <div class="af">
@@ -165,7 +165,7 @@
         </div>
 
         <!-- Body Section -->
-        <div class="auth-sect"><i class="fas fa-dumbbell"></i> Body Stats</div>
+        <div class="auth-sect"><i class="fas fa-dumbbell"></i> {{ 'Register.SECTION_BODY' | translate }}</div>
 
         <div class="ag2">
 
@@ -209,7 +209,7 @@
         </div>
 
         <!-- Security Section -->
-        <div class="auth-sect"><i class="fas fa-lock"></i> Security</div>
+        <div class="auth-sect"><i class="fas fa-lock"></i> {{ 'Register.SECTION_SECURITY' | translate }}</div>
 
         <!-- Password -->
         <div class="af">

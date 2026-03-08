@@ -171,7 +171,11 @@
       "goal": {
         "required": "Please select your fitness goal"
       }
-    }
+    },
+    "SECTION_PERSONAL": "Personal Info",
+    "SECTION_ACCOUNT": "Account Details",
+    "SECTION_BODY": "Body Stats",
+    "SECTION_SECURITY": "Security"
   },
   "ERROR": "Error",
   "SUCCESS": "Success!",

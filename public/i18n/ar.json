@@ -171,7 +171,11 @@
       "goal": {
         "required": "يرجى اختيار هدفك الرياضي"
       }
-    }
+    },
+    "SECTION_PERSONAL": "المعلومات الشخصية",
+    "SECTION_ACCOUNT": "تفاصيل الحساب",
+    "SECTION_BODY": "القياسات الجسدية",
+    "SECTION_SECURITY": "الأمان"
   },
   "ERROR": "خطأ",
   "SUCCESS": "تم بنجاح!",
