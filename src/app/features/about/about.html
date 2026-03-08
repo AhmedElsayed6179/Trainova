@@ -172,8 +172,9 @@
           </div>
           <h5 class="ab-team-name">{{ m.name }}</h5>
           <p class="ab-team-role">{{ m.roleKey | translate }}</p>
-          <a [href]="m.github" target="_blank" class="ab-team-github">
-            <i class="fab fa-github me-1"></i> GitHub
+          <a [href]="m.Contact" [aria-label]="'Contact ' + m.name" target="_blank"
+            class="ab-team-github">
+            <i class="fas fa-external-link-alt me-1"></i> Contact
           </a>
         </div>
       </div>

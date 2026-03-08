@@ -37,7 +37,7 @@ export class About implements OnInit, OnDestroy {
       name: 'Ahmed Mohamed',
       roleKey: 'About.TEAM1_ROLE',
       avatar: 'team/Ahmed.png',
-      github: 'https://github.com/AhmedMohamed',
+      Contact: 'https://ahmedelsayed6179.github.io/Ahmed-Websites',
     },
   ];
 
