@@ -33,13 +33,6 @@ export class Profile implements OnInit {
   showNewPassword = false;
   showConfirmPassword = false;
 
-  // ── Crop State ────────────────────────────────────────
-  cropZoom = 1;
-  private cropOffsetX = 0;
-  private cropOffsetY = 0;
-  private cropDragStartX = 0;
-  private cropDragStartY = 0;
-  private cropIsDragging = false;
   private originalFile: File | null = null;
 
 
@@ -452,13 +445,6 @@ export class Profile implements OnInit {
   }
 
   openCropModal(imageSrc: string) {
-    this.originalImageSrc = imageSrc;
-    this.cropZoom = 1;
-    this.cropOffsetX = 0;
-    this.cropOffsetY = 0;
-    this.cropIsDragging = false;
-
-    // Build SweetAlert2 with inline crop canvas
     Swal.fire({
       title: this.translate.instant('Profile.CROP_TITLE'),
       background: '#1a1a2e',
@@ -471,253 +457,66 @@ export class Profile implements OnInit {
       confirmButtonColor: '#ffc107',
       cancelButtonColor: '#6c757d',
       allowOutsideClick: false,
-      customClass: {
-        popup: 'swal-crop-tool-popup',
-        confirmButton: 'swal-crop-confirm-btn',
-        cancelButton: 'swal-crop-cancel-btn',
-      },
+      allowEscapeKey: false,
       html: `
-        <div class="swal-crop-wrapper">
-          <div class="swal-crop-area" id="swalCropArea">
-            <canvas id="swalCropCanvas"></canvas>
-            <div class="swal-crop-overlay">
-              <div class="swal-crop-circle" id="swalCropCircle">
-                <div class="swal-crop-circle-border"></div>
-              </div>
-            </div>
-            <div class="swal-crop-hint" id="swalCropHint">
-              <i class="fas fa-arrows-alt"></i>
-              <span>${this.translate.instant('Profile.CROP_ZOOM_HINT')}</span>
-            </div>
-          </div>
-          <div class="swal-crop-controls">
-            <button class="swal-zoom-btn" id="swalZoomOut" type="button"><i class="fas fa-search-minus"></i></button>
-            <div class="swal-zoom-track">
-              <div class="swal-zoom-fill" id="swalZoomFill"></div>
-              <input type="range" id="swalZoomSlider" min="0.5" max="3" step="0.01" value="1">
-            </div>
-            <button class="swal-zoom-btn" id="swalZoomIn" type="button"><i class="fas fa-search-plus"></i></button>
-            <button class="swal-zoom-btn swal-reset-btn" id="swalReset" type="button" title="Reset">
-              <i class="fas fa-undo-alt"></i>
-            </button>
-          </div>
-          <div class="swal-crop-previews">
-            <div class="swal-preview-item">
-              <canvas id="swalPreviewLg" width="64" height="64"></canvas>
-              <span>64px</span>
-            </div>
-            <div class="swal-preview-item">
-              <canvas id="swalPreviewSm" width="36" height="36"></canvas>
-              <span>36px</span>
-            </div>
-          </div>
+        <div style="max-width:350px;margin:auto;">
+          <img id="cropImage" src="${imageSrc}" style="max-width:100%;border-radius:10px;">
+        </div>
+        <div style="margin-top:15px;">
+          <button id="rotateLeft" class="swal2-styled" style="margin-right:5px;">↺ ${this.translate.instant('Profile.ROTATE_LEFT') || 'Rotate Left'}</button>
+          <button id="rotateRight" class="swal2-styled" style="margin-right:5px;">↻ ${this.translate.instant('Profile.ROTATE_RIGHT') || 'Rotate Right'}</button>
+          <button id="flipX" class="swal2-styled" style="margin-right:5px;">⇋ ${this.translate.instant('Profile.FLIP') || 'Flip'}</button>
+          <button id="resetCrop" class="swal2-styled">${this.translate.instant('Profile.RESET') || 'Reset'}</button>
         </div>
       `,
       didOpen: () => {
-        this.initSwalCrop(imageSrc);
-      },
-      preConfirm: () => {
-        return this.getSwalCroppedBlob();
+        const image = document.getElementById('cropImage') as HTMLImageElement;
+        const cropper = new (window as any).Cropper(image, {
+          aspectRatio: 1,
+          viewMode: 2,
+          background: false,
+          autoCropArea: 1,
+          movable: true,
+          zoomable: true,
+          rotatable: true,
+          scalable: true
+        });
+
+        document.getElementById('rotateLeft')?.addEventListener('click', () => cropper.rotate(-90));
+        document.getElementById('rotateRight')?.addEventListener('click', () => cropper.rotate(90));
+        document.getElementById('flipX')?.addEventListener('click', () => {
+          const data = cropper.getData();
+          cropper.scaleX(data.scaleX === -1 ? 1 : -1);
+        });
+        document.getElementById('resetCrop')?.addEventListener('click', () => cropper.reset());
+
+        Swal.getConfirmButton()?.addEventListener('click', () => {
+          cropper.getCroppedCanvas({
+            width: 500,
+            height: 500,
+            imageSmoothingQuality: 'high'
+          }).toBlob((blob: Blob | null) => {
+            if (!blob) {
+              Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Profile.IMAGE_FAILED'), confirmButtonColor: '#ffc107' });
+              return;
+            }
+            const croppedFile = new File([blob], this.originalFile?.name || 'profile.png', { type: 'image/png' });
+            const url = URL.createObjectURL(blob);
+            this.profileImage = url;
+            this.cdr.detectChanges();
+            this.uploadImageFile(croppedFile);
+            Swal.close();
+          }, 'image/png', 1.0);
+        });
       }
     }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        const blob = result.value as Blob;
-        const croppedFile = new File([blob], this.originalFile?.name || 'profile.jpg', { type: 'image/jpeg' });
-        // Show preview immediately
-        const url = URL.createObjectURL(blob);
-        this.profileImage = url;
-        this.uploadImageFile(croppedFile);
-      } else {
+      if (result.isDismissed) {
         this.originalFile = null;
       }
     });
   }
 
-  private swalCropCtx: CanvasRenderingContext2D | null = null;
-  private swalCropImg: HTMLImageElement | null = null;
-  private swalCropSize = 0;
-  private swalCropRadius = 0;
-  private originalImageSrc = '';
-
-  private initSwalCrop(imageSrc: string) {
-    const area = document.getElementById('swalCropArea') as HTMLDivElement;
-    const canvas = document.getElementById('swalCropCanvas') as HTMLCanvasElement;
-    if (!area || !canvas) return;
-
-    // Responsive size — fill popup width, max 400
-    const popupW = area.offsetWidth || 340;
-    const size = Math.min(popupW, 400);
-    this.swalCropSize = size;
-    this.swalCropRadius = Math.floor(size * 0.44);
-
-    canvas.width = size;
-    canvas.height = size;
-    canvas.style.width = size + 'px';
-    canvas.style.height = size + 'px';
-
-    // Style crop circle overlay to match
-    const circle = document.getElementById('swalCropCircle') as HTMLDivElement;
-    if (circle) {
-      const d = this.swalCropRadius * 2;
-      circle.style.width = d + 'px';
-      circle.style.height = d + 'px';
-    }
-
-    this.swalCropCtx = canvas.getContext('2d');
-
-    const img = new Image();
-    img.onload = () => {
-      this.swalCropImg = img;
-      // Fit image to fill the circle on load
-      const minDim = Math.min(img.width, img.height);
-      this.cropZoom = (this.swalCropRadius * 2) / minDim;
-      this.cropOffsetX = 0;
-      this.cropOffsetY = 0;
-      this.renderSwalCrop();
-      this.updateSwalZoomUI();
-    };
-    img.src = imageSrc;
-
-    // Zoom slider
-    const slider = document.getElementById('swalZoomSlider') as HTMLInputElement;
-    slider?.addEventListener('input', () => {
-      this.cropZoom = parseFloat(slider.value);
-      this.renderSwalCrop();
-      this.updateSwalZoomUI();
-    });
-
-    // Zoom buttons
-    document.getElementById('swalZoomOut')?.addEventListener('click', () => {
-      this.cropZoom = Math.max(0.5, this.cropZoom - 0.1);
-      this.renderSwalCrop(); this.updateSwalZoomUI();
-    });
-    document.getElementById('swalZoomIn')?.addEventListener('click', () => {
-      this.cropZoom = Math.min(3, this.cropZoom + 0.1);
-      this.renderSwalCrop(); this.updateSwalZoomUI();
-    });
-
-    // Reset
-    document.getElementById('swalReset')?.addEventListener('click', () => {
-      if (!this.swalCropImg) return;
-      const minDim = Math.min(this.swalCropImg.width, this.swalCropImg.height);
-      this.cropZoom = (this.swalCropRadius * 2) / minDim;
-      this.cropOffsetX = 0;
-      this.cropOffsetY = 0;
-      this.renderSwalCrop(); this.updateSwalZoomUI();
-    });
-
-    // Drag — mouse
-    canvas.addEventListener('mousedown', (e: MouseEvent) => {
-      this.cropIsDragging = true;
-      this.cropDragStartX = e.clientX - this.cropOffsetX;
-      this.cropDragStartY = e.clientY - this.cropOffsetY;
-      canvas.style.cursor = 'grabbing';
-      const hint = document.getElementById('swalCropHint');
-      if (hint) hint.style.opacity = '0';
-    });
-    window.addEventListener('mousemove', (e: MouseEvent) => {
-      if (!this.cropIsDragging) return;
-      this.cropOffsetX = e.clientX - this.cropDragStartX;
-      this.cropOffsetY = e.clientY - this.cropDragStartY;
-      this.renderSwalCrop();
-    });
-    window.addEventListener('mouseup', () => {
-      this.cropIsDragging = false;
-      canvas.style.cursor = 'grab';
-    });
-
-    // Drag — touch
-    canvas.addEventListener('touchstart', (e: TouchEvent) => {
-      e.preventDefault();
-      const t = e.touches[0];
-      this.cropDragStartX = t.clientX - this.cropOffsetX;
-      this.cropDragStartY = t.clientY - this.cropOffsetY;
-      const hint = document.getElementById('swalCropHint');
-      if (hint) hint.style.opacity = '0';
-    }, { passive: false });
-    canvas.addEventListener('touchmove', (e: TouchEvent) => {
-      e.preventDefault();
-      if (e.touches.length === 1) {
-        const t = e.touches[0];
-        this.cropOffsetX = t.clientX - this.cropDragStartX;
-        this.cropOffsetY = t.clientY - this.cropDragStartY;
-        this.renderSwalCrop();
-      }
-    }, { passive: false });
-
-    // Wheel zoom
-    canvas.addEventListener('wheel', (e: WheelEvent) => {
-      e.preventDefault();
-      this.cropZoom = Math.min(3, Math.max(0.5, this.cropZoom + (e.deltaY > 0 ? -0.05 : 0.05)));
-      this.renderSwalCrop(); this.updateSwalZoomUI();
-    }, { passive: false });
-  }
-
-  private renderSwalCrop() {
-    const ctx = this.swalCropCtx;
-    const img = this.swalCropImg;
-    if (!ctx || !img) return;
-    const size = this.swalCropSize;
-
-    ctx.clearRect(0, 0, size, size);
-    const scaledW = img.width * this.cropZoom;
-    const scaledH = img.height * this.cropZoom;
-    const drawX = size / 2 - scaledW / 2 + this.cropOffsetX;
-    const drawY = size / 2 - scaledH / 2 + this.cropOffsetY;
-    ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
-
-    // Draw previews
-    this.renderSwalPreview('swalPreviewLg', img, drawX, drawY, scaledW, scaledH, size, 64);
-    this.renderSwalPreview('swalPreviewSm', img, drawX, drawY, scaledW, scaledH, size, 36);
-  }
-
-  private renderSwalPreview(id: string, img: HTMLImageElement, drawX: number, drawY: number, scaledW: number, scaledH: number, size: number, pSize: number) {
-    const pc = document.getElementById(id) as HTMLCanvasElement;
-    if (!pc) return;
-    const pCtx = pc.getContext('2d')!;
-    const scale = pSize / size;
-    pCtx.clearRect(0, 0, pSize, pSize);
-    pCtx.save();
-    pCtx.beginPath();
-    pCtx.arc(pSize / 2, pSize / 2, pSize / 2, 0, Math.PI * 2);
-    pCtx.clip();
-    pCtx.drawImage(img, drawX * scale, drawY * scale, scaledW * scale, scaledH * scale);
-    pCtx.restore();
-  }
-
-  private updateSwalZoomUI() {
-    const slider = document.getElementById('swalZoomSlider') as HTMLInputElement;
-    const fill = document.getElementById('swalZoomFill') as HTMLDivElement;
-    if (slider) slider.value = String(this.cropZoom);
-    const pct = ((this.cropZoom - 0.5) / 2.5) * 100;
-    if (fill) fill.style.width = pct + '%';
-  }
-
-  private getSwalCroppedBlob(): Promise<Blob | null> {
-    return new Promise((resolve) => {
-      const img = this.swalCropImg;
-      if (!img) return resolve(null);
-      const outputSize = 400;
-      const offscreen = document.createElement('canvas');
-      offscreen.width = outputSize;
-      offscreen.height = outputSize;
-      const ctx = offscreen.getContext('2d')!;
-      const scale = outputSize / this.swalCropSize;
-      const scaledW = img.width * this.cropZoom * scale;
-      const scaledH = img.height * this.cropZoom * scale;
-      const drawX = outputSize / 2 - scaledW / 2 + this.cropOffsetX * scale;
-      const drawY = outputSize / 2 - scaledH / 2 + this.cropOffsetY * scale;
-      ctx.beginPath();
-      ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
-      offscreen.toBlob((blob) => resolve(blob), 'image/jpeg', 0.92);
-    });
-  }
-
   cancelCrop() {
-    this.swalCropImg = null;
-    this.swalCropCtx = null;
     this.originalFile = null;
   }
 
