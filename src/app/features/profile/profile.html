@@ -27,6 +27,8 @@
           </div>
           <img [src]="profileImage" class="profile-avatar" [class.d-none]="isImageLoading || isUploading"
             (load)="isImageLoading = false" (error)="profileImage='default-avatar.jpg'; isImageLoading=false"
+            [class.clickable-avatar]="user.profileImage"
+            (click)="viewPhoto()"
             alt="Profile">
           <div class="avatar-ring"></div>
           <div class="avatar-edit-btn" *ngIf="isEditing" (click)="fileInput.click()">

@@ -378,7 +378,12 @@
     "FIELD_EMAIL": "Email Address",
     "MALE": "Male",
     "FEMALE": "Female",
-    "YEARS": "years"
+    "YEARS": "years",
+    "ROTATE_LEFT": "Rotate Left",
+    "ROTATE_RIGHT": "Rotate Right",
+    "FLIP": "Flip",
+    "RESET": "Reset",
+    "VIEW_PHOTO": "View Photo"
   },
   "DASHBOARD": {
     "WELCOME_BACK": "Ready to crush today's workout?",

@@ -378,7 +378,12 @@
     "FIELD_EMAIL": "البريد الإلكتروني",
     "MALE": "ذكر",
     "FEMALE": "أنثى",
-    "YEARS": "سنة"
+    "YEARS": "سنة",
+    "ROTATE_LEFT": "تدوير لليسار",
+    "ROTATE_RIGHT": "تدوير لليمين",
+    "FLIP": "قلب",
+    "RESET": "إعادة تعيين",
+    "VIEW_PHOTO": "عرض الصورة"
   },
   "DASHBOARD": {
     "WELCOME_BACK": "مستعد لتحدي اليوم؟",

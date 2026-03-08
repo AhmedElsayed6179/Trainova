@@ -463,10 +463,10 @@ export class Profile implements OnInit {
           <img id="cropImage" src="${imageSrc}" style="max-width:100%;border-radius:10px;">
         </div>
         <div style="margin-top:15px;">
-          <button id="rotateLeft" class="swal2-styled" style="margin-right:5px;">↺ ${this.translate.instant('Profile.ROTATE_LEFT') || 'Rotate Left'}</button>
-          <button id="rotateRight" class="swal2-styled" style="margin-right:5px;">↻ ${this.translate.instant('Profile.ROTATE_RIGHT') || 'Rotate Right'}</button>
-          <button id="flipX" class="swal2-styled" style="margin-right:5px;">⇋ ${this.translate.instant('Profile.FLIP') || 'Flip'}</button>
-          <button id="resetCrop" class="swal2-styled">${this.translate.instant('Profile.RESET') || 'Reset'}</button>
+          <button id="rotateLeft" class="swal2-styled" style="margin-right:5px;">↺ ${this.translate.instant('Profile.ROTATE_LEFT')}</button>
+          <button id="rotateRight" class="swal2-styled" style="margin-right:5px;">↻ ${this.translate.instant('Profile.ROTATE_RIGHT')}</button>
+          <button id="flipX" class="swal2-styled" style="margin-right:5px;">⇋ ${this.translate.instant('Profile.FLIP')}</button>
+          <button id="resetCrop" class="swal2-styled">${this.translate.instant('Profile.RESET')}</button>
         </div>
       `,
       didOpen: () => {
@@ -520,6 +520,27 @@ export class Profile implements OnInit {
     this.originalFile = null;
   }
 
+  viewPhoto() {
+    // لو مفيش صورة مخصصة، متعرضش حاجة
+    if (!this.user?.profileImage) return;
+
+    const imageUrl = this.apiService.getFullImageUrl(this.user.profileImage);
+
+    Swal.fire({
+      title: this.user.name || this.translate.instant('Profile.VIEW_PHOTO'),
+      imageUrl: imageUrl,
+      imageAlt: this.user.name,
+      imageWidth: '100%',
+      background: '#1a1a2e',
+      color: '#fff',
+      showConfirmButton: false,
+      showCloseButton: true,
+      customClass: {
+        popup: 'swal-view-photo-popup',
+        image: 'swal-view-photo-img'
+      }
+    });
+  }
 
   onSubmit() {
     if (this.profileForm.invalid) {
