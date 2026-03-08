@@ -175,7 +175,10 @@
     "SECTION_PERSONAL": "المعلومات الشخصية",
     "SECTION_ACCOUNT": "تفاصيل الحساب",
     "SECTION_BODY": "القياسات الجسدية",
-    "SECTION_SECURITY": "الأمان"
+    "SECTION_SECURITY": "الأمان",
+    "VISUAL_LINE1": "تحدّيك",
+    "VISUAL_LINE2": "لـ ٣٠",
+    "VISUAL_LINE3": "يوماً"
   },
   "ERROR": "خطأ",
   "SUCCESS": "تم بنجاح!",
@@ -202,7 +205,10 @@
       "INVALID_CREDENTIALS": "اسم المستخدم أو كلمة المرور غير صحيحة",
       "SERVER_ERROR": "خطأ في الخادم. حاول مجدداً",
       "CONNECTION_ERROR": "خطأ في الاتصال. تحقق من الإنترنت"
-    }
+    },
+    "VISUAL_LINE1": "تدرّب",
+    "VISUAL_LINE2": "بذكاء",
+    "VISUAL_LINE3": "وانتصر"
   },
   "ForgotPassword": {
     "TITLE": "نسيت كلمة المرور؟",
@@ -221,7 +227,10 @@
       "IDENTIFIER_REQUIRED": "من فضلك أدخل اسم المستخدم أو بريدك الإلكتروني.",
       "USER_NOT_FOUND": "لا يوجد حساب مرتبط بهذا الاسم أو البريد الإلكتروني. تحقق وحاول مرة أخرى.",
       "USER_NOT_FOUND_TITLE": "الحساب غير موجود"
-    }
+    },
+    "VISUAL_LINE1": "عُد",
+    "VISUAL_LINE2": "أقوى",
+    "VISUAL_LINE3": "من قبل"
   },
   "Logout": {
     "CONFIRM_TITLE": "تسجيل الخروج؟",

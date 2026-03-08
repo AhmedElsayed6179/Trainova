@@ -175,7 +175,10 @@
     "SECTION_PERSONAL": "Personal Info",
     "SECTION_ACCOUNT": "Account Details",
     "SECTION_BODY": "Body Stats",
-    "SECTION_SECURITY": "Security"
+    "SECTION_SECURITY": "Security",
+    "VISUAL_LINE1": "YOUR",
+    "VISUAL_LINE2": "30-DAY",
+    "VISUAL_LINE3": "CHALLENGE"
   },
   "ERROR": "Error",
   "SUCCESS": "Success!",
@@ -202,7 +205,10 @@
       "INVALID_CREDENTIALS": "Invalid username or password",
       "SERVER_ERROR": "Server error. Please try again later",
       "CONNECTION_ERROR": "Connection error. Please check your internet"
-    }
+    },
+    "VISUAL_LINE1": "TRAIN",
+    "VISUAL_LINE2": "SMARTER",
+    "VISUAL_LINE3": "WIN BIGGER"
   },
   "ForgotPassword": {
     "TITLE": "Forgot Password?",
@@ -221,7 +227,10 @@
       "IDENTIFIER_REQUIRED": "Please enter your username or email.",
       "USER_NOT_FOUND": "No account found with this username or email. Please check and try again.",
       "USER_NOT_FOUND_TITLE": "Account Not Found"
-    }
+    },
+    "VISUAL_LINE1": "COME",
+    "VISUAL_LINE2": "BACK",
+    "VISUAL_LINE3": "STRONGER"
   },
   "Logout": {
     "CONFIRM_TITLE": "Sign Out?",
