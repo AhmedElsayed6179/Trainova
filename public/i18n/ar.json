@@ -738,5 +738,9 @@
     "Prone Cobra": "وضع الكوبرا",
     "Swimming (Floor)": "السباحة على الأرض"
   },
-  "APP_TITLE": "Trainova – تدرّب بذكاء، لا بجهد"
+  "APP_TITLE": "Trainova – تدرّب بذكاء، لا بجهد",
+  "Security": {
+    "DEVTOOLS_TITLE": "تم إغلاق الموقع",
+    "DEVTOOLS_MSG": "لا يمكن فتح أدوات المطورين على هذا الموقع."
+  }
 }

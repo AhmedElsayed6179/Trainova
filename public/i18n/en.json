@@ -738,5 +738,9 @@
     "Prone Cobra": "Prone Cobra",
     "Swimming (Floor)": "Floor Swimming"
   },
-  "APP_TITLE": "Trainova – Train Smarter, Not Harder"
+  "APP_TITLE": "Trainova – Train Smarter, Not Harder",
+  "Security": {
+    "DEVTOOLS_TITLE": "Site Closed",
+    "DEVTOOLS_MSG": "Developer tools cannot be opened on this site."
+  }
 }
