@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { Router, RouterLink } from '@angular/router';
@@ -20,11 +20,7 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, RouterLink]
 })
-export class Profile implements OnInit, AfterViewInit {
-  @ViewChild('cropCanvas') cropCanvasRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('cropContainer') cropContainerRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('previewCanvas') previewCanvasRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('previewCanvasSm') previewCanvasSmRef!: ElementRef<HTMLCanvasElement>;
+export class Profile implements OnInit {
 
   profileForm: FormGroup;
   passwordForm: FormGroup;
@@ -37,21 +33,13 @@ export class Profile implements OnInit, AfterViewInit {
   showNewPassword = false;
   showConfirmPassword = false;
 
-  // ── Crop Modal State ──────────────────────────────────
-  showCropModal = false;
+  // ── Crop State ────────────────────────────────────────
   cropZoom = 1;
-  cropHasDragged = false;
-  get zoomPercent(): number {
-    return ((this.cropZoom - 0.5) / (3 - 0.5)) * 100;
-  }
-  private cropImage: HTMLImageElement | null = null;
   private cropOffsetX = 0;
   private cropOffsetY = 0;
   private cropDragStartX = 0;
   private cropDragStartY = 0;
   private cropIsDragging = false;
-  private cropCanvasSize = 0; // set dynamically to window size
-  private cropCircleRadius = 0; // set dynamically
   private originalFile: File | null = null;
 
 
@@ -112,10 +100,6 @@ export class Profile implements OnInit, AfterViewInit {
 
     // ✅ Load all data in parallel immediately
     this.loadAllData();
-  }
-
-  ngAfterViewInit() {
-    // Charts will be initialized after data loads — no fixed 1000ms delay
   }
 
   // ✅ Patch form immediately with available user data
@@ -462,103 +446,235 @@ export class Profile implements OnInit, AfterViewInit {
     this.originalFile = file;
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      const imageSrc = e.target.result;
-      // Show SweetAlert2 preview with the original image before cropping
-      Swal.fire({
-        title: this.translate.instant('Profile.CROP_CONFIRM_TITLE'),
-        text: this.translate.instant('Profile.CROP_CONFIRM_TEXT'),
-        imageUrl: imageSrc,
-        imageAlt: 'Selected photo',
-        imageWidth: 'auto',
-        imageHeight: 260,
-        showCloseButton: true,
-        showCancelButton: true,
-        confirmButtonText: `<i class="fas fa-crop-alt me-1"></i> ${this.translate.instant('Profile.CROP_CONFIRM_BTN')}`,
-        cancelButtonText: `<i class="fas fa-image me-1"></i> ${this.translate.instant('Profile.CROP_CANCEL_BTN')}`,
-        confirmButtonColor: '#ffc107',
-        cancelButtonColor: '#6c757d',
-        reverseButtons: true,
-        background: '#1a1a2e',
-        color: '#fff',
-        customClass: {
-          image: 'swal-preview-image',
-          popup: 'swal-crop-preview-popup'
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.openCropModal(imageSrc);
-        } else {
-          // User cancelled — reset file input
-          this.originalFile = null;
-        }
-      });
+      this.openCropModal(e.target.result);
     };
     reader.readAsDataURL(file);
   }
 
   openCropModal(imageSrc: string) {
-    // Calculate canvas size based on viewport
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const bottomPanelH = Math.min(220, vh * 0.32);
-    const topBarH = 56;
-    const availH = vh - bottomPanelH - topBarH;
-    this.cropCanvasSize = Math.min(vw, availH, 600);
-    this.cropCircleRadius = Math.floor(this.cropCanvasSize * 0.42);
-
+    this.originalImageSrc = imageSrc;
     this.cropZoom = 1;
     this.cropOffsetX = 0;
     this.cropOffsetY = 0;
-    this.cropHasDragged = false;
-    this.showCropModal = true;
-    this.cdr.detectChanges();
+    this.cropIsDragging = false;
 
-    const img = new Image();
-    img.onload = () => {
-      this.cropImage = img;
-      const minDim = Math.min(img.width, img.height);
-      this.cropZoom = (this.cropCircleRadius * 2) / minDim;
-      this.drawCropCanvas();
-      this.updateSvgMask();
-    };
-    img.src = imageSrc;
+    // Build SweetAlert2 with inline crop canvas
+    Swal.fire({
+      title: this.translate.instant('Profile.CROP_TITLE'),
+      background: '#1a1a2e',
+      color: '#fff',
+      showCloseButton: true,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: `<i class="fas fa-check me-1"></i> ${this.translate.instant('Profile.CROP_APPLY')}`,
+      cancelButtonText: `<i class="fas fa-times me-1"></i> ${this.translate.instant('Profile.CANCEL')}`,
+      confirmButtonColor: '#ffc107',
+      cancelButtonColor: '#6c757d',
+      allowOutsideClick: false,
+      customClass: {
+        popup: 'swal-crop-tool-popup',
+        confirmButton: 'swal-crop-confirm-btn',
+        cancelButton: 'swal-crop-cancel-btn',
+      },
+      html: `
+        <div class="swal-crop-wrapper">
+          <div class="swal-crop-area" id="swalCropArea">
+            <canvas id="swalCropCanvas"></canvas>
+            <div class="swal-crop-overlay">
+              <div class="swal-crop-circle" id="swalCropCircle">
+                <div class="swal-crop-circle-border"></div>
+              </div>
+            </div>
+            <div class="swal-crop-hint" id="swalCropHint">
+              <i class="fas fa-arrows-alt"></i>
+              <span>${this.translate.instant('Profile.CROP_ZOOM_HINT')}</span>
+            </div>
+          </div>
+          <div class="swal-crop-controls">
+            <button class="swal-zoom-btn" id="swalZoomOut" type="button"><i class="fas fa-search-minus"></i></button>
+            <div class="swal-zoom-track">
+              <div class="swal-zoom-fill" id="swalZoomFill"></div>
+              <input type="range" id="swalZoomSlider" min="0.5" max="3" step="0.01" value="1">
+            </div>
+            <button class="swal-zoom-btn" id="swalZoomIn" type="button"><i class="fas fa-search-plus"></i></button>
+            <button class="swal-zoom-btn swal-reset-btn" id="swalReset" type="button" title="Reset">
+              <i class="fas fa-undo-alt"></i>
+            </button>
+          </div>
+          <div class="swal-crop-previews">
+            <div class="swal-preview-item">
+              <canvas id="swalPreviewLg" width="64" height="64"></canvas>
+              <span>64px</span>
+            </div>
+            <div class="swal-preview-item">
+              <canvas id="swalPreviewSm" width="36" height="36"></canvas>
+              <span>36px</span>
+            </div>
+          </div>
+        </div>
+      `,
+      didOpen: () => {
+        this.initSwalCrop(imageSrc);
+      },
+      preConfirm: () => {
+        return this.getSwalCroppedBlob();
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const blob = result.value as Blob;
+        const croppedFile = new File([blob], this.originalFile?.name || 'profile.jpg', { type: 'image/jpeg' });
+        // Show preview immediately
+        const url = URL.createObjectURL(blob);
+        this.profileImage = url;
+        this.uploadImageFile(croppedFile);
+      } else {
+        this.originalFile = null;
+      }
+    });
   }
 
-  drawCropCanvas() {
-    if (!this.cropCanvasRef || !this.cropImage) return;
-    const canvas = this.cropCanvasRef.nativeElement;
-    const ctx = canvas.getContext('2d')!;
-    const size = this.cropCanvasSize;
+  private swalCropCtx: CanvasRenderingContext2D | null = null;
+  private swalCropImg: HTMLImageElement | null = null;
+  private swalCropSize = 0;
+  private swalCropRadius = 0;
+  private originalImageSrc = '';
+
+  private initSwalCrop(imageSrc: string) {
+    const area = document.getElementById('swalCropArea') as HTMLDivElement;
+    const canvas = document.getElementById('swalCropCanvas') as HTMLCanvasElement;
+    if (!area || !canvas) return;
+
+    // Responsive size — fill popup width, max 400
+    const popupW = area.offsetWidth || 340;
+    const size = Math.min(popupW, 400);
+    this.swalCropSize = size;
+    this.swalCropRadius = Math.floor(size * 0.44);
+
     canvas.width = size;
     canvas.height = size;
     canvas.style.width = size + 'px';
     canvas.style.height = size + 'px';
 
+    // Style crop circle overlay to match
+    const circle = document.getElementById('swalCropCircle') as HTMLDivElement;
+    if (circle) {
+      const d = this.swalCropRadius * 2;
+      circle.style.width = d + 'px';
+      circle.style.height = d + 'px';
+    }
+
+    this.swalCropCtx = canvas.getContext('2d');
+
+    const img = new Image();
+    img.onload = () => {
+      this.swalCropImg = img;
+      // Fit image to fill the circle on load
+      const minDim = Math.min(img.width, img.height);
+      this.cropZoom = (this.swalCropRadius * 2) / minDim;
+      this.cropOffsetX = 0;
+      this.cropOffsetY = 0;
+      this.renderSwalCrop();
+      this.updateSwalZoomUI();
+    };
+    img.src = imageSrc;
+
+    // Zoom slider
+    const slider = document.getElementById('swalZoomSlider') as HTMLInputElement;
+    slider?.addEventListener('input', () => {
+      this.cropZoom = parseFloat(slider.value);
+      this.renderSwalCrop();
+      this.updateSwalZoomUI();
+    });
+
+    // Zoom buttons
+    document.getElementById('swalZoomOut')?.addEventListener('click', () => {
+      this.cropZoom = Math.max(0.5, this.cropZoom - 0.1);
+      this.renderSwalCrop(); this.updateSwalZoomUI();
+    });
+    document.getElementById('swalZoomIn')?.addEventListener('click', () => {
+      this.cropZoom = Math.min(3, this.cropZoom + 0.1);
+      this.renderSwalCrop(); this.updateSwalZoomUI();
+    });
+
+    // Reset
+    document.getElementById('swalReset')?.addEventListener('click', () => {
+      if (!this.swalCropImg) return;
+      const minDim = Math.min(this.swalCropImg.width, this.swalCropImg.height);
+      this.cropZoom = (this.swalCropRadius * 2) / minDim;
+      this.cropOffsetX = 0;
+      this.cropOffsetY = 0;
+      this.renderSwalCrop(); this.updateSwalZoomUI();
+    });
+
+    // Drag — mouse
+    canvas.addEventListener('mousedown', (e: MouseEvent) => {
+      this.cropIsDragging = true;
+      this.cropDragStartX = e.clientX - this.cropOffsetX;
+      this.cropDragStartY = e.clientY - this.cropOffsetY;
+      canvas.style.cursor = 'grabbing';
+      const hint = document.getElementById('swalCropHint');
+      if (hint) hint.style.opacity = '0';
+    });
+    window.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!this.cropIsDragging) return;
+      this.cropOffsetX = e.clientX - this.cropDragStartX;
+      this.cropOffsetY = e.clientY - this.cropDragStartY;
+      this.renderSwalCrop();
+    });
+    window.addEventListener('mouseup', () => {
+      this.cropIsDragging = false;
+      canvas.style.cursor = 'grab';
+    });
+
+    // Drag — touch
+    canvas.addEventListener('touchstart', (e: TouchEvent) => {
+      e.preventDefault();
+      const t = e.touches[0];
+      this.cropDragStartX = t.clientX - this.cropOffsetX;
+      this.cropDragStartY = t.clientY - this.cropOffsetY;
+      const hint = document.getElementById('swalCropHint');
+      if (hint) hint.style.opacity = '0';
+    }, { passive: false });
+    canvas.addEventListener('touchmove', (e: TouchEvent) => {
+      e.preventDefault();
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        this.cropOffsetX = t.clientX - this.cropDragStartX;
+        this.cropOffsetY = t.clientY - this.cropDragStartY;
+        this.renderSwalCrop();
+      }
+    }, { passive: false });
+
+    // Wheel zoom
+    canvas.addEventListener('wheel', (e: WheelEvent) => {
+      e.preventDefault();
+      this.cropZoom = Math.min(3, Math.max(0.5, this.cropZoom + (e.deltaY > 0 ? -0.05 : 0.05)));
+      this.renderSwalCrop(); this.updateSwalZoomUI();
+    }, { passive: false });
+  }
+
+  private renderSwalCrop() {
+    const ctx = this.swalCropCtx;
+    const img = this.swalCropImg;
+    if (!ctx || !img) return;
+    const size = this.swalCropSize;
+
     ctx.clearRect(0, 0, size, size);
-    const img = this.cropImage;
     const scaledW = img.width * this.cropZoom;
     const scaledH = img.height * this.cropZoom;
     const drawX = size / 2 - scaledW / 2 + this.cropOffsetX;
     const drawY = size / 2 - scaledH / 2 + this.cropOffsetY;
     ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
 
-    this.drawPreview(img, drawX, drawY, scaledW, scaledH, size);
+    // Draw previews
+    this.renderSwalPreview('swalPreviewLg', img, drawX, drawY, scaledW, scaledH, size, 64);
+    this.renderSwalPreview('swalPreviewSm', img, drawX, drawY, scaledW, scaledH, size, 36);
   }
 
-  drawPreview(img: HTMLImageElement, drawX: number, drawY: number, scaledW: number, scaledH: number, size: number) {
-    this.renderPreviewCanvas(img, drawX, drawY, scaledW, scaledH, size, this.previewCanvasRef, 72);
-    this.renderPreviewCanvas(img, drawX, drawY, scaledW, scaledH, size, this.previewCanvasSmRef, 40);
-  }
-
-  renderPreviewCanvas(
-    img: HTMLImageElement, drawX: number, drawY: number, scaledW: number, scaledH: number,
-    size: number, ref: ElementRef<HTMLCanvasElement> | undefined, pSize: number
-  ) {
-    if (!ref) return;
-    const pCanvas = ref.nativeElement;
-    pCanvas.width = pSize;
-    pCanvas.height = pSize;
-    const pCtx = pCanvas.getContext('2d')!;
+  private renderSwalPreview(id: string, img: HTMLImageElement, drawX: number, drawY: number, scaledW: number, scaledH: number, size: number, pSize: number) {
+    const pc = document.getElementById(id) as HTMLCanvasElement;
+    if (!pc) return;
+    const pCtx = pc.getContext('2d')!;
     const scale = pSize / size;
     pCtx.clearRect(0, 0, pSize, pSize);
     pCtx.save();
@@ -569,128 +685,40 @@ export class Profile implements OnInit, AfterViewInit {
     pCtx.restore();
   }
 
-  stepZoom(delta: number) {
-    this.cropZoom = Math.min(3, Math.max(0.5, this.cropZoom + delta));
-    this.drawCropCanvas();
+  private updateSwalZoomUI() {
+    const slider = document.getElementById('swalZoomSlider') as HTMLInputElement;
+    const fill = document.getElementById('swalZoomFill') as HTMLDivElement;
+    if (slider) slider.value = String(this.cropZoom);
+    const pct = ((this.cropZoom - 0.5) / 2.5) * 100;
+    if (fill) fill.style.width = pct + '%';
   }
 
-  resetCrop() {
-    if (!this.cropImage) return;
-    this.cropOffsetX = 0;
-    this.cropOffsetY = 0;
-    const minDim = Math.min(this.cropImage.width, this.cropImage.height);
-    this.cropZoom = (this.cropCircleRadius * 2) / minDim;
-    this.cropHasDragged = false;
-    this.drawCropCanvas();
-  }
-
-  updateSvgMask() {
-    setTimeout(() => {
-      const size = this.cropCanvasSize;
-      const cx = size / 2;
-      const cy = size / 2;
-      const r = this.cropCircleRadius;
-
-      // The SVGs are positioned over the canvas area
-      const circle = document.getElementById('cropCircle') as unknown as SVGCircleElement;
-      const border = document.getElementById('cropCircleBorder') as unknown as SVGCircleElement;
-      if (circle) { circle.setAttribute('cx', cx.toString()); circle.setAttribute('cy', cy.toString()); circle.setAttribute('r', r.toString()); }
-      if (border) { border.setAttribute('cx', cx.toString()); border.setAttribute('cy', cy.toString()); border.setAttribute('r', r.toString()); }
-    }, 30);
-  }
-
-  onZoomChange() {
-    this.drawCropCanvas();
-  }
-
-  onCropWheel(event: WheelEvent) {
-    event.preventDefault();
-    const delta = event.deltaY > 0 ? -0.05 : 0.05;
-    this.cropZoom = Math.min(3, Math.max(0.5, this.cropZoom + delta));
-    this.drawCropCanvas();
-  }
-
-  onCropMouseDown(event: MouseEvent) {
-    this.cropIsDragging = true;
-    this.cropHasDragged = true;
-    this.cropDragStartX = event.clientX - this.cropOffsetX;
-    this.cropDragStartY = event.clientY - this.cropOffsetY;
-
-    const onMove = (e: MouseEvent) => {
-      if (!this.cropIsDragging) return;
-      this.cropOffsetX = e.clientX - this.cropDragStartX;
-      this.cropOffsetY = e.clientY - this.cropDragStartY;
-      this.drawCropCanvas();
-    };
-    const onUp = () => {
-      this.cropIsDragging = false;
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  }
-
-  onCropTouchStart(event: TouchEvent) {
-    if (event.touches.length === 1) {
-      this.cropHasDragged = true;
-      const touch = event.touches[0];
-      this.cropDragStartX = touch.clientX - this.cropOffsetX;
-      this.cropDragStartY = touch.clientY - this.cropOffsetY;
-
-      const onMove = (e: TouchEvent) => {
-        if (e.touches.length !== 1) return;
-        const t = e.touches[0];
-        this.cropOffsetX = t.clientX - this.cropDragStartX;
-        this.cropOffsetY = t.clientY - this.cropDragStartY;
-        this.drawCropCanvas();
-      };
-      const onEnd = () => {
-        document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('touchend', onEnd);
-      };
-      document.addEventListener('touchmove', onMove, { passive: true });
-      document.addEventListener('touchend', onEnd);
-    }
-  }
-
-  applyCrop() {
-    if (!this.cropImage) return;
-
-    // Draw final cropped circle to offscreen canvas
-    const outputSize = 400;
-    const offscreen = document.createElement('canvas');
-    offscreen.width = outputSize;
-    offscreen.height = outputSize;
-    const ctx = offscreen.getContext('2d')!;
-
-    const scale = outputSize / this.cropCanvasSize;
-    const img = this.cropImage;
-    const scaledW = img.width * this.cropZoom * scale;
-    const scaledH = img.height * this.cropZoom * scale;
-    const drawX = outputSize / 2 - scaledW / 2 + this.cropOffsetX * scale;
-    const drawY = outputSize / 2 - scaledH / 2 + this.cropOffsetY * scale;
-
-    // Clip to circle
-    ctx.beginPath();
-    ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
-
-    offscreen.toBlob((blob) => {
-      if (!blob) return;
-      const croppedFile = new File([blob], this.originalFile?.name || 'profile.jpg', { type: 'image/jpeg' });
-      this.showCropModal = false;
-      this.profileImage = offscreen.toDataURL('image/jpeg', 0.9);
-      this.uploadImageFile(croppedFile);
-    }, 'image/jpeg', 0.9);
+  private getSwalCroppedBlob(): Promise<Blob | null> {
+    return new Promise((resolve) => {
+      const img = this.swalCropImg;
+      if (!img) return resolve(null);
+      const outputSize = 400;
+      const offscreen = document.createElement('canvas');
+      offscreen.width = outputSize;
+      offscreen.height = outputSize;
+      const ctx = offscreen.getContext('2d')!;
+      const scale = outputSize / this.swalCropSize;
+      const scaledW = img.width * this.cropZoom * scale;
+      const scaledH = img.height * this.cropZoom * scale;
+      const drawX = outputSize / 2 - scaledW / 2 + this.cropOffsetX * scale;
+      const drawY = outputSize / 2 - scaledH / 2 + this.cropOffsetY * scale;
+      ctx.beginPath();
+      ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
+      offscreen.toBlob((blob) => resolve(blob), 'image/jpeg', 0.92);
+    });
   }
 
   cancelCrop() {
-    this.showCropModal = false;
-    this.cropImage = null;
+    this.swalCropImg = null;
+    this.swalCropCtx = null;
     this.originalFile = null;
-    this.cropHasDragged = false;
   }
 
 
