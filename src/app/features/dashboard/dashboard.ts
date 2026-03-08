@@ -4,6 +4,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import Chart from 'chart.js/auto';
 import { User } from '../../core/models/user-profile';
@@ -36,6 +37,7 @@ export class Dashboard implements OnInit, OnDestroy {
   };
 
   greeting: string = '';
+  isArabic = false;
   private charts: Chart[] = [];
   private subscriptions = new Subscription();
 
@@ -43,6 +45,7 @@ export class Dashboard implements OnInit, OnDestroy {
     private apiService: ApiService,
     private stateService: StateService,
     private translate: TranslateService,
+    private router: Router,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -52,6 +55,14 @@ export class Dashboard implements OnInit, OnDestroy {
       window.location.href = '/login';
       return;
     }
+
+    // ── Language: initialize + react to changes ──────────────────
+    this.isArabic = (this.translate.currentLang || this.translate.defaultLang || localStorage.getItem('lang') || 'en') === 'ar';
+    const langSub = this.translate.onLangChange.subscribe(event => {
+      this.isArabic = event.lang === 'ar';
+      this.cdr.detectChanges();
+    });
+    this.subscriptions.add(langSub);
 
     this.setGreeting();
     this.loadDashboardData();
@@ -277,6 +288,11 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   objectKeys(obj: any): string[] { return obj ? Object.keys(obj) : []; }
+
+  // ── Helper: exercise name respects active language ────────────
+  getExerciseName(exercise: any): string {
+    return this.isArabic ? (exercise.exercise_name_ar || exercise.exercise_name) : exercise.exercise_name;
+  }
 
   startWorkout() {
     window.location.href = '/workout';
