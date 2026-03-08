@@ -139,7 +139,6 @@
   flex-wrap: wrap;
   width: 100%;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .hero-stat-item {
@@ -480,36 +479,161 @@ body:not(.dark-mode) .section-body-text {
   color: #4A5568;
 }
 
-/* Responsive */
+/* ========== RESPONSIVE MOBILE ========== */
 @media (max-width: 768px) {
+
+  /* --- Hero --- */
+  .home-hero {
+    min-height: 100svh;
+    align-items: flex-start;
+  }
+
   .hero-content {
-    padding: 100px 0 60px;
+    padding: 90px 0 50px;
+    width: 100%;
+  }
+
+  /* Center everything on mobile for RTL feel */
+  .col-lg-6.animate-fade-up:first-child {
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    padding: 5px 14px;
+    margin-bottom: 18px;
   }
 
   .hero-title {
-    font-size: 3.5rem;
+    font-size: clamp(3rem, 14vw, 4.2rem);
+    line-height: 0.95;
+    margin-bottom: 18px;
   }
 
+  .hero-subtitle {
+    font-size: 1rem;
+    max-width: 100%;
+    margin-bottom: 28px;
+    padding: 0 4px;
+  }
+
+  /* CTA Buttons — stack vertically, full width */
+  .hero-cta-group {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+    padding: 14px 24px;
+    font-size: 0.95rem;
+  }
+
+  /* Stats strip — 3 columns evenly spaced */
   .hero-stats {
-    gap: 16px 24px;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 36px;
+    padding-top: 28px;
+    width: 100%;
+    text-align: center;
   }
 
   .hero-stat-item {
-    min-width: 0;
-    flex: 0 0 auto;
+    padding: 0 8px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .hero-stat-item:last-child {
+    border-right: none;
   }
 
   .hero-stat-number {
-    font-size: 2rem;
+    font-size: 1.9rem;
+    line-height: 1;
   }
 
+  .hero-stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Floating card */
   .hero-card-float {
     max-width: 100%;
-    margin-top: 40px;
+    margin-top: 32px;
+    padding: 20px;
+  }
+
+  /* --- Features --- */
+  .features-section {
+    padding: 60px 0;
+  }
+
+  .section-heading {
+    font-size: 1.7rem;
+  }
+
+  .feature-card {
+    padding: 24px 20px;
+  }
+
+  /* --- Categories --- */
+  .categories-section {
+    padding: 60px 0;
   }
 
   .category-card {
     aspect-ratio: 1;
+  }
+
+  .category-name {
+    font-size: 1.4rem;
+  }
+
+  /* --- CTA --- */
+  .cta-section {
+    padding: 70px 0;
+  }
+
+  .cta-title {
+    font-size: clamp(2.2rem, 10vw, 3.5rem);
+    letter-spacing: 2px;
+  }
+
+  .btn-hero-primary.cta-btn {
+    width: auto;
+    min-width: 200px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 400px) {
+  .hero-title {
+    font-size: clamp(2.6rem, 13vw, 3.2rem);
+  }
+
+  .hero-stat-number {
+    font-size: 1.6rem;
+  }
+
+  .hero-stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0;
+  }
+
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    max-width: 100%;
   }
 }
