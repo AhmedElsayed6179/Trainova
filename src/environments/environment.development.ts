@@ -1,9 +1,9 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000/api',
-  baseUrl: 'http://localhost:3000',
+  production: true,
+  apiUrl: 'https://trainova-api.up.railway.app/api',
+  baseUrl: 'https://trainova-api.up.railway.app',
   appName: 'Trainova',
-  appUrl: 'http://localhost:4200',
+  appUrl: 'https://trainova.up.railway.app',
   version: '1.0.0',
   FORMSPREE_URL: 'https://formspree.io/f/meerogzd'
 };
