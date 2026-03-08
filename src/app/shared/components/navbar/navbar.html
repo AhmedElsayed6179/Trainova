@@ -96,11 +96,23 @@
                   <div style="font-weight: 700; font-size: 0.95rem;color: white;">{{ currentUser?.name }}</div>
                   <div style="font-size: 0.8rem; color: var(--text-muted);">{{ currentUser?.email }}</div>
                   <div class="d-flex align-items-center gap-2 mt-1" style="font-size:0.75rem; color:var(--text-muted);">
-                    <span><i class="fas fa-fire me-1" style="color:var(--primary);"></i>{{ currentUser?.current_streak
-                      || 0 }} day streak</span>
+                    <span><i class="fas fa-fire me-1" style="color:var(--primary);"></i>{{ currentUser?.current_streak || 0 }} {{ 'Navbar.DAY_STREAK' | translate }}</span>
                     <span style="opacity:0.4;">•</span>
-                    <span><i class="fas fa-dumbbell me-1" style="color:var(--primary);"></i>{{
-                      currentUser?.total_workouts || 0 }} workouts</span>
+                    <span><i class="fas fa-dumbbell me-1" style="color:var(--primary);"></i>{{ currentUser?.total_workouts || 0 }} {{ 'Navbar.WORKOUTS' | translate }}</span>
+                  </div>
+                  <!-- ── Account Info Bar ── -->
+                  <div class="navbar-account-info mt-2 pt-2" style="border-top:1px solid var(--border);">
+                    <div class="d-flex align-items-center justify-content-between" style="font-size:0.75rem;">
+                      <span style="color:var(--text-muted);">
+                        <i class="fas fa-calendar-check me-1" style="color:#4e8ef7;"></i>
+                        {{ currentUser?.completed_days || 0 }} {{ 'Navbar.WORKOUT_DAYS' | translate }}
+                      </span>
+                      <span *ngIf="currentUser?.goal" style="background:rgba(245,166,35,0.12); color:var(--primary);
+                        padding:2px 8px; border-radius:10px; font-weight:600; font-size:0.7rem;">
+                        <i class="fas fa-bullseye me-1"></i>
+                        {{ getGoalLabel(currentUser?.goal) }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </li>

@@ -9,7 +9,17 @@
     "DASHBOARD": "Dashboard",
     "PROFILE": "Profile",
     "WORKOUT": "Workout",
-    "ABOUT": "About"
+    "ABOUT": "About",
+    "DAY_STREAK": "day streak",
+    "WORKOUTS": "workouts",
+    "WORKOUT_DAYS": "workout days",
+    "GOALS": {
+      "ABS": "Abs & Core",
+      "LEGS": "Legs & Lower Body",
+      "FULL_BODY": "Full Body",
+      "BACK": "Back & Shoulders",
+      "ALL": "All Areas"
+    }
   },
   "Footer": {
     "CREDIT": "Built with ❤️ by Ahmed Mohamed",

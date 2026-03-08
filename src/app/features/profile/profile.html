@@ -336,9 +336,16 @@
                 <option value="abs">{{ 'Register.GOALS.ABS' | translate }}</option>
                 <option value="legs">{{ 'Register.GOALS.LEGS' | translate }}</option>
                 <option value="full-body">{{ 'Register.GOALS.FULL_BODY' | translate }}</option>
+                <option value="back">{{ 'Register.GOALS.BACK' | translate }}</option>
                 <option value="all">{{ 'Register.GOALS.ALL' | translate }}</option>
               </select>
               <i class="fas fa-chevron-down pf-select-arrow"></i>
+            </div>
+            <!-- Show current value when not editing -->
+            <div *ngIf="!isEditing && user.goal" class="pf-field-display mt-1"
+              style="font-size:0.82rem; color:var(--text-muted);">
+              <i class="fas fa-check-circle me-1" style="color:var(--primary);"></i>
+              {{ getGoalName(user.goal) }}
             </div>
           </div>
 
