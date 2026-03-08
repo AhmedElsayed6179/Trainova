@@ -137,6 +137,9 @@
   padding-top: 40px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .hero-stat-item {
@@ -488,7 +491,17 @@ body:not(.dark-mode) .section-body-text {
   }
 
   .hero-stats {
-    gap: 24px;
+    gap: 16px 24px;
+    justify-content: flex-start;
+  }
+
+  .hero-stat-item {
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+
+  .hero-stat-number {
+    font-size: 2rem;
   }
 
   .hero-card-float {
