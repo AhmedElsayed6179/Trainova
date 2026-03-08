@@ -2,6 +2,12 @@
    EXERCISES.CSS — Premium Athletic Design
    ════════════════════════════════════════ */
 
+/* ── GLOBAL FIX: prevent horizontal overflow ── */
+.ex-page {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 .pb-6 {
   padding-bottom: 80px;
 }
@@ -49,7 +55,7 @@
 
 .ex-hero-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  font-size: clamp(3rem, 8vw, 6.5rem);
   line-height: 0.9;
   color: #fff;
   letter-spacing: 2px;
@@ -73,6 +79,7 @@
   border-radius: 16px;
   padding: 20px 28px;
   width: fit-content;
+  max-width: 100%;
 }
 
 .ex-hero-stat {
@@ -94,6 +101,7 @@
   width: 1px;
   height: 36px;
   background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .ex-hero-stat-n {
@@ -235,7 +243,8 @@ body:not(.dark-mode) .ex-filter-bar {
 .ex-search {
   position: relative;
   flex: 1;
-  min-width: 180px;
+  min-width: 0;
+  /* fix flex overflow */
 }
 
 .ex-search-icon {
@@ -264,6 +273,7 @@ body:not(.dark-mode) .ex-filter-bar {
   font-family: var(--font-body);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 0;
 }
 
 [dir="rtl"] .ex-search-input {
@@ -312,6 +322,15 @@ body:not(.dark-mode) .ex-search-input:focus {
   display: flex;
   gap: 6px;
   flex-shrink: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.ex-diff-filter::-webkit-scrollbar {
+  height: 0;
 }
 
 .ex-diff-btn {
@@ -324,6 +343,7 @@ body:not(.dark-mode) .ex-search-input:focus {
   color: var(--text-secondary);
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.2s;
 }
 
@@ -376,16 +396,13 @@ body:not(.dark-mode) .ex-diff-btn {
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+  scrollbar-width: none;
 }
 
 .ex-cat-row::-webkit-scrollbar {
-  height: 3px;
-}
-
-.ex-cat-row::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 2px;
+  height: 0;
 }
 
 .ex-cat-btn {
@@ -401,6 +418,7 @@ body:not(.dark-mode) .ex-diff-btn {
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.25s ease;
 }
 
@@ -623,6 +641,7 @@ body:not(.dark-mode) .ex-muscle-chip {
   display: flex;
   gap: 14px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .ex-card-stat {
@@ -690,7 +709,7 @@ body:not(.dark-mode) .ex-card-foot {
   font-size: 0.7rem;
 }
 
-/* Hover veil */
+/* Hover veil — disable on touch devices */
 .ex-card-veil {
   position: absolute;
   inset: 0;
@@ -704,6 +723,7 @@ body:not(.dark-mode) .ex-card-foot {
   opacity: 0;
   transition: opacity 0.3s ease;
   border-radius: inherit;
+  pointer-events: none;
 }
 
 .ex-card:hover .ex-card-veil {
@@ -723,11 +743,11 @@ body:not(.dark-mode) .ex-card-foot {
   text-transform: uppercase;
 }
 
-/* ── EMPTY ── */
+/* ── EMPTY STATE ── */
 .ex-empty {
   text-align: center;
   padding: 80px 24px;
-  grid-column: 1/-1;
+  grid-column: 1 / -1;
 }
 
 .ex-empty-icon {
@@ -760,7 +780,9 @@ body:not(.dark-mode) .ex-empty h4 {
   font-size: 0.9rem;
 }
 
-/* ═══ MODAL ═══ */
+/* ═══════════════════════
+   MODAL
+   ═══════════════════════ */
 .ex-overlay {
   position: fixed;
   inset: 0;
@@ -771,10 +793,12 @@ body:not(.dark-mode) .ex-empty h4 {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  overflow: hidden;
+  /* prevent body scroll bleed */
 }
 
 .ex-overlay.open {
@@ -789,8 +813,11 @@ body:not(.dark-mode) .ex-empty h4 {
   overflow: hidden;
   width: 100%;
   max-width: 720px;
-  max-height: 92vh;
+  max-height: 90dvh;
+  /* use dvh for better mobile behavior */
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   position: relative;
   transform: scale(0.88) translateY(20px);
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -876,12 +903,13 @@ body:not(.dark-mode) .ex-modal {
 
 .ex-modal-title {
   font-family: 'Rajdhani', 'Bebas Neue', sans-serif;
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
   font-weight: 800;
   color: #fff;
   margin-bottom: 14px;
   letter-spacing: 0.5px;
-  line-height: 1;
+  line-height: 1.1;
+  word-break: break-word;
 }
 
 .ex-modal-meta {
@@ -901,13 +929,13 @@ body:not(.dark-mode) .ex-modal-body {
 
 /* Stats row */
 .ex-modal-stats {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 24px;
 }
 
 .ex-mstat {
-  flex: 1;
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -1100,7 +1128,9 @@ body:not(.dark-mode) .ex-modal-foot {
   border-top-color: rgba(0, 0, 0, 0.06);
 }
 
-/* ── RESPONSIVE ── */
+/* ══════════════════════════════════
+   RESPONSIVE — tablet (≤ 900px)
+   ══════════════════════════════════ */
 @media (max-width: 900px) {
   .ex-hero {
     padding: 88px 0 48px;
@@ -1108,78 +1138,253 @@ body:not(.dark-mode) .ex-modal-foot {
 
   .ex-hero-stats {
     padding: 16px 20px;
+    width: 100%;
   }
 
   .ex-hero-stat {
-    padding: 0 18px;
+    padding: 0 14px;
   }
 
   .ex-filter-inner {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
 
   .ex-diff-filter {
     overflow-x: auto;
   }
 
-  .ex-diff-filter::-webkit-scrollbar {
-    height: 0;
+  .ex-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
   }
 }
 
+/* ══════════════════════════════════
+   RESPONSIVE — mobile (≤ 640px)
+   ══════════════════════════════════ */
 @media (max-width: 640px) {
+
+  /* Hero */
+  .ex-hero {
+    padding: 80px 0 40px;
+  }
+
+  .ex-hero-title {
+    letter-spacing: 1px;
+  }
+
+  .ex-hero-sub {
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+
+  .ex-hero-stats {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .ex-hero-stat {
+    padding: 14px 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .ex-hero-stat:last-child {
+    border-bottom: none;
+  }
+
+  .ex-hero-divider {
+    display: none;
+  }
+
+  .ex-hero-stat-n {
+    font-size: 2rem;
+  }
+
+  .ex-hero-stat-l {
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-align: right;
+  }
+
+  /* Filter bar stacks vertically */
+  .ex-filter-inner {
+    gap: 8px;
+  }
+
+  .ex-search {
+    width: 100%;
+  }
+
+  .ex-diff-filter {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .ex-diff-btn {
+    flex: 1;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 0.72rem;
+  }
+
+  .ex-result-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+  }
+
+  .ex-result-n {
+    font-size: 1.2rem;
+  }
+
+  /* Category tabs — icon only on very small */
+  .ex-cat-btn {
+    padding: 9px 14px;
+    gap: 7px;
+  }
+
+  /* Grid — single column */
   .ex-grid {
     grid-template-columns: 1fr;
     gap: 14px;
   }
 
-  .ex-modal-body {
-    padding: 20px;
+  /* Card layout improvements */
+  .ex-card-art {
+    height: 90px;
+    margin: 10px 14px;
+  }
+
+  .ex-card-info {
+    padding: 0 14px;
+  }
+
+  .ex-card-foot {
+    padding: 10px 14px;
+  }
+
+  /* Modal — fullscreen style on mobile */
+  .ex-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .ex-modal {
+    border-radius: 24px 24px 0 0;
+    max-height: 92dvh;
+    max-width: 100%;
+    transform: translateY(100%);
+    /* slide from bottom */
+  }
+
+  .ex-overlay.open .ex-modal {
+    transform: translateY(0);
   }
 
   .ex-modal-head {
     padding: 24px 20px 18px;
   }
 
+  .ex-modal-body {
+    padding: 16px;
+  }
+
   .ex-modal-foot {
-    padding: 14px 20px 20px;
+    padding: 12px 16px 20px;
     flex-direction: column;
+    gap: 8px;
   }
 
   .ex-modal-foot .btn {
     width: 100%;
   }
 
+  /* Stats grid 2x2 on mobile */
   .ex-modal-stats {
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
+    margin-bottom: 18px;
   }
 
   .ex-mstat {
-    padding: 10px 6px;
+    padding: 12px 8px;
+  }
+
+  .ex-mstat-val {
+    font-size: 1.1rem;
+  }
+
+  .ex-mstat-ico {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  /* Modal title wrap */
+  .ex-modal-title {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+    word-break: break-word;
+  }
+
+  /* Close button bigger tap target */
+  .ex-modal-x {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE — tiny (≤ 380px)
+   ══════════════════════════════════ */
+@media (max-width: 380px) {
+  .ex-eyebrow {
+    font-size: 0.66rem;
+    letter-spacing: 1.5px;
+    padding: 6px 12px;
+  }
+
+  .ex-diff-btn {
+    padding: 7px 8px;
+    font-size: 0.68rem;
+  }
+
+  .ex-cat-btn {
+    padding: 8px 10px;
   }
 
   .ex-cat-btn .ex-cat-label {
     display: none;
   }
+}
 
-  .ex-cat-btn {
-    padding: 10px 14px;
+/* ══════════════════════════════════
+   TOUCH DEVICES — disable hover veil
+   ══════════════════════════════════ */
+@media (hover: none) {
+  .ex-card-veil {
+    display: none;
   }
 
-  .ex-hero-stats {
-    flex-direction: column;
-    gap: 12px;
+  .ex-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border);
   }
 
-  .ex-hero-divider {
-    width: 80px;
-    height: 1px;
-  }
-
-  .ex-hero-stat {
-    padding: 0;
-    flex-direction: row;
-    gap: 12px;
+  .ex-card:active {
+    transform: scale(0.98);
   }
 }
