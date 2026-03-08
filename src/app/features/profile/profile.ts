@@ -24,6 +24,7 @@ export class Profile implements OnInit, AfterViewInit {
   @ViewChild('cropCanvas') cropCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('cropContainer') cropContainerRef!: ElementRef<HTMLDivElement>;
   @ViewChild('previewCanvas') previewCanvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('previewCanvasSm') previewCanvasSmRef!: ElementRef<HTMLCanvasElement>;
 
   profileForm: FormGroup;
   passwordForm: FormGroup;
@@ -33,7 +34,6 @@ export class Profile implements OnInit, AfterViewInit {
   isEditingPassword = false;
   isUploading = false;
   isImageLoading = true;
-  showPassword = false;
   showNewPassword = false;
   showConfirmPassword = false;
 
@@ -50,8 +50,8 @@ export class Profile implements OnInit, AfterViewInit {
   private cropDragStartX = 0;
   private cropDragStartY = 0;
   private cropIsDragging = false;
-  private cropCanvasSize = 340;
-  private cropCircleRadius = 140;
+  private cropCanvasSize = 0; // set dynamically to window size
+  private cropCircleRadius = 0; // set dynamically
   private originalFile: File | null = null;
 
 
@@ -91,9 +91,8 @@ export class Profile implements OnInit, AfterViewInit {
       goal: [{ value: '', disabled: true }, Validators.required]
     });
 
-    // Password Form
+    // Password Form — no currentPassword required
     this.passwordForm = this.fb.group({
-      currentPassword: ['', [Validators.required, Validators.minLength(8)]],
       newPassword: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)]],
       confirmPassword: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
@@ -369,8 +368,7 @@ export class Profile implements OnInit, AfterViewInit {
   }
 
   togglePasswordVisibility(field: string) {
-    if (field === 'current') this.showPassword = !this.showPassword;
-    else if (field === 'new') this.showNewPassword = !this.showNewPassword;
+    if (field === 'new') this.showNewPassword = !this.showNewPassword;
     else if (field === 'confirm') this.showConfirmPassword = !this.showConfirmPassword;
   }
 
@@ -468,6 +466,15 @@ export class Profile implements OnInit, AfterViewInit {
   }
 
   openCropModal(imageSrc: string) {
+    // Calculate canvas size based on viewport
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const bottomPanelH = Math.min(220, vh * 0.32);
+    const topBarH = 56;
+    const availH = vh - bottomPanelH - topBarH;
+    this.cropCanvasSize = Math.min(vw, availH, 600);
+    this.cropCircleRadius = Math.floor(this.cropCanvasSize * 0.42);
+
     this.cropZoom = 1;
     this.cropOffsetX = 0;
     this.cropOffsetY = 0;
@@ -478,11 +485,8 @@ export class Profile implements OnInit, AfterViewInit {
     const img = new Image();
     img.onload = () => {
       this.cropImage = img;
-      this.cropOffsetX = 0;
-      this.cropOffsetY = 0;
-      // Auto-fit: scale to fill circle
       const minDim = Math.min(img.width, img.height);
-      this.cropZoom = (this.cropCanvasSize / minDim) * 0.9;
+      this.cropZoom = (this.cropCircleRadius * 2) / minDim;
       this.drawCropCanvas();
       this.updateSvgMask();
     };
@@ -496,25 +500,31 @@ export class Profile implements OnInit, AfterViewInit {
     const size = this.cropCanvasSize;
     canvas.width = size;
     canvas.height = size;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
 
     ctx.clearRect(0, 0, size, size);
-
     const img = this.cropImage;
     const scaledW = img.width * this.cropZoom;
     const scaledH = img.height * this.cropZoom;
     const drawX = size / 2 - scaledW / 2 + this.cropOffsetX;
     const drawY = size / 2 - scaledH / 2 + this.cropOffsetY;
-
     ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
 
-    // Draw live preview
     this.drawPreview(img, drawX, drawY, scaledW, scaledH, size);
   }
 
   drawPreview(img: HTMLImageElement, drawX: number, drawY: number, scaledW: number, scaledH: number, size: number) {
-    if (!this.previewCanvasRef) return;
-    const pCanvas = this.previewCanvasRef.nativeElement;
-    const pSize = 72;
+    this.renderPreviewCanvas(img, drawX, drawY, scaledW, scaledH, size, this.previewCanvasRef, 72);
+    this.renderPreviewCanvas(img, drawX, drawY, scaledW, scaledH, size, this.previewCanvasSmRef, 40);
+  }
+
+  renderPreviewCanvas(
+    img: HTMLImageElement, drawX: number, drawY: number, scaledW: number, scaledH: number,
+    size: number, ref: ElementRef<HTMLCanvasElement> | undefined, pSize: number
+  ) {
+    if (!ref) return;
+    const pCanvas = ref.nativeElement;
     pCanvas.width = pSize;
     pCanvas.height = pSize;
     const pCtx = pCanvas.getContext('2d')!;
@@ -538,25 +548,24 @@ export class Profile implements OnInit, AfterViewInit {
     this.cropOffsetX = 0;
     this.cropOffsetY = 0;
     const minDim = Math.min(this.cropImage.width, this.cropImage.height);
-    this.cropZoom = (this.cropCanvasSize / minDim) * 0.9;
+    this.cropZoom = (this.cropCircleRadius * 2) / minDim;
     this.cropHasDragged = false;
     this.drawCropCanvas();
   }
 
   updateSvgMask() {
     setTimeout(() => {
-      const container = this.cropContainerRef?.nativeElement;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      const cx = rect.width / 2;
-      const cy = rect.height / 2;
+      const size = this.cropCanvasSize;
+      const cx = size / 2;
+      const cy = size / 2;
       const r = this.cropCircleRadius;
 
-      const circle = container.querySelector('#cropCircle') as SVGCircleElement;
-      const border = container.querySelector('#cropCircleBorder') as SVGCircleElement;
+      // The SVGs are positioned over the canvas area
+      const circle = document.getElementById('cropCircle') as unknown as SVGCircleElement;
+      const border = document.getElementById('cropCircleBorder') as unknown as SVGCircleElement;
       if (circle) { circle.setAttribute('cx', cx.toString()); circle.setAttribute('cy', cy.toString()); circle.setAttribute('r', r.toString()); }
       if (border) { border.setAttribute('cx', cx.toString()); border.setAttribute('cy', cy.toString()); border.setAttribute('r', r.toString()); }
-    }, 50);
+    }, 30);
   }
 
   onZoomChange() {
@@ -665,29 +674,60 @@ export class Profile implements OnInit, AfterViewInit {
     this.isLoading = true;
     const updatedData = this.profileForm.value;
     const oldGoal = this.user!.goal;
-    this.apiService.updateProfile(this.user!._id, updatedData).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.user = { ...this.user!, ...res.user };
-          this.apiService.updateUserData(this.user!);
-          this.stateService.notifyProfileUpdated(this.user!);
-          this.isEditing = false;
-          if (updatedData.goal !== oldGoal) {
-            this.stateService.notifyGoalChanged(updatedData.goal);
-            this.regenerateWorkouts();
+
+    // Build uniqueness checks only for changed fields
+    const checks: Promise<void>[] = [];
+
+    if (updatedData.username && updatedData.username !== this.user!.username) {
+      checks.push(
+        this.apiService.checkUsername(updatedData.username).toPromise().then((res: any) => {
+          if (res?.exists) throw new Error('username_taken');
+        })
+      );
+    }
+
+    if (updatedData.phone && updatedData.phone !== this.user!.phone) {
+      checks.push(
+        this.apiService.checkPhone(updatedData.phone).toPromise().then((res: any) => {
+          if (res?.exists) throw new Error('phone_taken');
+        })
+      );
+    }
+
+    Promise.all(checks).then(() => {
+      this.apiService.updateProfile(this.user!._id, updatedData).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.user = { ...this.user!, ...res.user };
+            this.apiService.updateUserData(this.user!);
+            this.stateService.notifyProfileUpdated(this.user!);
+            this.isEditing = false;
+            if (updatedData.goal !== oldGoal) {
+              this.stateService.notifyGoalChanged(updatedData.goal);
+              this.regenerateWorkouts();
+            }
+            Swal.fire({
+              icon: 'success', title: this.translate.instant('SUCCESS'),
+              text: this.translate.instant('Profile.UPDATED'),
+              timer: 1500, showConfirmButton: false
+            }).then(() => window.location.reload());
           }
-          Swal.fire({
-            icon: 'success', title: this.translate.instant('SUCCESS'),
-            text: this.translate.instant('Profile.UPDATED'),
-            timer: 1500, showConfirmButton: false
-          }).then(() => window.location.reload());
-        }
-      },
-      error: (err) => {
-        console.error('Update error:', err);
+        },
+        error: (err) => {
+          console.error('Update error:', err);
+          Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Profile.UPDATE_FAILED'), confirmButtonColor: '#ffc107' });
+        },
+        complete: () => { this.isLoading = false; }
+      });
+    }).catch((err: Error) => {
+      this.isLoading = false;
+      if (err.message === 'username_taken') {
+        Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Register.ERRORS.username.exists') || 'This username is already taken.', confirmButtonColor: '#ffc107' });
+      } else if (err.message === 'phone_taken') {
+        Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Register.ERRORS.phone.exists') || 'This phone number is already registered.', confirmButtonColor: '#ffc107' });
+      } else {
         Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Profile.UPDATE_FAILED'), confirmButtonColor: '#ffc107' });
-      },
-      complete: () => { this.isLoading = false; }
+      }
     });
   }
 
@@ -701,10 +741,9 @@ export class Profile implements OnInit, AfterViewInit {
     }
     this.isLoading = true;
     const passwordData = {
-      currentPassword: this.passwordForm.value.currentPassword,
       newPassword: this.passwordForm.value.newPassword
     };
-    this.apiService.changePassword(this.user!._id, passwordData).subscribe({
+    this.apiService.changePassword(this.user!._id, passwordData as any).subscribe({
       next: (res) => {
         if (res.success) {
           this.isEditingPassword = false;

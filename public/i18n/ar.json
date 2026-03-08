@@ -357,7 +357,8 @@
     "CROP_APPLY": "تطبيق ورفع",
     "CROP_ZOOM_HINT": "اسكرول للتكبير · اسحب للتحريك",
     "UPLOADING": "جاري الرفع...",
-    "CROP_PREVIEW": "معاينة"
+    "CROP_PREVIEW": "معاينة",
+    "CROP_PREVIEW_SM": "مصغرة"
   },
   "DASHBOARD": {
     "WELCOME_BACK": "مستعد لتحدي اليوم؟",

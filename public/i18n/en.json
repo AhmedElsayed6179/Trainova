@@ -357,7 +357,8 @@
     "CROP_APPLY": "Apply & Upload",
     "CROP_ZOOM_HINT": "Scroll to zoom · Drag to move",
     "UPLOADING": "Uploading...",
-    "CROP_PREVIEW": "Preview"
+    "CROP_PREVIEW": "Preview",
+    "CROP_PREVIEW_SM": "Thumbnail"
   },
   "DASHBOARD": {
     "WELCOME_BACK": "Ready to crush today's workout?",
