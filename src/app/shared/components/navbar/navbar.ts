@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Title } from '@angular/platform-browser';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../core/services/api.service';
 import { StateService } from '../../../core/services/state-service';
@@ -26,6 +27,7 @@ export class Navbar implements OnInit, OnDestroy {
 
   constructor(
     private translate: TranslateService,
+    private titleService: Title,
     private apiService: ApiService,
     private stateService: StateService,
     private router: Router
@@ -114,6 +116,11 @@ export class Navbar implements OnInit, OnDestroy {
     } else {
       document.body.style.fontFamily = "'Cairo', 'Rajdhani', sans-serif";
     }
+
+    // Update page title dynamically based on active language
+    this.translate.get('APP_TITLE').subscribe((title: string) => {
+      this.titleService.setTitle(title);
+    });
   }
 
   // ── Mobile Nav ────────────────────────────────────
