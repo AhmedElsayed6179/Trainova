@@ -356,7 +356,8 @@
     "CROP_TITLE": "قص الصورة",
     "CROP_APPLY": "تطبيق ورفع",
     "CROP_ZOOM_HINT": "اسكرول للتكبير · اسحب للتحريك",
-    "UPLOADING": "جاري الرفع..."
+    "UPLOADING": "جاري الرفع...",
+    "CROP_PREVIEW": "معاينة"
   },
   "DASHBOARD": {
     "WELCOME_BACK": "مستعد لتحدي اليوم؟",

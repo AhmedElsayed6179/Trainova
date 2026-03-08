@@ -23,6 +23,7 @@ import { environment } from '../../../environments/environment';
 export class Profile implements OnInit, AfterViewInit {
   @ViewChild('cropCanvas') cropCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('cropContainer') cropContainerRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('previewCanvas') previewCanvasRef!: ElementRef<HTMLCanvasElement>;
 
   profileForm: FormGroup;
   passwordForm: FormGroup;
@@ -39,6 +40,10 @@ export class Profile implements OnInit, AfterViewInit {
   // ── Crop Modal State ──────────────────────────────────
   showCropModal = false;
   cropZoom = 1;
+  cropHasDragged = false;
+  get zoomPercent(): number {
+    return ((this.cropZoom - 0.5) / (3 - 0.5)) * 100;
+  }
   private cropImage: HTMLImageElement | null = null;
   private cropOffsetX = 0;
   private cropOffsetY = 0;
@@ -466,6 +471,7 @@ export class Profile implements OnInit, AfterViewInit {
     this.cropZoom = 1;
     this.cropOffsetX = 0;
     this.cropOffsetY = 0;
+    this.cropHasDragged = false;
     this.showCropModal = true;
     this.cdr.detectChanges();
 
@@ -500,6 +506,41 @@ export class Profile implements OnInit, AfterViewInit {
     const drawY = size / 2 - scaledH / 2 + this.cropOffsetY;
 
     ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
+
+    // Draw live preview
+    this.drawPreview(img, drawX, drawY, scaledW, scaledH, size);
+  }
+
+  drawPreview(img: HTMLImageElement, drawX: number, drawY: number, scaledW: number, scaledH: number, size: number) {
+    if (!this.previewCanvasRef) return;
+    const pCanvas = this.previewCanvasRef.nativeElement;
+    const pSize = 72;
+    pCanvas.width = pSize;
+    pCanvas.height = pSize;
+    const pCtx = pCanvas.getContext('2d')!;
+    const scale = pSize / size;
+    pCtx.clearRect(0, 0, pSize, pSize);
+    pCtx.save();
+    pCtx.beginPath();
+    pCtx.arc(pSize / 2, pSize / 2, pSize / 2, 0, Math.PI * 2);
+    pCtx.clip();
+    pCtx.drawImage(img, drawX * scale, drawY * scale, scaledW * scale, scaledH * scale);
+    pCtx.restore();
+  }
+
+  stepZoom(delta: number) {
+    this.cropZoom = Math.min(3, Math.max(0.5, this.cropZoom + delta));
+    this.drawCropCanvas();
+  }
+
+  resetCrop() {
+    if (!this.cropImage) return;
+    this.cropOffsetX = 0;
+    this.cropOffsetY = 0;
+    const minDim = Math.min(this.cropImage.width, this.cropImage.height);
+    this.cropZoom = (this.cropCanvasSize / minDim) * 0.9;
+    this.cropHasDragged = false;
+    this.drawCropCanvas();
   }
 
   updateSvgMask() {
@@ -531,6 +572,7 @@ export class Profile implements OnInit, AfterViewInit {
 
   onCropMouseDown(event: MouseEvent) {
     this.cropIsDragging = true;
+    this.cropHasDragged = true;
     this.cropDragStartX = event.clientX - this.cropOffsetX;
     this.cropDragStartY = event.clientY - this.cropOffsetY;
 
@@ -551,6 +593,7 @@ export class Profile implements OnInit, AfterViewInit {
 
   onCropTouchStart(event: TouchEvent) {
     if (event.touches.length === 1) {
+      this.cropHasDragged = true;
       const touch = event.touches[0];
       this.cropDragStartX = touch.clientX - this.cropOffsetX;
       this.cropDragStartY = touch.clientY - this.cropOffsetY;
@@ -607,6 +650,7 @@ export class Profile implements OnInit, AfterViewInit {
     this.showCropModal = false;
     this.cropImage = null;
     this.originalFile = null;
+    this.cropHasDragged = false;
   }
 
 
