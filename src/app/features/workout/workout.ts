@@ -100,6 +100,7 @@ export class Workout implements OnInit, OnDestroy, AfterViewInit {
 
   isLoadingDay = false;
   isLoading = true;
+  isArabic = false;
 
   private subscriptions = new Subscription();
 
@@ -117,6 +118,14 @@ export class Workout implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate(['/login']);
       return;
     }
+
+    // ── Language: initialize + react to changes ──────────────────
+    this.isArabic = (this.translate.currentLang || this.translate.defaultLang || localStorage.getItem('lang') || 'en') === 'ar';
+    const langSub = this.translate.onLangChange.subscribe(event => {
+      this.isArabic = event.lang === 'ar';
+      this.cdr.detectChanges();
+    });
+    this.subscriptions.add(langSub);
 
     const goalSub = this.stateService.goalChanged$.subscribe(newGoal => {
       if (newGoal && this.user) this.generateNewPlan();
@@ -580,17 +589,11 @@ export class Workout implements OnInit, OnDestroy, AfterViewInit {
 
   // ── Exercise Details Modal ─────────────────────────────────────
 
-  // ── Helper: returns name_ar when Arabic is active ────────────
-  getExerciseName(exercise: WorkoutExercise): string {
-    const isArabic = this.translate.currentLang === 'ar';
-    return isArabic ? ((exercise as any).name_ar || exercise.name) : exercise.name;
-  }
-
   async showExerciseDetails(exercise: WorkoutExercise) {
-    const isArabic = this.translate.currentLang === 'ar';
-    const name = isArabic ? (exercise.name_ar || exercise.name) : exercise.name;
-    const instructions = isArabic ? (exercise.instructions_ar || exercise.instructions) : exercise.instructions;
-    const tips = isArabic ? (exercise.tips_ar || exercise.tips) : exercise.tips;
+    const ar = this.isArabic;
+    const name = ar ? ((exercise as any).name_ar || exercise.name) : exercise.name;
+    const instructions = ar ? ((exercise as any).instructions_ar || exercise.instructions) : exercise.instructions;
+    const tips = ar ? ((exercise as any).tips_ar || exercise.tips) : exercise.tips;
     const imgUrl = exercise.gifUrl || getExerciseImage(exercise);
 
     Swal.fire({
@@ -599,20 +602,20 @@ export class Workout implements OnInit, OnDestroy, AfterViewInit {
         ${imgUrl ? `<img src="${imgUrl}" alt="${name}"
           style="width:100%;max-width:280px;border-radius:12px;margin:10px auto;display:block;object-fit:cover"
           onerror="this.style.display='none'">` : ''}
-        <div style="text-align:${isArabic ? 'right' : 'left'};direction:${isArabic ? 'rtl' : 'ltr'};padding:0 8px">
-          <p style="margin:6px 0"><strong>${isArabic ? 'المجموعات' : 'Sets'}:</strong> ${exercise.sets}</p>
-          <p style="margin:6px 0"><strong>${isArabic ? 'التكرارات' : 'Reps'}:</strong> ${exercise.reps}</p>
-          <p style="margin:6px 0"><strong>${isArabic ? 'وقت الراحة' : 'Rest'}:</strong> ${exercise.restTime}s</p>
+        <div style="text-align:${ar ? 'right' : 'left'};direction:${ar ? 'rtl' : 'ltr'};padding:0 8px">
+          <p style="margin:6px 0"><strong>${ar ? 'المجموعات' : 'Sets'}:</strong> ${exercise.sets}</p>
+          <p style="margin:6px 0"><strong>${ar ? 'التكرارات' : 'Reps'}:</strong> ${exercise.reps}</p>
+          <p style="margin:6px 0"><strong>${ar ? 'وقت الراحة' : 'Rest'}:</strong> ${exercise.restTime}s</p>
           ${instructions?.length ? `
             <hr style="opacity:0.2;margin:12px 0">
-            <h6 style="color:var(--primary);margin-bottom:8px">${isArabic ? 'التعليمات' : 'Instructions'}:</h6>
-            <ul style="padding-${isArabic ? 'right' : 'left'}:18px;margin:0">
+            <h6 style="color:var(--primary);margin-bottom:8px">${ar ? 'التعليمات' : 'Instructions'}:</h6>
+            <ul style="padding-${ar ? 'right' : 'left'}:18px;margin:0">
               ${instructions.map((i: string) => `<li style="margin-bottom:4px">${i}</li>`).join('')}
             </ul>` : ''}
           ${tips?.length ? `
             <hr style="opacity:0.2;margin:12px 0">
-            <h6 style="color:var(--primary);margin-bottom:8px">${isArabic ? 'نصائح' : 'Tips'}:</h6>
-            <ul style="padding-${isArabic ? 'right' : 'left'}:18px;margin:0">
+            <h6 style="color:var(--primary);margin-bottom:8px">${ar ? 'نصائح' : 'Tips'}:</h6>
+            <ul style="padding-${ar ? 'right' : 'left'}:18px;margin:0">
               ${tips.map((t: string) => `<li style="margin-bottom:4px">${t}</li>`).join('')}
             </ul>` : ''}
         </div>
@@ -620,6 +623,11 @@ export class Workout implements OnInit, OnDestroy, AfterViewInit {
       confirmButtonColor: '#ffc107',
       width: '560px'
     });
+  }
+
+  // ── Helper: exercise name respects active language ─────────────
+  getExerciseName(exercise: WorkoutExercise): string {
+    return this.isArabic ? ((exercise as any).name_ar || exercise.name) : exercise.name;
   }
 
   // ── Helpers ────────────────────────────────────────────────────
