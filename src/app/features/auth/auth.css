@@ -590,16 +590,16 @@ body:not(.dark-mode) .ai-arr {
 }
 
 .ai-ok {
-  padding: 0 12px;
+  padding: 0 14px 0 8px;
   font-size: 0.85rem;
   flex-shrink: 0;
   order: 10;
 }
 
-/* RTL: push ok icon to left side */
+/* RTL: move ok icon to left side with proper spacing */
 [dir="rtl"] .ai-ok {
   order: -1;
-  padding: 0 12px 0 0;
+  padding: 0 8px 0 14px;
 }
 
 .ai-ok {
