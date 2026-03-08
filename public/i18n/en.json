@@ -384,7 +384,11 @@
     "RECENT_ACTIVITY": "Recent Activity",
     "NO_RECENT_ACTIVITY": "No recent activity yet",
     "LOADING": "Loading dashboard...",
-    "VIEW_WORKOUT": "View Workout"
+    "VIEW_WORKOUT": "View Workout",
+    "NO_CATEGORY_DATA": "No data available",
+    "DAY": "Day",
+    "DONE_BADGE": "Done",
+    "DONE_COUNT": "done"
   },
   "DAYS": {
     "SHORT": [

@@ -384,7 +384,11 @@
     "RECENT_ACTIVITY": "النشاط الأخير",
     "NO_RECENT_ACTIVITY": "لا يوجد نشاط حديث بعد",
     "LOADING": "جارٍ تحميل لوحة التحكم...",
-    "VIEW_WORKOUT": "عرض التمرين"
+    "VIEW_WORKOUT": "عرض التمرين",
+    "NO_CATEGORY_DATA": "لا توجد بيانات متاحة",
+    "DAY": "يوم",
+    "DONE_BADGE": "منجز",
+    "DONE_COUNT": "منجز"
   },
   "DAYS": {
     "SHORT": [
