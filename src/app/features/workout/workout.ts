@@ -390,7 +390,7 @@ export class Workout implements OnInit, OnDestroy, AfterViewInit {
 
     // ✅ Start rest countdown using THIS exercise's restTime
     const restDuration = exercise.restTime > 0 ? exercise.restTime : 45;
-    this.startRest(restDuration, exercise.name);
+    this.startRest(restDuration, this.getExerciseName(exercise));
   }
 
   // ── Rest Timer ─────────────────────────────────────────────────
@@ -579,6 +579,12 @@ export class Workout implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // ── Exercise Details Modal ─────────────────────────────────────
+
+  // ── Helper: returns name_ar when Arabic is active ────────────
+  getExerciseName(exercise: WorkoutExercise): string {
+    const isArabic = this.translate.currentLang === 'ar';
+    return isArabic ? ((exercise as any).name_ar || exercise.name) : exercise.name;
+  }
 
   async showExerciseDetails(exercise: WorkoutExercise) {
     const isArabic = this.translate.currentLang === 'ar';
