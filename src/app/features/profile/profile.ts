@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { Router, RouterLink } from '@angular/router';
@@ -21,6 +21,9 @@ import { environment } from '../../../environments/environment';
   imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, RouterLink]
 })
 export class Profile implements OnInit, AfterViewInit {
+  @ViewChild('cropCanvas') cropCanvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('cropContainer') cropContainerRef!: ElementRef<HTMLDivElement>;
+
   profileForm: FormGroup;
   passwordForm: FormGroup;
   user: User | null = null;
@@ -32,6 +35,20 @@ export class Profile implements OnInit, AfterViewInit {
   showPassword = false;
   showNewPassword = false;
   showConfirmPassword = false;
+
+  // ── Crop Modal State ──────────────────────────────────
+  showCropModal = false;
+  cropZoom = 1;
+  private cropImage: HTMLImageElement | null = null;
+  private cropOffsetX = 0;
+  private cropOffsetY = 0;
+  private cropDragStartX = 0;
+  private cropDragStartY = 0;
+  private cropIsDragging = false;
+  private cropCanvasSize = 340;
+  private cropCircleRadius = 140;
+  private originalFile: File | null = null;
+
 
   profileImage: string = 'default-avatar.jpg';
   userStats: UserStats = {
@@ -46,7 +63,6 @@ export class Profile implements OnInit, AfterViewInit {
   categoryChart: any;
   weeklyChart: any;
   weeklyData: number[] = [0, 0, 0, 0, 0, 0, 0];
-  // ✅ Separate category data loaded from dashboard API
   categoryData: { [key: string]: number } = {};
   chartsInitialized = false;
 
@@ -430,19 +446,169 @@ export class Profile implements OnInit, AfterViewInit {
   onImageSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Profile.IMAGE_TOO_LARGE'), confirmButtonColor: '#ffc107' });
       return;
     }
-    if (!file.type.match(/image\/(jpeg|jpg|png|gif)/)) {
+    if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
       Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Profile.IMAGE_TYPE_ERROR'), confirmButtonColor: '#ffc107' });
       return;
     }
+    this.originalFile = file;
     const reader = new FileReader();
-    reader.onload = (e: any) => { this.profileImage = e.target.result; };
+    reader.onload = (e: any) => {
+      this.openCropModal(e.target.result);
+    };
     reader.readAsDataURL(file);
-    this.uploadImageFile(file);
   }
+
+  openCropModal(imageSrc: string) {
+    this.cropZoom = 1;
+    this.cropOffsetX = 0;
+    this.cropOffsetY = 0;
+    this.showCropModal = true;
+    this.cdr.detectChanges();
+
+    const img = new Image();
+    img.onload = () => {
+      this.cropImage = img;
+      this.cropOffsetX = 0;
+      this.cropOffsetY = 0;
+      // Auto-fit: scale to fill circle
+      const minDim = Math.min(img.width, img.height);
+      this.cropZoom = (this.cropCanvasSize / minDim) * 0.9;
+      this.drawCropCanvas();
+      this.updateSvgMask();
+    };
+    img.src = imageSrc;
+  }
+
+  drawCropCanvas() {
+    if (!this.cropCanvasRef || !this.cropImage) return;
+    const canvas = this.cropCanvasRef.nativeElement;
+    const ctx = canvas.getContext('2d')!;
+    const size = this.cropCanvasSize;
+    canvas.width = size;
+    canvas.height = size;
+
+    ctx.clearRect(0, 0, size, size);
+
+    const img = this.cropImage;
+    const scaledW = img.width * this.cropZoom;
+    const scaledH = img.height * this.cropZoom;
+    const drawX = size / 2 - scaledW / 2 + this.cropOffsetX;
+    const drawY = size / 2 - scaledH / 2 + this.cropOffsetY;
+
+    ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
+  }
+
+  updateSvgMask() {
+    setTimeout(() => {
+      const container = this.cropContainerRef?.nativeElement;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const r = this.cropCircleRadius;
+
+      const circle = container.querySelector('#cropCircle') as SVGCircleElement;
+      const border = container.querySelector('#cropCircleBorder') as SVGCircleElement;
+      if (circle) { circle.setAttribute('cx', cx.toString()); circle.setAttribute('cy', cy.toString()); circle.setAttribute('r', r.toString()); }
+      if (border) { border.setAttribute('cx', cx.toString()); border.setAttribute('cy', cy.toString()); border.setAttribute('r', r.toString()); }
+    }, 50);
+  }
+
+  onZoomChange() {
+    this.drawCropCanvas();
+  }
+
+  onCropWheel(event: WheelEvent) {
+    event.preventDefault();
+    const delta = event.deltaY > 0 ? -0.05 : 0.05;
+    this.cropZoom = Math.min(3, Math.max(0.5, this.cropZoom + delta));
+    this.drawCropCanvas();
+  }
+
+  onCropMouseDown(event: MouseEvent) {
+    this.cropIsDragging = true;
+    this.cropDragStartX = event.clientX - this.cropOffsetX;
+    this.cropDragStartY = event.clientY - this.cropOffsetY;
+
+    const onMove = (e: MouseEvent) => {
+      if (!this.cropIsDragging) return;
+      this.cropOffsetX = e.clientX - this.cropDragStartX;
+      this.cropOffsetY = e.clientY - this.cropDragStartY;
+      this.drawCropCanvas();
+    };
+    const onUp = () => {
+      this.cropIsDragging = false;
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }
+
+  onCropTouchStart(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      const touch = event.touches[0];
+      this.cropDragStartX = touch.clientX - this.cropOffsetX;
+      this.cropDragStartY = touch.clientY - this.cropOffsetY;
+
+      const onMove = (e: TouchEvent) => {
+        if (e.touches.length !== 1) return;
+        const t = e.touches[0];
+        this.cropOffsetX = t.clientX - this.cropDragStartX;
+        this.cropOffsetY = t.clientY - this.cropDragStartY;
+        this.drawCropCanvas();
+      };
+      const onEnd = () => {
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+      };
+      document.addEventListener('touchmove', onMove, { passive: true });
+      document.addEventListener('touchend', onEnd);
+    }
+  }
+
+  applyCrop() {
+    if (!this.cropImage) return;
+
+    // Draw final cropped circle to offscreen canvas
+    const outputSize = 400;
+    const offscreen = document.createElement('canvas');
+    offscreen.width = outputSize;
+    offscreen.height = outputSize;
+    const ctx = offscreen.getContext('2d')!;
+
+    const scale = outputSize / this.cropCanvasSize;
+    const img = this.cropImage;
+    const scaledW = img.width * this.cropZoom * scale;
+    const scaledH = img.height * this.cropZoom * scale;
+    const drawX = outputSize / 2 - scaledW / 2 + this.cropOffsetX * scale;
+    const drawY = outputSize / 2 - scaledH / 2 + this.cropOffsetY * scale;
+
+    // Clip to circle
+    ctx.beginPath();
+    ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.drawImage(img, drawX, drawY, scaledW, scaledH);
+
+    offscreen.toBlob((blob) => {
+      if (!blob) return;
+      const croppedFile = new File([blob], this.originalFile?.name || 'profile.jpg', { type: 'image/jpeg' });
+      this.showCropModal = false;
+      this.profileImage = offscreen.toDataURL('image/jpeg', 0.9);
+      this.uploadImageFile(croppedFile);
+    }, 'image/jpeg', 0.9);
+  }
+
+  cancelCrop() {
+    this.showCropModal = false;
+    this.cropImage = null;
+    this.originalFile = null;
+  }
+
 
   onSubmit() {
     if (this.profileForm.invalid) {

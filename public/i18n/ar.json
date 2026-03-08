@@ -352,7 +352,11 @@
     "PASSWORD_WEAK": "ضعيف",
     "PASSWORD_MEDIUM": "متوسط",
     "PASSWORD_STRONG": "قوي",
-    "EDIT_MODE": "وضع التعديل نشط"
+    "EDIT_MODE": "وضع التعديل نشط",
+    "CROP_TITLE": "قص الصورة",
+    "CROP_APPLY": "تطبيق ورفع",
+    "CROP_ZOOM_HINT": "اسكرول للتكبير · اسحب للتحريك",
+    "UPLOADING": "جاري الرفع..."
   },
   "DASHBOARD": {
     "WELCOME_BACK": "مستعد لتحدي اليوم؟",

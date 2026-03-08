@@ -352,7 +352,11 @@
     "PASSWORD_WEAK": "Weak",
     "PASSWORD_MEDIUM": "Medium",
     "PASSWORD_STRONG": "Strong",
-    "EDIT_MODE": "Edit Mode Active"
+    "EDIT_MODE": "Edit Mode Active",
+    "CROP_TITLE": "Crop Photo",
+    "CROP_APPLY": "Apply & Upload",
+    "CROP_ZOOM_HINT": "Scroll to zoom · Drag to move",
+    "UPLOADING": "Uploading..."
   },
   "DASHBOARD": {
     "WELCOME_BACK": "Ready to crush today's workout?",
