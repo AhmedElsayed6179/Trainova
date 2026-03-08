@@ -81,14 +81,23 @@
             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 px-2" href="#" id="userDropdown"
               role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <img [src]="profileImage" class="user-avatar" alt="Profile" onerror="this.src='default-avatar.jpg'">
-              <span class="fw-600 d-none d-lg-inline" style="font-size: 0.9rem;">
-                {{ currentUser?.name || currentUser?.username }}
-              </span>
-              <span class="d-none d-lg-flex align-items-center gap-1 ms-1"
-                style="font-size:0.75rem; color:var(--text-muted); border-left:1px solid var(--border); padding-left:8px;">
-                <i class="fas fa-fire" style="color:var(--primary); font-size:0.7rem;"></i>
-                {{ currentUser?.current_streak || 0 }}
-              </span>
+              <!-- Info block — fills the empty space on all screen sizes -->
+              <div class="d-flex flex-column justify-content-center" style="line-height:1.2; min-width:0;">
+                <span class="fw-600" style="font-size: 0.88rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px;">
+                  {{ currentUser?.name || currentUser?.username }}
+                </span>
+                <span class="d-flex align-items-center gap-2 mt-1" style="font-size:0.7rem; color:var(--text-muted);">
+                  <span>
+                    <i class="fas fa-fire" style="color:var(--primary); font-size:0.65rem;"></i>
+                    {{ currentUser?.current_streak || 0 }} {{ 'Navbar.DAY_STREAK' | translate }}
+                  </span>
+                  <span style="opacity:0.35;">•</span>
+                  <span>
+                    <i class="fas fa-dumbbell" style="color:var(--primary); font-size:0.6rem;"></i>
+                    {{ currentUser?.total_workouts || 0 }} {{ 'Navbar.WORKOUTS' | translate }}
+                  </span>
+                </span>
+              </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end animate-fade-in">
               <li>
@@ -96,23 +105,11 @@
                   <div style="font-weight: 700; font-size: 0.95rem;color: white;">{{ currentUser?.name }}</div>
                   <div style="font-size: 0.8rem; color: var(--text-muted);">{{ currentUser?.email }}</div>
                   <div class="d-flex align-items-center gap-2 mt-1" style="font-size:0.75rem; color:var(--text-muted);">
-                    <span><i class="fas fa-fire me-1" style="color:var(--primary);"></i>{{ currentUser?.current_streak || 0 }} {{ 'Navbar.DAY_STREAK' | translate }}</span>
+                    <span><i class="fas fa-fire me-1" style="color:var(--primary);"></i>{{ currentUser?.current_streak
+                      || 0 }} day streak</span>
                     <span style="opacity:0.4;">•</span>
-                    <span><i class="fas fa-dumbbell me-1" style="color:var(--primary);"></i>{{ currentUser?.total_workouts || 0 }} {{ 'Navbar.WORKOUTS' | translate }}</span>
-                  </div>
-                  <!-- ── Account Info Bar ── -->
-                  <div class="navbar-account-info mt-2 pt-2" style="border-top:1px solid var(--border);">
-                    <div class="d-flex align-items-center justify-content-between" style="font-size:0.75rem;">
-                      <span style="color:var(--text-muted);">
-                        <i class="fas fa-calendar-check me-1" style="color:#4e8ef7;"></i>
-                        {{ currentUser?.completed_days || 0 }} {{ 'Navbar.WORKOUT_DAYS' | translate }}
-                      </span>
-                      <span *ngIf="currentUser?.goal" style="background:rgba(245,166,35,0.12); color:var(--primary);
-                        padding:2px 8px; border-radius:10px; font-weight:600; font-size:0.7rem;">
-                        <i class="fas fa-bullseye me-1"></i>
-                        {{ getGoalLabel(currentUser?.goal) }}
-                      </span>
-                    </div>
+                    <span><i class="fas fa-dumbbell me-1" style="color:var(--primary);"></i>{{
+                      currentUser?.total_workouts || 0 }} workouts</span>
                   </div>
                 </div>
               </li>
