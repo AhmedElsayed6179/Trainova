@@ -146,14 +146,16 @@
       },
       "email": {
         "required": "Email is required",
-        "email": "Please enter a valid email",
-        "pattern": "Please enter a valid email"
+        "email": "Please enter a valid email address",
+        "pattern": "Please enter a valid email",
+        "exists": "This email is already registered"
       },
       "username": {
         "required": "Username is required",
         "minlength": "Username must be at least 3 characters",
         "maxlength": "Username cannot exceed 20 characters",
-        "pattern": "Username can only contain letters, numbers and underscore"
+        "pattern": "Username can only contain letters, numbers and underscore",
+        "exists": "This username is already taken"
       },
       "password": {
         "required": "Password is required",
@@ -176,7 +178,8 @@
       },
       "phone": {
         "required": "Phone number is required",
-        "pattern": "Please enter a valid Egyptian phone number (01xxxxxxxxx)"
+        "pattern": "Please enter a valid Egyptian phone number (01xxxxxxxxx)",
+        "exists": "This phone number is already registered"
       },
       "goal": {
         "required": "Please select your fitness goal"
@@ -358,7 +361,24 @@
     "CROP_ZOOM_HINT": "Scroll to zoom · Drag to move",
     "UPLOADING": "Uploading...",
     "CROP_PREVIEW": "Preview",
-    "CROP_PREVIEW_SM": "Thumbnail"
+    "CROP_PREVIEW_SM": "Thumbnail",
+    "CROP_ZOOM": "Zoom",
+    "CROP_CONFIRM_TITLE": "Selected Photo",
+    "CROP_CONFIRM_TEXT": "Do you want to crop and upload this photo?",
+    "CROP_CONFIRM_BTN": "Yes, Crop It",
+    "CROP_CANCEL_BTN": "Choose Another",
+    "FIELD_NAME": "Full Name",
+    "FIELD_USERNAME": "Username",
+    "FIELD_AGE": "Age",
+    "FIELD_GENDER": "Gender",
+    "FIELD_WEIGHT": "Weight",
+    "FIELD_HEIGHT": "Height",
+    "FIELD_PHONE": "Phone Number",
+    "FIELD_GOAL": "Fitness Goal",
+    "FIELD_EMAIL": "Email Address",
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "YEARS": "years"
   },
   "DASHBOARD": {
     "WELCOME_BACK": "Ready to crush today's workout?",

@@ -83,6 +83,7 @@ export class Profile implements OnInit, AfterViewInit {
     this.profileForm = this.fb.group({
       name: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3)]],
       username: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9_]+$/)]],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       age: [{ value: null, disabled: true }, [Validators.required, Validators.min(10), Validators.max(70)]],
       gender: [{ value: '', disabled: true }, Validators.required],
       weight: [{ value: null, disabled: true }, [Validators.required, Validators.min(20), Validators.max(300)]],
@@ -123,6 +124,7 @@ export class Profile implements OnInit, AfterViewInit {
     this.profileForm.patchValue({
       name: this.user.name,
       username: this.user.username,
+      email: this.user.email,
       age: this.user.age,
       gender: this.user.gender,
       weight: this.user.weight,
@@ -460,7 +462,36 @@ export class Profile implements OnInit, AfterViewInit {
     this.originalFile = file;
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      this.openCropModal(e.target.result);
+      const imageSrc = e.target.result;
+      // Show SweetAlert2 preview with the original image before cropping
+      Swal.fire({
+        title: this.translate.instant('Profile.CROP_CONFIRM_TITLE'),
+        text: this.translate.instant('Profile.CROP_CONFIRM_TEXT'),
+        imageUrl: imageSrc,
+        imageAlt: 'Selected photo',
+        imageWidth: 'auto',
+        imageHeight: 260,
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonText: `<i class="fas fa-crop-alt me-1"></i> ${this.translate.instant('Profile.CROP_CONFIRM_BTN')}`,
+        cancelButtonText: `<i class="fas fa-image me-1"></i> ${this.translate.instant('Profile.CROP_CANCEL_BTN')}`,
+        confirmButtonColor: '#ffc107',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true,
+        background: '#1a1a2e',
+        color: '#fff',
+        customClass: {
+          image: 'swal-preview-image',
+          popup: 'swal-crop-preview-popup'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.openCropModal(imageSrc);
+        } else {
+          // User cancelled — reset file input
+          this.originalFile = null;
+        }
+      });
     };
     reader.readAsDataURL(file);
   }
@@ -686,6 +717,14 @@ export class Profile implements OnInit, AfterViewInit {
       );
     }
 
+    if (updatedData.email && updatedData.email !== this.user!.email) {
+      checks.push(
+        this.apiService.checkEmail(updatedData.email).toPromise().then((res: any) => {
+          if (res?.exists) throw new Error('email_taken');
+        })
+      );
+    }
+
     if (updatedData.phone && updatedData.phone !== this.user!.phone) {
       checks.push(
         this.apiService.checkPhone(updatedData.phone).toPromise().then((res: any) => {
@@ -722,9 +761,11 @@ export class Profile implements OnInit, AfterViewInit {
     }).catch((err: Error) => {
       this.isLoading = false;
       if (err.message === 'username_taken') {
-        Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Register.ERRORS.username.exists') || 'This username is already taken.', confirmButtonColor: '#ffc107' });
+        Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Register.ERRORS.username.exists'), confirmButtonColor: '#ffc107' });
+      } else if (err.message === 'email_taken') {
+        Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Register.ERRORS.email.exists'), confirmButtonColor: '#ffc107' });
       } else if (err.message === 'phone_taken') {
-        Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Register.ERRORS.phone.exists') || 'This phone number is already registered.', confirmButtonColor: '#ffc107' });
+        Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Register.ERRORS.phone.exists'), confirmButtonColor: '#ffc107' });
       } else {
         Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant('Profile.UPDATE_FAILED'), confirmButtonColor: '#ffc107' });
       }
@@ -809,6 +850,7 @@ export class Profile implements OnInit, AfterViewInit {
     const control = form.get(controlName);
     if (!control || !control.errors || !control.touched) return '';
     if (control.hasError('required')) return `Register.ERRORS.${controlName}.required`;
+    if (control.hasError('email')) return 'Register.ERRORS.email.email';
     if (control.hasError('minlength')) return `Register.ERRORS.${controlName}.minlength`;
     if (control.hasError('maxlength')) return `Register.ERRORS.${controlName}.maxlength`;
     if (control.hasError('min')) return `Register.ERRORS.${controlName}.min`;

@@ -242,11 +242,11 @@
 
           <!-- Full Name -->
           <div class="pf-field-group">
-            <label class="pf-label">{{ 'Register.NAME' | translate }}</label>
+            <label class="pf-label">{{ 'Profile.FIELD_NAME' | translate }}</label>
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
               [class.pf-input-error]="hasError('name','required') || hasError('name','minlength')">
               <span class="pf-input-icon"><i class="fas fa-user"></i></span>
-              <input type="text" class="pf-input" formControlName="name" [placeholder]="'Register.NAME' | translate">
+              <input type="text" class="pf-input" formControlName="name" [placeholder]="'Profile.FIELD_NAME' | translate">
             </div>
             <span class="pf-error" *ngIf="hasError('name','required') || hasError('name','minlength')">
               {{ getErrorMessage('name') | translate }}
@@ -255,24 +255,38 @@
 
           <!-- Username -->
           <div class="pf-field-group">
-            <label class="pf-label">{{ 'Register.USERNAME' | translate }}</label>
+            <label class="pf-label">{{ 'Profile.FIELD_USERNAME' | translate }}</label>
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
               [class.pf-input-error]="hasError('username','required')">
               <span class="pf-input-icon"><i class="fas fa-at"></i></span>
               <input type="text" class="pf-input" formControlName="username"
-                [placeholder]="'Register.USERNAME' | translate">
+                [placeholder]="'Profile.FIELD_USERNAME' | translate">
             </div>
             <span class="pf-error" *ngIf="hasError('username','required') || hasError('username','pattern')">
               {{ getErrorMessage('username') | translate }}
             </span>
           </div>
 
+          <!-- Email -->
+          <div class="pf-field-group">
+            <label class="pf-label">{{ 'Profile.FIELD_EMAIL' | translate }}</label>
+            <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
+              [class.pf-input-error]="hasError('email','required') || hasError('email','email')">
+              <span class="pf-input-icon"><i class="fas fa-envelope"></i></span>
+              <input type="email" class="pf-input" formControlName="email"
+                [placeholder]="'Profile.FIELD_EMAIL' | translate">
+            </div>
+            <span class="pf-error" *ngIf="hasError('email','required') || hasError('email','email')">
+              {{ getErrorMessage('email') | translate }}
+            </span>
+          </div>
+
           <!-- Age -->
           <div class="pf-field-group">
-            <label class="pf-label">{{ 'Register.AGE' | translate }}</label>
+            <label class="pf-label">{{ 'Profile.FIELD_AGE' | translate }}</label>
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing">
               <span class="pf-input-icon"><i class="fas fa-birthday-cake"></i></span>
-              <input type="number" class="pf-input" formControlName="age" [placeholder]="'Register.AGE' | translate">
+              <input type="number" class="pf-input" formControlName="age" [placeholder]="'Profile.FIELD_AGE' | translate">
             </div>
             <span class="pf-error" *ngIf="hasError('age','min') || hasError('age','max')">
               {{ getErrorMessage('age') | translate }}
@@ -281,12 +295,12 @@
 
           <!-- Gender -->
           <div class="pf-field-group">
-            <label class="pf-label">{{ 'Register.GENDER' | translate }}</label>
+            <label class="pf-label">{{ 'Profile.FIELD_GENDER' | translate }}</label>
             <div class="pf-input-wrap pf-select-wrap" [class.pf-input-active]="isEditing">
               <span class="pf-input-icon"><i class="fas fa-venus-mars"></i></span>
               <select class="pf-input pf-select" formControlName="gender">
-                <option value="male">{{ 'Register.Male' | translate }}</option>
-                <option value="female">{{ 'Register.Female' | translate }}</option>
+                <option value="male">{{ 'Profile.MALE' | translate }}</option>
+                <option value="female">{{ 'Profile.FEMALE' | translate }}</option>
               </select>
               <i class="fas fa-chevron-down pf-select-arrow"></i>
             </div>
@@ -294,33 +308,33 @@
 
           <!-- Weight -->
           <div class="pf-field-group">
-            <label class="pf-label">{{ 'Register.WEIGHT' | translate }}</label>
+            <label class="pf-label">{{ 'Profile.FIELD_WEIGHT' | translate }}</label>
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing">
               <span class="pf-input-icon"><i class="fas fa-weight"></i></span>
               <input type="number" class="pf-input" formControlName="weight"
-                [placeholder]="'Register.WEIGHT' | translate">
+                [placeholder]="'Profile.FIELD_WEIGHT' | translate">
               <span class="pf-input-suffix">kg</span>
             </div>
           </div>
 
           <!-- Height -->
           <div class="pf-field-group">
-            <label class="pf-label">{{ 'Register.HEIGHT' | translate }}</label>
+            <label class="pf-label">{{ 'Profile.FIELD_HEIGHT' | translate }}</label>
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing">
               <span class="pf-input-icon"><i class="fas fa-ruler-vertical"></i></span>
               <input type="number" class="pf-input" formControlName="height"
-                [placeholder]="'Register.HEIGHT' | translate">
+                [placeholder]="'Profile.FIELD_HEIGHT' | translate">
               <span class="pf-input-suffix">cm</span>
             </div>
           </div>
 
           <!-- Phone -->
           <div class="pf-field-group">
-            <label class="pf-label">{{ 'Register.PHONE' | translate }}</label>
+            <label class="pf-label">{{ 'Profile.FIELD_PHONE' | translate }}</label>
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
               [class.pf-input-error]="hasError('phone','pattern')">
               <span class="pf-input-icon"><i class="fas fa-phone"></i></span>
-              <input type="tel" class="pf-input" formControlName="phone" [placeholder]="'Register.PHONE' | translate">
+              <input type="tel" class="pf-input" formControlName="phone" [placeholder]="'Profile.FIELD_PHONE' | translate">
             </div>
             <span class="pf-error" *ngIf="hasError('phone','pattern')">
               {{ getErrorMessage('phone') | translate }}
@@ -329,7 +343,7 @@
 
           <!-- Goal -->
           <div class="pf-field-group">
-            <label class="pf-label">{{ 'Register.GOAL' | translate }}</label>
+            <label class="pf-label">{{ 'Profile.FIELD_GOAL' | translate }}</label>
             <div class="pf-input-wrap pf-select-wrap" [class.pf-input-active]="isEditing">
               <span class="pf-input-icon"><i class="fas fa-bullseye"></i></span>
               <select class="pf-input pf-select" formControlName="goal">
