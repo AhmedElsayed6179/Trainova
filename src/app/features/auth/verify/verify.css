@@ -1,0 +1,183 @@
+/* ══════════════════════════════════════
+   VERIFY STATE STYLES
+   ══════════════════════════════════════ */
+
+.verify-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px 0 16px;
+}
+
+.verify-icon-wrap {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  margin-bottom: 22px;
+  position: relative;
+}
+
+.verify-icon-loading {
+  background: radial-gradient(circle, rgba(255, 193, 7, 0.08), transparent);
+  border: 1.5px solid rgba(255, 193, 7, 0.2);
+}
+
+.verify-icon-success {
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.08), transparent);
+  border: 1.5px solid rgba(74, 222, 128, 0.25);
+  color: #4ade80;
+  box-shadow: 0 0 32px rgba(74, 222, 128, 0.12);
+}
+
+.verify-icon-danger {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.08), transparent);
+  border: 1.5px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  box-shadow: 0 0 32px rgba(239, 68, 68, 0.08);
+}
+
+.verify-icon-warning {
+  background: radial-gradient(circle, rgba(255, 193, 7, 0.08), transparent);
+  border: 1.5px solid rgba(255, 193, 7, 0.25);
+  color: #ffc107;
+  box-shadow: 0 0 32px rgba(255, 193, 7, 0.1);
+}
+
+.verify-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 10px;
+  letter-spacing: 0.5px;
+}
+
+.verify-title-success {
+  color: #4ade80;
+}
+
+.verify-title-danger {
+  color: #ef4444;
+}
+
+.verify-sub {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.65;
+  max-width: 340px;
+}
+
+.verify-countdown {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: #555;
+  background: rgba(255, 193, 7, 0.05);
+  border: 1px solid rgba(255, 193, 7, 0.12);
+  border-radius: 8px;
+  padding: 8px 18px;
+}
+
+.verify-countdown strong {
+  color: #ffc107;
+}
+
+/* Alert banners (shared with forgot-password) */
+.alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border-radius: 12px;
+  padding: 16px 18px;
+  border: 1px solid transparent;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.alert-success {
+  background: rgba(74, 222, 128, 0.05);
+  border-color: rgba(74, 222, 128, 0.2);
+}
+
+.alert-danger {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.alert-warning {
+  background: rgba(255, 193, 7, 0.05);
+  border-color: rgba(255, 193, 7, 0.2);
+}
+
+.alert-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.alert-icon-success {
+  background: rgba(74, 222, 128, 0.1);
+  color: #4ade80;
+}
+
+.alert-icon-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.alert-icon-warning {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.alert-body {
+  flex: 1;
+}
+
+.alert-title {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.alert-title-success {
+  color: #4ade80;
+}
+
+.alert-title-danger {
+  color: #ef4444;
+}
+
+.alert-title-warning {
+  color: #ffc107;
+}
+
+.alert-text {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #666;
+  line-height: 1.55;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

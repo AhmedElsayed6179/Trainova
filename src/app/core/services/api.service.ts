@@ -41,6 +41,14 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/forgot-password`, { identifier, lang });
   }
 
+  verifyEmail(token: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/verify-email?token=${token}`);
+  }
+
+  resendVerification(identifier: string, lang: string = 'en'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/resend-verification`, { identifier, lang });
+  }
+
   resetPassword(token: string, newPassword: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
   }

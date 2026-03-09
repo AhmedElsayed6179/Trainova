@@ -21,6 +21,7 @@ export class ForgotPassword implements OnDestroy {
   isLoading = false;
   showNotFoundMsg = false;
   showSuccessMsg = false;
+  showNotVerifiedMsg = false;
   userExists: boolean | null = null;
   cooldownSeconds = 0;
   private cooldownTimer: any = null;
@@ -115,6 +116,16 @@ export class ForgotPassword implements OnDestroy {
           this.userExists = false;
         } else if (res?.error === 'cooldown') {
           this.startCooldown(res.secondsLeft || 120);
+        } else if (res?.error === 'email_not_verified') {
+          // Account exists but not verified — we already sent verification email
+          this.showNotVerifiedMsg = true;
+          this.showNotFoundMsg = false;
+          if (res.cooldown) {
+            this.startCooldown(res.secondsLeft || 120);
+          } else if (res.verificationSent) {
+            // Email was sent
+          }
+          this.forgotForm.get('identifier')?.disable();
         } else {
           // Show success even on server error to avoid email enumeration
           this.showSuccessMsg = true;

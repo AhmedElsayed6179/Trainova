@@ -154,18 +154,31 @@ export class Register implements OnInit, OnDestroy {
         if (response.success) {
           forkJoin({
             title: this.translate.get('SUCCESS'),
-            text: this.translate.get('Register.SUCCESS_MESSAGE'),
-            confirmText: this.translate.get('Register.GO_TO_LOGIN')
+            text: this.translate.get('Register.SUCCESS_VERIFICATION_MESSAGE'),
+            confirmText: this.translate.get('Register.CHECK_EMAIL_BTN')
           }).subscribe(t => {
-            Swal.fire({ icon: 'success', title: t.title, text: t.text, confirmButtonColor: '#ffc107', confirmButtonText: t.confirmText })
-              .then(() => this.router.navigate(['/auth/login']));
+            Swal.fire({
+              icon: 'success',
+              title: t.title,
+              text: t.text,
+              confirmButtonColor: '#ffc107',
+              confirmButtonText: t.confirmText,
+              allowOutsideClick: false
+            }).then(() => this.router.navigate(['/verify']));
           });
 
         } else {
           let errorKey = 'Register.ERRORS.REGISTRATION_FAILED';
-          if (response.error === 'email_exists') { errorKey = 'Register.ERRORS.EMAIL_EXISTS'; this.emailExists = true; }
-          else if (response.error === 'username_exists') { errorKey = 'Register.ERRORS.USERNAME_EXISTS'; this.usernameExists = true; }
-          else if (response.error === 'phone_exists') { errorKey = 'Register.ERRORS.PHONE_EXISTS'; this.phoneExists = true; }
+          if (response.error === 'email_exists') {
+            errorKey = 'Register.ERRORS.EMAIL_EXISTS_VERIFY';
+            this.emailExists = true;
+          } else if (response.error === 'username_exists') {
+            errorKey = 'Register.ERRORS.USERNAME_EXISTS';
+            this.usernameExists = true;
+          } else if (response.error === 'phone_exists') {
+            errorKey = 'Register.ERRORS.PHONE_EXISTS';
+            this.phoneExists = true;
+          }
 
           forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get(errorKey) })
             .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));

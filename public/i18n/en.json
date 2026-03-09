@@ -183,7 +183,8 @@
       },
       "goal": {
         "required": "Please select your fitness goal"
-      }
+      },
+      "EMAIL_EXISTS_VERIFY": "This email is already registered. If you haven't verified your account yet, check your inbox for the verification email."
     },
     "SECTION_PERSONAL": "Personal Info",
     "SECTION_ACCOUNT": "Account Details",
@@ -191,7 +192,9 @@
     "SECTION_SECURITY": "Security",
     "VISUAL_LINE1": "YOUR",
     "VISUAL_LINE2": "30-DAY",
-    "VISUAL_LINE3": "CHALLENGE"
+    "VISUAL_LINE3": "CHALLENGE",
+    "SUCCESS_VERIFICATION_MESSAGE": "Your account has been created! We've sent a verification link to your email. Please check your inbox to activate your account.",
+    "CHECK_EMAIL_BTN": "Check My Email"
   },
   "ERROR": "Error",
   "SUCCESS": "Success!",
@@ -217,11 +220,14 @@
       "PASSWORD_MINLENGTH": "Password must be at least 8 characters",
       "INVALID_CREDENTIALS": "Invalid username or password",
       "SERVER_ERROR": "Server error. Please try again later",
-      "CONNECTION_ERROR": "Connection error. Please check your internet"
+      "CONNECTION_ERROR": "Connection error. Please check your internet",
+      "EMAIL_NOT_VERIFIED_TITLE": "Email Not Verified",
+      "EMAIL_NOT_VERIFIED": "Please verify your email before logging in. Check your inbox or request a new verification link."
     },
     "VISUAL_LINE1": "TRAIN",
     "VISUAL_LINE2": "SMARTER",
-    "VISUAL_LINE3": "WIN BIGGER"
+    "VISUAL_LINE3": "WIN BIGGER",
+    "RESEND_VERIFICATION": "Resend Verification Email"
   },
   "ForgotPassword": {
     "TITLE": "Forgot Password?",
@@ -239,7 +245,9 @@
     "ERRORS": {
       "IDENTIFIER_REQUIRED": "Please enter your username or email.",
       "USER_NOT_FOUND": "No account found with this username or email. Please check and try again.",
-      "USER_NOT_FOUND_TITLE": "Account Not Found"
+      "USER_NOT_FOUND_TITLE": "Account Not Found",
+      "NOT_VERIFIED_TITLE": "Account Not Verified",
+      "NOT_VERIFIED": "Your account email is not verified. A new verification email has been sent to your inbox."
     },
     "VISUAL_LINE1": "COME",
     "VISUAL_LINE2": "BACK",
@@ -773,5 +781,37 @@
     "STAT_INSTANT": "Instant",
     "SAME_PASSWORD_TITLE": "Same Password Detected",
     "SAME_PASSWORD_TEXT": "Your new password cannot be the same as your current password. Please choose a different one."
+  },
+  "Verify": {
+    "VISUAL_LINE1": "CONFIRM",
+    "VISUAL_LINE2": "YOUR",
+    "VISUAL_LINE3": "IDENTITY",
+    "VISUAL_SUB": "One click to unlock your full Trainova experience.",
+    "STAT_SECURE": "Secure",
+    "STAT_EMAIL": "Email",
+    "STAT_INSTANT": "Instant",
+    "VERIFYING_TITLE": "Verifying your email...",
+    "VERIFYING_SUB": "Please wait while we confirm your account.",
+    "SUCCESS_TITLE": "Email Verified!",
+    "SUCCESS_SUB": "Your account is now active. Welcome to Trainova!",
+    "REDIRECT_IN": "Redirecting in",
+    "GO_TO_LOGIN": "Go to Login",
+    "EXPIRED_TITLE": "Link Expired",
+    "EXPIRED_SUB": "This verification link has expired. Enter your username or email below to receive a new one.",
+    "INVALID_TITLE": "Invalid Link",
+    "INVALID_SUB": "This verification link is invalid or has already been used.",
+    "CHECK_EMAIL_TITLE": "Check Your Email",
+    "CHECK_EMAIL_SUB": "We sent a verification link to your email address. Click the link to activate your account.",
+    "RESEND_PROMPT": "Didn't receive the email? Enter your username or email to resend.",
+    "IDENTIFIER_LABEL": "Username or Email",
+    "IDENTIFIER_PLACEHOLDER": "Enter your username or email",
+    "RESEND_BUTTON": "Resend Verification Email",
+    "COOLDOWN_BTN": "Try again in",
+    "RESEND_SUCCESS_TITLE": "Email Sent!",
+    "RESEND_SUCCESS_TEXT": "A new verification email has been sent. Check your inbox.",
+    "ERRORS": {
+      "USER_NOT_FOUND": "No account found with this username or email.",
+      "ALREADY_VERIFIED": "This account is already verified. Please log in."
+    }
   }
 }

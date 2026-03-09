@@ -7,6 +7,7 @@ import { About } from './features/about/about';
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
 import { ForgotPassword } from './features/auth/forgot-password/forgot-password';
+import { Verify } from './features/auth/verify/verify';
 import { Dashboard } from './features/dashboard/dashboard';
 import { Workout } from './features/workout/workout';
 import { Profile } from './features/profile/profile';
@@ -67,6 +68,11 @@ export const routes: Routes = [
   {
     path: 'forgot-password',
     component: ForgotPassword
+  },
+
+  {
+    path: 'verify',
+    component: Verify
   },
 
   {

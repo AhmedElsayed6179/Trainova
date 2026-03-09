@@ -1,0 +1,183 @@
+<div class="auth-page">
+
+  <!-- ══ LEFT: Visual Panel ══ -->
+  <div class="auth-visual">
+    <div class="auth-visual-bg"></div>
+    <div class="auth-visual-grid"></div>
+    <div class="auth-visual-content">
+      <div class="auth-logo">
+        <div class="auth-logo-icon"><i class="fas fa-bolt"></i></div>
+        <span class="auth-logo-text">TRAINOVA</span>
+      </div>
+      <h1 class="auth-visual-headline">
+        {{ 'Verify.VISUAL_LINE1' | translate }}<br>
+        <em>{{ 'Verify.VISUAL_LINE2' | translate }}</em><br>
+        {{ 'Verify.VISUAL_LINE3' | translate }}
+      </h1>
+      <p class="auth-visual-sub">{{ 'Verify.VISUAL_SUB' | translate }}</p>
+      <div class="auth-stats-row">
+        <div class="auth-stat">
+          <div class="auth-stat-val"><i class="fas fa-shield-alt" style="font-size:1.6rem;"></i></div>
+          <div class="auth-stat-lbl">{{ 'Verify.STAT_SECURE' | translate }}</div>
+        </div>
+        <div class="auth-stat">
+          <div class="auth-stat-val"><i class="fas fa-envelope-open-text" style="font-size:1.6rem;"></i></div>
+          <div class="auth-stat-lbl">{{ 'Verify.STAT_EMAIL' | translate }}</div>
+        </div>
+        <div class="auth-stat">
+          <div class="auth-stat-val"><i class="fas fa-bolt" style="font-size:1.6rem;"></i></div>
+          <div class="auth-stat-lbl">{{ 'Verify.STAT_INSTANT' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: Status Panel ══ -->
+  <div class="auth-form-panel">
+    <div class="auth-form-wrap">
+
+      <!-- Mobile brand -->
+      <div class="auth-mobile-brand">
+        <div class="auth-mobile-brand-icon"><i class="fas fa-bolt"></i></div>
+        <span class="auth-mobile-brand-text">TRAINOVA</span>
+      </div>
+
+      <!-- ══ LOADING STATE ══ -->
+      <div *ngIf="status === 'loading'" class="verify-state">
+        <div class="verify-icon-wrap verify-icon-loading">
+          <span class="auth-spin" style="width:36px;height:36px;border-width:3px;"></span>
+        </div>
+        <h2 class="verify-title">{{ 'Verify.VERIFYING_TITLE' | translate }}</h2>
+        <p class="verify-sub">{{ 'Verify.VERIFYING_SUB' | translate }}</p>
+      </div>
+
+      <!-- ══ SUCCESS STATE ══ -->
+      <div *ngIf="status === 'success'" class="verify-state">
+        <div class="verify-icon-wrap verify-icon-success">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="verify-title verify-title-success">{{ 'Verify.SUCCESS_TITLE' | translate }}</h2>
+        <p class="verify-sub">{{ 'Verify.SUCCESS_SUB' | translate }}</p>
+        <div class="verify-countdown" *ngIf="countdown > 0">
+          {{ 'Verify.REDIRECT_IN' | translate }} <strong>{{ countdown }}s</strong>
+        </div>
+        <a routerLink="/login" class="auth-sub" style="display:block;text-align:center;text-decoration:none;margin-top:24px;">
+          <div class="auth-sub-inner">
+            {{ 'Verify.GO_TO_LOGIN' | translate }}
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+
+      <!-- ══ INVALID / EXPIRED TOKEN ══ -->
+      <div *ngIf="status === 'invalid' || status === 'expired'" class="verify-state">
+        <div class="verify-icon-wrap verify-icon-danger">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <h2 class="verify-title verify-title-danger">
+          {{ status === 'expired' ? ('Verify.EXPIRED_TITLE' | translate) : ('Verify.INVALID_TITLE' | translate) }}
+        </h2>
+        <p class="verify-sub">
+          {{ status === 'expired' ? ('Verify.EXPIRED_SUB' | translate) : ('Verify.INVALID_SUB' | translate) }}
+        </p>
+        <!-- Resend form if expired -->
+        <div *ngIf="status === 'expired'" style="margin-top:24px;">
+          <div class="af">
+            <label>{{ 'Verify.IDENTIFIER_LABEL' | translate }}</label>
+            <div class="ai" [class.err]="resendError">
+              <i class="fas fa-user ai-ico"></i>
+              <input type="text" [(ngModel)]="resendIdentifier"
+                     placeholder="{{ 'Verify.IDENTIFIER_PLACEHOLDER' | translate }}">
+            </div>
+            <div class="ae" *ngIf="resendError">
+              <i class="fas fa-exclamation-circle"></i>{{ resendError }}
+            </div>
+          </div>
+          <button class="auth-sub" [disabled]="isResending || cooldownSeconds > 0 || !resendIdentifier"
+                  (click)="resendVerification()">
+            <div class="auth-sub-inner">
+              <ng-container *ngIf="!isResending && cooldownSeconds === 0">
+                {{ 'Verify.RESEND_BUTTON' | translate }}
+                <i class="fas fa-paper-plane"></i>
+              </ng-container>
+              <ng-container *ngIf="cooldownSeconds > 0">
+                <i class="fas fa-clock"></i>
+                {{ 'Verify.COOLDOWN_BTN' | translate }} {{ cooldownDisplay }}
+              </ng-container>
+              <ng-container *ngIf="isResending && cooldownSeconds === 0">
+                <span class="auth-spin"></span>
+                {{ 'Login.LOADING' | translate }}
+              </ng-container>
+            </div>
+          </button>
+          <div *ngIf="resendSuccess" class="alert-banner alert-success" style="margin-top:16px;animation:fadeInDown .25s ease both;">
+            <div class="alert-icon-wrap alert-icon-success"><i class="fas fa-paper-plane"></i></div>
+            <div class="alert-body">
+              <strong class="alert-title alert-title-success">{{ 'Verify.RESEND_SUCCESS_TITLE' | translate }}</strong>
+              <p class="alert-text">{{ 'Verify.RESEND_SUCCESS_TEXT' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ NO TOKEN (came without token) ══ -->
+      <div *ngIf="status === 'no_token'" class="verify-state">
+        <div class="verify-icon-wrap verify-icon-warning">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <h2 class="verify-title">{{ 'Verify.CHECK_EMAIL_TITLE' | translate }}</h2>
+        <p class="verify-sub">{{ 'Verify.CHECK_EMAIL_SUB' | translate }}</p>
+
+        <div class="auth-heading" style="margin-top:28px;">
+          <p style="text-align:center;">{{ 'Verify.RESEND_PROMPT' | translate }}</p>
+        </div>
+
+        <div class="af">
+          <label>{{ 'Verify.IDENTIFIER_LABEL' | translate }}</label>
+          <div class="ai" [class.err]="resendError">
+            <i class="fas fa-user ai-ico"></i>
+            <input type="text" [(ngModel)]="resendIdentifier"
+                   placeholder="{{ 'Verify.IDENTIFIER_PLACEHOLDER' | translate }}">
+          </div>
+          <div class="ae" *ngIf="resendError">
+            <i class="fas fa-exclamation-circle"></i>{{ resendError }}
+          </div>
+        </div>
+
+        <button class="auth-sub" [disabled]="isResending || cooldownSeconds > 0 || !resendIdentifier"
+                (click)="resendVerification()">
+          <div class="auth-sub-inner">
+            <ng-container *ngIf="!isResending && cooldownSeconds === 0">
+              {{ 'Verify.RESEND_BUTTON' | translate }}
+              <i class="fas fa-paper-plane"></i>
+            </ng-container>
+            <ng-container *ngIf="cooldownSeconds > 0">
+              <i class="fas fa-clock"></i>
+              {{ 'Verify.COOLDOWN_BTN' | translate }} {{ cooldownDisplay }}
+            </ng-container>
+            <ng-container *ngIf="isResending && cooldownSeconds === 0">
+              <span class="auth-spin"></span>
+              {{ 'Login.LOADING' | translate }}
+            </ng-container>
+          </div>
+        </button>
+
+        <div *ngIf="resendSuccess" class="alert-banner alert-success" style="margin-top:16px;animation:fadeInDown .25s ease both;">
+          <div class="alert-icon-wrap alert-icon-success"><i class="fas fa-paper-plane"></i></div>
+          <div class="alert-body">
+            <strong class="alert-title alert-title-success">{{ 'Verify.RESEND_SUCCESS_TITLE' | translate }}</strong>
+            <p class="alert-text">{{ 'Verify.RESEND_SUCCESS_TEXT' | translate }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-switch" style="margin-top:20px;">
+        <a routerLink="/login">
+          <i class="fas fa-arrow-left me-1"></i>
+          {{ 'ForgotPassword.BACK_TO_LOGIN' | translate }}
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
