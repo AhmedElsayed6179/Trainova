@@ -245,7 +245,10 @@
     "VISUAL_LINE2": "BACK",
     "VISUAL_LINE3": "STRONGER",
     "SUCCESS_TITLE": "Check Your Inbox!",
-    "SUCCESS_TEXT": "If an account matches that username or email, we've sent a password reset link. It expires in 1 hour."
+    "SUCCESS_TEXT": "If an account matches that username or email, we've sent a password reset link. It expires in 1 hour.",
+    "COOLDOWN_TITLE": "Please Wait",
+    "COOLDOWN_TEXT": "You can request another reset link in",
+    "COOLDOWN_BTN": "Retry in"
   },
   "Logout": {
     "CONFIRM_TITLE": "Sign Out?",
@@ -387,7 +390,9 @@
     "RESET": "Reset",
     "VIEW_PHOTO": "View Photo",
     "FORGOT_PASSWORD_LINK": "Forgot your current password?",
-    "FORGOT_PASSWORD_HINT": "Click here to reset it"
+    "FORGOT_PASSWORD_HINT": "Click here to reset it",
+    "SAME_PASSWORD_ERROR": "New password must be different from your current password.",
+    "FORGOT_CURRENT_PASSWORD": "Forgot your current password?"
   },
   "DASHBOARD": {
     "WELCOME_BACK": "Ready to crush today's workout?",

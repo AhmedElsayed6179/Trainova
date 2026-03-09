@@ -22,6 +22,8 @@ export class ForgotPassword implements OnDestroy {
   showNotFoundMsg = false;
   showSuccessMsg = false;
   userExists: boolean | null = null;
+  cooldownSeconds = 0;
+  private cooldownTimer: any = null;
 
   get isLoggedIn(): boolean {
     return !!localStorage.getItem('authToken');
@@ -111,6 +113,8 @@ export class ForgotPassword implements OnDestroy {
         if (res?.error === 'user_not_found') {
           this.showNotFoundMsg = true;
           this.userExists = false;
+        } else if (res?.error === 'cooldown') {
+          this.startCooldown(res.secondsLeft || 120);
         } else {
           // Show success even on server error to avoid email enumeration
           this.showSuccessMsg = true;
@@ -125,6 +129,32 @@ export class ForgotPassword implements OnDestroy {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  private startCooldown(seconds: number): void {
+    this.cooldownSeconds = seconds;
+    this.cdr.markForCheck();
+    if (this.cooldownTimer) clearInterval(this.cooldownTimer);
+    this.cooldownTimer = setInterval(() => {
+      this.cooldownSeconds--;
+      this.cdr.markForCheck();
+      if (this.cooldownSeconds <= 0) {
+        clearInterval(this.cooldownTimer);
+        this.cooldownTimer = null;
+        this.cooldownSeconds = 0;
+        this.cdr.markForCheck();
+      }
+    }, 1000);
+  }
+
+  get isCooldown(): boolean {
+    return this.cooldownSeconds > 0;
+  }
+
+  get cooldownDisplay(): string {
+    const m = Math.floor(this.cooldownSeconds / 60);
+    const s = this.cooldownSeconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
   }
 
   private applyCheckResult(exists: boolean): void {
@@ -158,7 +188,7 @@ export class ForgotPassword implements OnDestroy {
   }
 
   get isSubmitDisabled(): boolean {
-    return this.forgotForm.invalid || this.isBusy || this.userExists === false || this.showSuccessMsg;
+    return this.forgotForm.invalid || this.isBusy || this.userExists === false || this.showSuccessMsg || this.isCooldown;
   }
 
   private markFormGroupTouched(fg: FormGroup): void {
@@ -168,5 +198,6 @@ export class ForgotPassword implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.cooldownTimer) clearInterval(this.cooldownTimer);
   }
 }

@@ -79,7 +79,7 @@ export class Profile implements OnInit {
       currentPassword: ['', [Validators.required]],
       newPassword: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)]],
       confirmPassword: ['', Validators.required]
-    }, { validators: this.passwordMatchValidator });
+    }, { validators: [this.passwordMatchValidator, this.samePasswordValidator] });
   }
 
   ngOnInit() {
@@ -312,6 +312,13 @@ export class Profile implements OnInit {
     const password = group.get('newPassword')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { notMatching: true };
+  }
+
+  samePasswordValidator(group: AbstractControl): ValidationErrors | null {
+    const current = group.get('currentPassword')?.value;
+    const next = group.get('newPassword')?.value;
+    if (!current || !next) return null;
+    return current === next ? { samePassword: true } : null;
   }
 
   toggleEdit() {
@@ -649,6 +656,8 @@ export class Profile implements OnInit {
         } else {
           const errorMsg = res.error === 'invalid_current_password'
             ? 'Profile.INVALID_CURRENT_PASSWORD'
+            : res.error === 'same_password'
+            ? 'Profile.SAME_PASSWORD_ERROR'
             : 'Profile.PASSWORD_CHANGE_FAILED';
           Swal.fire({ icon: 'error', title: this.translate.instant('ERROR'), text: this.translate.instant(errorMsg), confirmButtonColor: '#ffc107' });
         }
