@@ -1,102 +1,303 @@
-/* ══════════════════════════════════════
-   VERIFY STATE STYLES
-   ══════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   VERIFY STATE STYLES — Enhanced Edition
+   Trainova Auth · Email Verification Page
+   ══════════════════════════════════════════════════════ */
 
+/* ── Base verify container ── */
 .verify-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 8px 0 16px;
+  padding: 12px 0 20px;
+  animation: verifyFadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@keyframes verifyFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ══════════════════════════════
+   ICON WRAPPER — base
+   ══════════════════════════════ */
 .verify-icon-wrap {
-  width: 90px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.4rem;
-  margin-bottom: 22px;
+  font-size: 2.6rem;
+  margin-bottom: 26px;
   position: relative;
+  flex-shrink: 0;
 }
 
+/* Outer glow ring animation */
+.verify-icon-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  animation: ringPulse 2.8s ease-in-out infinite;
+}
+
+/* Inner shimmer ring */
+.verify-icon-wrap::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  animation: ringPulse 2.8s ease-in-out 0.4s infinite;
+}
+
+@keyframes ringPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+/* ── LOADING ── */
 .verify-icon-loading {
-  background: radial-gradient(circle, rgba(255, 193, 7, 0.08), transparent);
-  border: 1.5px solid rgba(255, 193, 7, 0.2);
+  background:
+    radial-gradient(circle at 35% 35%, rgba(245, 166, 35, 0.15), transparent 65%),
+    rgba(245, 166, 35, 0.05);
+  border: 1.5px solid rgba(245, 166, 35, 0.22);
+  box-shadow:
+    0 0 40px rgba(245, 166, 35, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
+.verify-icon-loading::before {
+  border-color: rgba(245, 166, 35, 0.25);
+}
+
+.verify-icon-loading::after {
+  border-color: rgba(245, 166, 35, 0.12);
+}
+
+/* ── SUCCESS ── */
 .verify-icon-success {
-  background: radial-gradient(circle, rgba(74, 222, 128, 0.08), transparent);
-  border: 1.5px solid rgba(74, 222, 128, 0.25);
+  background:
+    radial-gradient(circle at 35% 35%, rgba(74, 222, 128, 0.18), transparent 65%),
+    rgba(74, 222, 128, 0.06);
+  border: 1.5px solid rgba(74, 222, 128, 0.28);
   color: #4ade80;
-  box-shadow: 0 0 32px rgba(74, 222, 128, 0.12);
+  box-shadow:
+    0 0 50px rgba(74, 222, 128, 0.18),
+    0 0 100px rgba(74, 222, 128, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  animation: verifyFadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both, successPop 0.6s 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
+.verify-icon-success::before {
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.verify-icon-success::after {
+  border-color: rgba(74, 222, 128, 0.15);
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(0.7);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ── DANGER (invalid / expired) ── */
 .verify-icon-danger {
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.08), transparent);
-  border: 1.5px solid rgba(239, 68, 68, 0.25);
+  background:
+    radial-gradient(circle at 35% 35%, rgba(239, 68, 68, 0.15), transparent 65%),
+    rgba(239, 68, 68, 0.05);
+  border: 1.5px solid rgba(239, 68, 68, 0.28);
   color: #ef4444;
-  box-shadow: 0 0 32px rgba(239, 68, 68, 0.08);
+  box-shadow:
+    0 0 40px rgba(239, 68, 68, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+.verify-icon-danger::before {
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+.verify-icon-danger::after {
+  border-color: rgba(239, 68, 68, 0.12);
+}
+
+/* ── WARNING (no token / check email) ── */
 .verify-icon-warning {
-  background: radial-gradient(circle, rgba(255, 193, 7, 0.08), transparent);
-  border: 1.5px solid rgba(255, 193, 7, 0.25);
-  color: #ffc107;
-  box-shadow: 0 0 32px rgba(255, 193, 7, 0.1);
+  background:
+    radial-gradient(circle at 35% 35%, rgba(245, 166, 35, 0.18), transparent 65%),
+    rgba(245, 166, 35, 0.06);
+  border: 1.5px solid rgba(245, 166, 35, 0.28);
+  color: #F5A623;
+  box-shadow:
+    0 0 40px rgba(245, 166, 35, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  animation: verifyFadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both, iconFloat 3.5s 0.6s ease-in-out infinite;
 }
 
+.verify-icon-warning::before {
+  border-color: rgba(245, 166, 35, 0.3);
+}
+
+.verify-icon-warning::after {
+  border-color: rgba(245, 166, 35, 0.14);
+}
+
+@keyframes iconFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* ══════════════════════════════
+   TYPOGRAPHY
+   ══════════════════════════════ */
 .verify-title {
-  font-size: 1.45rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 800;
   color: #fff;
-  margin: 0 0 10px;
-  letter-spacing: 0.5px;
+  margin: 0 0 12px;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+}
+
+body:not(.dark-mode) .verify-title {
+  color: #0F172A;
 }
 
 .verify-title-success {
-  color: #4ade80;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .verify-title-danger {
-  color: #ef4444;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .verify-sub {
   font-size: 0.9rem;
-  color: #666;
+  color: rgba(255, 255, 255, 0.45);
   margin: 0;
-  line-height: 1.65;
-  max-width: 340px;
+  line-height: 1.7;
+  max-width: 360px;
 }
 
+body:not(.dark-mode) .verify-sub {
+  color: #475569;
+}
+
+/* ══════════════════════════════
+   COUNTDOWN BADGE
+   ══════════════════════════════ */
 .verify-countdown {
-  margin-top: 14px;
-  font-size: 0.85rem;
-  color: #555;
-  background: rgba(255, 193, 7, 0.05);
-  border: 1px solid rgba(255, 193, 7, 0.12);
-  border-radius: 8px;
-  padding: 8px 18px;
+  margin-top: 18px;
+  font-size: 0.83rem;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(245, 166, 35, 0.06);
+  border: 1px solid rgba(245, 166, 35, 0.16);
+  border-radius: 100px;
+  padding: 8px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeInDown 0.3s ease both;
+}
+
+body:not(.dark-mode) .verify-countdown {
+  background: rgba(245, 166, 35, 0.08);
+  border-color: rgba(245, 166, 35, 0.25);
+  color: #475569;
 }
 
 .verify-countdown strong {
-  color: #ffc107;
+  color: #F5A623;
+  font-weight: 800;
+  font-size: 0.95rem;
+  min-width: 24px;
+  display: inline-block;
 }
 
-/* Alert banners (shared with forgot-password) */
+.verify-countdown::before {
+  content: '↺';
+  font-size: 0.9rem;
+  color: #F5A623;
+  animation: spin 1.5s linear infinite;
+}
+
+/* ══════════════════════════════
+   SUCCESS DIVIDER LINE
+   ══════════════════════════════ */
+.verify-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(74, 222, 128, 0.5), transparent);
+  border-radius: 2px;
+  margin: 18px auto 0;
+}
+
+/* ══════════════════════════════
+   ALERT BANNERS
+   ══════════════════════════════ */
 .alert-banner {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px 18px;
   border: 1px solid transparent;
   text-align: left;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer line at top */
+.alert-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  opacity: 0.6;
 }
 
 .alert-success {
@@ -104,20 +305,33 @@
   border-color: rgba(74, 222, 128, 0.2);
 }
 
+.alert-success::before {
+  background: linear-gradient(90deg, transparent, rgba(74, 222, 128, 0.5), transparent);
+}
+
 .alert-danger {
   background: rgba(239, 68, 68, 0.05);
   border-color: rgba(239, 68, 68, 0.2);
 }
 
-.alert-warning {
-  background: rgba(255, 193, 7, 0.05);
-  border-color: rgba(255, 193, 7, 0.2);
+.alert-danger::before {
+  background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.5), transparent);
 }
 
+.alert-warning {
+  background: rgba(245, 166, 35, 0.05);
+  border-color: rgba(245, 166, 35, 0.2);
+}
+
+.alert-warning::before {
+  background: linear-gradient(90deg, transparent, rgba(245, 166, 35, 0.5), transparent);
+}
+
+/* ── Alert icon wrap ── */
 .alert-icon-wrap {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,27 +340,32 @@
 }
 
 .alert-icon-success {
-  background: rgba(74, 222, 128, 0.1);
+  background: rgba(74, 222, 128, 0.12);
   color: #4ade80;
+  box-shadow: 0 0 16px rgba(74, 222, 128, 0.15);
 }
 
 .alert-icon-danger {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.12);
   color: #ef4444;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.12);
 }
 
 .alert-icon-warning {
-  background: rgba(255, 193, 7, 0.1);
-  color: #ffc107;
+  background: rgba(245, 166, 35, 0.12);
+  color: #F5A623;
+  box-shadow: 0 0 16px rgba(245, 166, 35, 0.12);
 }
 
+/* ── Alert body ── */
 .alert-body {
   flex: 1;
+  min-width: 0;
 }
 
 .alert-title {
   display: block;
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -160,24 +379,201 @@
 }
 
 .alert-title-warning {
-  color: #ffc107;
+  color: #F5A623;
 }
 
 .alert-text {
   margin: 0;
   font-size: 0.82rem;
-  color: #666;
-  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.6;
 }
 
+body:not(.dark-mode) .alert-text {
+  color: #475569;
+}
+
+/* ══════════════════════════════
+   STATUS CARD — wraps states
+   ══════════════════════════════ */
+.verify-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  padding: 36px 28px 28px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+body:not(.dark-mode) .verify-card {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Top gradient edge */
+.verify-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 20px 20px 0 0;
+}
+
+.verify-card-success::before {
+  background: linear-gradient(90deg, transparent 10%, #4ade80 50%, transparent 90%);
+}
+
+.verify-card-danger::before {
+  background: linear-gradient(90deg, transparent 10%, #ef4444 50%, transparent 90%);
+}
+
+.verify-card-warning::before,
+.verify-card-loading::before {
+  background: linear-gradient(90deg, transparent 10%, #F5A623 50%, transparent 90%);
+}
+
+/* ══════════════════════════════
+   STEP DOTS — success indicator
+   ══════════════════════════════ */
+.verify-steps {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.verify-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  transition: all 0.3s ease;
+}
+
+body:not(.dark-mode) .verify-step-dot {
+  background: #CBD5E1;
+}
+
+.verify-step-dot.active {
+  background: #F5A623;
+  box-shadow: 0 0 8px rgba(245, 166, 35, 0.5);
+  transform: scale(1.3);
+}
+
+.verify-step-dot.done {
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
+.verify-step-line {
+  width: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body:not(.dark-mode) .verify-step-line {
+  background: #E2E8F0;
+}
+
+.verify-step-line.done {
+  background: rgba(74, 222, 128, 0.4);
+}
+
+/* ══════════════════════════════
+   ANIMATIONS
+   ══════════════════════════════ */
 @keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-10px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading pulse for text */
+.verify-loading-pulse {
+  animation: textPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Check icon bounce on success */
+.verify-icon-success i {
+  animation: checkBounce 0.5s 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes checkBounce {
+  0% {
+    transform: scale(0) rotate(-15deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+/* ══════════════════════════════
+   RESEND FORM SECTION
+   ══════════════════════════════ */
+.verify-resend-section {
+  margin-top: 28px;
+  width: 100%;
+  animation: fadeInDown 0.35s 0.15s ease both;
+}
+
+.verify-resend-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body:not(.dark-mode) .verify-resend-label {
+  color: #64748B;
+}
+
+.verify-resend-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 1px;
+}
+
+body:not(.dark-mode) .verify-resend-label::after {
+  background: #E2E8F0;
 }
