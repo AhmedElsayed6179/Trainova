@@ -31,6 +31,7 @@ export class Profile implements OnInit {
   isUploading = false;
   isImageLoading = true;
   showNewPassword = false;
+  showCurrentPassword = false;
   showConfirmPassword = false;
 
   private originalFile: File | null = null;
@@ -73,8 +74,9 @@ export class Profile implements OnInit {
       goal: [{ value: '', disabled: true }, Validators.required]
     });
 
-    // Password Form — no currentPassword required
+    // Password Form — requires currentPassword for verification
     this.passwordForm = this.fb.group({
+      currentPassword: ['', [Validators.required]],
       newPassword: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)]],
       confirmPassword: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
@@ -347,7 +349,8 @@ export class Profile implements OnInit {
   }
 
   togglePasswordVisibility(field: string) {
-    if (field === 'new') this.showNewPassword = !this.showNewPassword;
+    if (field === 'current') this.showCurrentPassword = !this.showCurrentPassword;
+    else if (field === 'new') this.showNewPassword = !this.showNewPassword;
     else if (field === 'confirm') this.showConfirmPassword = !this.showConfirmPassword;
   }
 
@@ -630,9 +633,10 @@ export class Profile implements OnInit {
     }
     this.isLoading = true;
     const passwordData = {
+      currentPassword: this.passwordForm.value.currentPassword,
       newPassword: this.passwordForm.value.newPassword
     };
-    this.apiService.changePassword(this.user!._id, passwordData as any).subscribe({
+    this.apiService.changePassword(this.user!._id, passwordData).subscribe({
       next: (res) => {
         if (res.success) {
           this.isEditingPassword = false;

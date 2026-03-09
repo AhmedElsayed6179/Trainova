@@ -27,9 +27,7 @@
           </div>
           <img [src]="profileImage" class="profile-avatar" [class.d-none]="isImageLoading || isUploading"
             (load)="isImageLoading = false" (error)="profileImage='default-avatar.jpg'; isImageLoading=false"
-            [class.clickable-avatar]="user.profileImage"
-            (click)="viewPhoto()"
-            alt="Profile">
+            [class.clickable-avatar]="user.profileImage" (click)="viewPhoto()" alt="Profile">
           <div class="avatar-ring"></div>
           <div class="avatar-edit-btn" *ngIf="isEditing" (click)="fileInput.click()">
             <i class="fas fa-camera"></i>
@@ -248,7 +246,8 @@
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
               [class.pf-input-error]="hasError('name','required') || hasError('name','minlength')">
               <span class="pf-input-icon"><i class="fas fa-user"></i></span>
-              <input type="text" class="pf-input" formControlName="name" [placeholder]="'Profile.FIELD_NAME' | translate">
+              <input type="text" class="pf-input" formControlName="name"
+                [placeholder]="'Profile.FIELD_NAME' | translate">
             </div>
             <span class="pf-error" *ngIf="hasError('name','required') || hasError('name','minlength')">
               {{ getErrorMessage('name') | translate }}
@@ -288,7 +287,8 @@
             <label class="pf-label">{{ 'Profile.FIELD_AGE' | translate }}</label>
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing">
               <span class="pf-input-icon"><i class="fas fa-birthday-cake"></i></span>
-              <input type="number" class="pf-input" formControlName="age" [placeholder]="'Profile.FIELD_AGE' | translate">
+              <input type="number" class="pf-input" formControlName="age"
+                [placeholder]="'Profile.FIELD_AGE' | translate">
             </div>
             <span class="pf-error" *ngIf="hasError('age','min') || hasError('age','max')">
               {{ getErrorMessage('age') | translate }}
@@ -336,7 +336,8 @@
             <div class="pf-input-wrap" [class.pf-input-active]="isEditing"
               [class.pf-input-error]="hasError('phone','pattern')">
               <span class="pf-input-icon"><i class="fas fa-phone"></i></span>
-              <input type="tel" class="pf-input" formControlName="phone" [placeholder]="'Profile.FIELD_PHONE' | translate">
+              <input type="tel" class="pf-input" formControlName="phone"
+                [placeholder]="'Profile.FIELD_PHONE' | translate">
             </div>
             <span class="pf-error" *ngIf="hasError('phone','pattern')">
               {{ getErrorMessage('phone') | translate }}
@@ -410,6 +411,24 @@
     <div class="pf-collapsible" [class.pf-collapsible--open]="isEditingPassword">
       <div class="pf-section-body pf-section-body--pw">
         <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+
+          <!-- Current Password (full width) -->
+          <div class="pf-field-group" style="margin-bottom: 16px;">
+            <label class="pf-label">{{ 'Profile.CURRENT_PASSWORD' | translate }}<span
+                style="color:#dc3545;margin-right:2px;">*</span></label>
+            <div class="pf-input-wrap pf-input-active"
+              [class.pf-input-error]="hasError('currentPassword','required', passwordForm)">
+              <span class="pf-input-icon"><i class="fas fa-lock"></i></span>
+              <input [type]="showCurrentPassword ? 'text' : 'password'" class="pf-input"
+                formControlName="currentPassword" placeholder="••••••••" autocomplete="current-password">
+              <button class="pf-eye-btn" type="button" (click)="togglePasswordVisibility('current')">
+                <i class="fas" [ngClass]="showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+              </button>
+            </div>
+            <span class="pf-error" *ngIf="hasError('currentPassword','required', passwordForm)">
+              {{ 'Profile.CURRENT_PASSWORD' | translate }} {{ 'Register.ERRORS.password.required' | translate }}
+            </span>
+          </div>
 
           <!-- New + Confirm row -->
           <div class="pf-fields-grid pf-fields-grid--2col">
