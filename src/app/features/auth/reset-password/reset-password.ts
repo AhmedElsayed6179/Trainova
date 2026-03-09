@@ -20,6 +20,7 @@ export class ResetPassword implements OnInit {
   isLoading = false;
   showPassword = false;
   showConfirmPassword = false;
+  showSamePasswordError = false;
 
   /** 'idle' | 'success' | 'error' | 'expired' | 'invalid' */
   state: 'idle' | 'success' | 'error' | 'expired' | 'invalid' = 'idle';
@@ -56,6 +57,14 @@ export class ResetPassword implements OnInit {
       this.translate.use(lang);
       localStorage.setItem('lang', lang);
     }
+
+    // Reset same-password error when user types
+    this.resetForm.get('password')?.valueChanges.subscribe(() => {
+      if (this.showSamePasswordError) {
+        this.showSamePasswordError = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   passwordMatchValidator(group: FormGroup) {
@@ -76,6 +85,8 @@ export class ResetPassword implements OnInit {
         this.isLoading = false;
         if (res?.success) {
           this.state = 'success';
+        } else if (res?.error === 'same_password') {
+          this.showSamePasswordError = true;
         } else if (res?.error === 'token_expired') {
           this.state = 'expired';
         } else {

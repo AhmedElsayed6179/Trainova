@@ -770,6 +770,8 @@
     "VISUAL_LINE2": "PASSWORD",
     "VISUAL_LINE3": "NEW START",
     "VISUAL_SUB": "Create a strong new password and get back to your training journey.",
-    "STAT_INSTANT": "Instant"
+    "STAT_INSTANT": "Instant",
+    "SAME_PASSWORD_TITLE": "Same Password Detected",
+    "SAME_PASSWORD_TEXT": "Your new password cannot be the same as your current password. Please choose a different one."
   }
 }
