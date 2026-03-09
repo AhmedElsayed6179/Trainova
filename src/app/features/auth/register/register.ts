@@ -155,12 +155,13 @@ export class Register implements OnInit, OnDestroy {
           forkJoin({
             title: this.translate.get('SUCCESS'),
             text: this.translate.get('Register.SUCCESS_VERIFICATION_MESSAGE'),
-            confirmText: this.translate.get('Register.CHECK_EMAIL_BTN')
+            confirmText: this.translate.get('Register.CHECK_EMAIL_BTN'),
+            cooldownNote: this.translate.get('Register.RESEND_COOLDOWN_NOTE')
           }).subscribe(t => {
             Swal.fire({
               icon: 'success',
               title: t.title,
-              text: t.text,
+              html: `<p style="margin:0 0 14px">${t.text}</p><div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:10px;padding:10px 16px;font-size:0.85rem;color:#F5A623;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-clock" style="font-size:1rem;"></i> ${t.cooldownNote}</div>`,
               confirmButtonColor: '#ffc107',
               confirmButtonText: t.confirmText,
               allowOutsideClick: false

@@ -194,7 +194,8 @@
     "VISUAL_LINE2": "30-DAY",
     "VISUAL_LINE3": "CHALLENGE",
     "SUCCESS_VERIFICATION_MESSAGE": "Your account has been created! We've sent a verification link to your email. Please check your inbox to activate your account.",
-    "CHECK_EMAIL_BTN": "Check My Email"
+    "CHECK_EMAIL_BTN": "Check My Email",
+    "RESEND_COOLDOWN_NOTE": "You can request a new verification email after 2 minutes"
   },
   "ERROR": "Error",
   "SUCCESS": "Success!",
@@ -812,6 +813,8 @@
     "ERRORS": {
       "USER_NOT_FOUND": "No account found with this username or email.",
       "ALREADY_VERIFIED": "This account is already verified. Please log in."
-    }
+    },
+    "ALREADY_VERIFIED_TITLE": "Account Already Verified",
+    "ALREADY_VERIFIED_SUB": "This account has already been verified. You can log in now."
   }
 }

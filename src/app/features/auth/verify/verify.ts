@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
 
-type VerifyStatus = 'loading' | 'success' | 'invalid' | 'expired' | 'no_token';
+type VerifyStatus = 'loading' | 'success' | 'invalid' | 'expired' | 'no_token' | 'already_verified';
 
 @Component({
   selector: 'app-verify',
@@ -52,6 +52,9 @@ export class Verify implements OnInit, OnDestroy {
           this.startCountdown();
         } else if (res.error === 'token_expired') {
           this.status = 'expired';
+        } else if (res.error === 'already_verified') {
+          this.status = 'already_verified';
+          this.startCountdown();
         } else {
           this.status = 'invalid';
         }
@@ -90,9 +93,9 @@ export class Verify implements OnInit, OnDestroy {
         this.isResending = false;
         if (res.success) {
           this.resendSuccess = true;
-          this.startCooldown(120);
+          this.startCooldown(180);
         } else if (res.error === 'cooldown') {
-          this.startCooldown(res.secondsLeft || 120);
+          this.startCooldown(res.secondsLeft || 180);
         } else if (res.error === 'already_verified') {
           this.translate.get('Verify.ERRORS.ALREADY_VERIFIED').subscribe(t => {
             this.resendError = t;

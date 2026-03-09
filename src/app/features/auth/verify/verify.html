@@ -233,6 +233,42 @@
         </div>
       </div>
 
+      <!-- ══════════════════════════════════
+           ALREADY VERIFIED STATE
+           ══════════════════════════════════ -->
+      <div *ngIf="status === 'already_verified'" class="verify-state">
+        <!-- Step dots — all done -->
+        <div class="verify-steps">
+          <div class="verify-step-dot done"></div>
+          <div class="verify-step-line done"></div>
+          <div class="verify-step-dot done"></div>
+          <div class="verify-step-line done"></div>
+          <div class="verify-step-dot done"></div>
+        </div>
+
+        <div class="verify-card verify-card-success">
+          <div class="verify-icon-wrap verify-icon-success">
+            <i class="fas fa-check-double"></i>
+          </div>
+          <h2 class="verify-title verify-title-success">{{ 'Verify.ALREADY_VERIFIED_TITLE' | translate }}</h2>
+          <p class="verify-sub">{{ 'Verify.ALREADY_VERIFIED_SUB' | translate }}</p>
+
+          <div class="verify-countdown" *ngIf="countdown > 0">
+            {{ 'Verify.REDIRECT_IN' | translate }}&nbsp;<strong>{{ countdown }}s</strong>
+          </div>
+
+          <div class="verify-divider"></div>
+        </div>
+
+        <a routerLink="/login" class="auth-sub"
+          style="display:block;text-align:center;text-decoration:none;margin-top:20px;">
+          <div class="auth-sub-inner">
+            {{ 'Verify.GO_TO_LOGIN' | translate }}
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+
       <!-- Back link -->
       <div class="auth-switch" style="margin-top:22px;">
         <a routerLink="/login">
