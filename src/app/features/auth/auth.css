@@ -972,3 +972,42 @@ body:not(.dark-mode) .auth-switch a:hover {
   margin: 0;
   line-height: 1.6;
 }
+
+/* ── Success alert (forgot-password email sent) ── */
+.alert-success {
+  background: rgba(25, 210, 120, 0.08);
+  border: 1px solid rgba(25, 210, 120, 0.25);
+}
+
+.alert-icon-success {
+  background: rgba(25, 210, 120, 0.15);
+  color: #19d278;
+}
+
+.alert-title-success {
+  color: #19d278;
+}
+
+/* ── Forgot current password link in profile ── */
+.forgot-current-pw-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.forgot-pw-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity .2s;
+}
+
+.forgot-pw-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}

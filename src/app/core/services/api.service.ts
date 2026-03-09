@@ -37,8 +37,8 @@ export class ApiService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { identifier, password });
   }
 
-  forgotPassword(identifier: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { identifier });
+  forgotPassword(identifier: string, lang: string = 'en'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { identifier, lang });
   }
 
   resetPassword(token: string, newPassword: string): Observable<any> {

@@ -19,9 +19,13 @@ export class ForgotPassword implements OnDestroy {
   forgotForm: FormGroup;
   isChecking = false;
   isLoading = false;
-  showMaintenanceMsg = false;
   showNotFoundMsg = false;
+  showSuccessMsg = false;
   userExists: boolean | null = null;
+
+  get isLoggedIn(): boolean {
+    return !!localStorage.getItem('authToken');
+  }
 
   private destroy$ = new Subject<void>();
   private check$ = new Subject<string>();
@@ -37,7 +41,6 @@ export class ForgotPassword implements OnDestroy {
       identifier: ['', [Validators.required, Validators.minLength(3)]]
     });
 
-    // ── Live-check pipeline ───────────────────────────────────────────────
     this.check$
       .pipe(
         debounceTime(300),
@@ -48,10 +51,9 @@ export class ForgotPassword implements OnDestroy {
             this.cdr.markForCheck();
             return of(null);
           }
-          // Start check — show spinner immediately
           this.isChecking = true;
           this.showNotFoundMsg = false;
-          this.showMaintenanceMsg = false;
+          this.showSuccessMsg = false;
           this.userExists = null;
           this.cdr.markForCheck();
           return this.apiService.checkUserExists(value);
@@ -68,19 +70,15 @@ export class ForgotPassword implements OnDestroy {
         error: () => {
           this.isChecking = false;
           this.userExists = null;
-          this.showMaintenanceMsg = false;
           this.showNotFoundMsg = false;
           this.cdr.markForCheck();
         }
       });
   }
 
-  // ── Events ────────────────────────────────────────────────────────────
-
   onIdentifierChange(value: string): void {
-    // Hide stale messages instantly on new input
-    this.showMaintenanceMsg = false;
     this.showNotFoundMsg = false;
+    this.showSuccessMsg = false;
     this.userExists = null;
     this.cdr.markForCheck();
     this.check$.next(value.trim());
@@ -91,62 +89,53 @@ export class ForgotPassword implements OnDestroy {
     this.cdr.markForCheck();
     if (this.forgotForm.invalid) return;
 
-    // If live-check already has a result — show immediately, no extra API call
-    if (this.userExists === true) {
-      this.isLoading = false;
-      this.isChecking = false;
-      this.showMaintenanceMsg = true;
-      this.cdr.markForCheck();
-      return;
-    }
     if (this.userExists === false) {
-      this.isLoading = false;
-      this.isChecking = false;
       this.showNotFoundMsg = true;
       this.cdr.markForCheck();
       return;
     }
 
-    // If live-check is still running or hasn't fired yet — explicit API call
     const identifier = this.forgotForm.get('identifier')?.value?.trim();
     if (!identifier) return;
 
     this.isLoading = true;
-    this.showMaintenanceMsg = false;
     this.showNotFoundMsg = false;
+    this.showSuccessMsg = false;
     this.cdr.markForCheck();
 
-    this.apiService.checkUserExists(identifier).subscribe({
-      next: res => {
+    const lang = this.translate.currentLang || 'en';
+
+    this.apiService.forgotPassword(identifier, lang).subscribe({
+      next: (res: any) => {
         this.isLoading = false;
-        this.applyCheckResult(res.exists);
+        if (res?.error === 'user_not_found') {
+          this.showNotFoundMsg = true;
+          this.userExists = false;
+        } else {
+          // Show success even on server error to avoid email enumeration
+          this.showSuccessMsg = true;
+          this.showNotFoundMsg = false;
+          this.forgotForm.get('identifier')?.disable();
+        }
         this.cdr.markForCheck();
       },
       error: () => {
         this.isLoading = false;
-        this.showMaintenanceMsg = true;
+        this.showSuccessMsg = true;
         this.cdr.markForCheck();
       }
     });
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────
-
   private applyCheckResult(exists: boolean): void {
     this.userExists = exists;
-    if (exists) {
-      this.showMaintenanceMsg = true;
-      this.showNotFoundMsg = false;
-    } else {
-      this.showNotFoundMsg = true;
-      this.showMaintenanceMsg = false;
-    }
+    this.showNotFoundMsg = !exists;
   }
 
   private resetCheckState(): void {
     this.userExists = null;
     this.showNotFoundMsg = false;
-    this.showMaintenanceMsg = false;
+    this.showSuccessMsg = false;
     this.isChecking = false;
     this.isLoading = false;
   }
@@ -169,7 +158,7 @@ export class ForgotPassword implements OnDestroy {
   }
 
   get isSubmitDisabled(): boolean {
-    return this.forgotForm.invalid || this.isBusy || this.userExists === false;
+    return this.forgotForm.invalid || this.isBusy || this.userExists === false || this.showSuccessMsg;
   }
 
   private markFormGroupTouched(fg: FormGroup): void {

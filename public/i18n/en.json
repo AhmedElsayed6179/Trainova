@@ -234,8 +234,8 @@
     "STAT_SECURE": "Secure",
     "STAT_FAST": "Fast Reset",
     "STAT_PROTECTED": "Protected",
-    "MAINTENANCE_TITLE": "Reset Link — Under Maintenance",
-    "MAINTENANCE_TEXT": "We found your account! However, the password reset feature is currently under maintenance. Please try again later or contact support.",
+    "MAINTENANCE_TITLE": "",
+    "MAINTENANCE_TEXT": "",
     "ERRORS": {
       "IDENTIFIER_REQUIRED": "Please enter your username or email.",
       "USER_NOT_FOUND": "No account found with this username or email. Please check and try again.",
@@ -243,7 +243,9 @@
     },
     "VISUAL_LINE1": "COME",
     "VISUAL_LINE2": "BACK",
-    "VISUAL_LINE3": "STRONGER"
+    "VISUAL_LINE3": "STRONGER",
+    "SUCCESS_TITLE": "Check Your Inbox!",
+    "SUCCESS_TEXT": "If an account matches that username or email, we've sent a password reset link. It expires in 1 hour."
   },
   "Logout": {
     "CONFIRM_TITLE": "Sign Out?",
@@ -383,7 +385,9 @@
     "ROTATE_RIGHT": "Rotate Right",
     "FLIP": "Flip",
     "RESET": "Reset",
-    "VIEW_PHOTO": "View Photo"
+    "VIEW_PHOTO": "View Photo",
+    "FORGOT_PASSWORD_LINK": "Forgot your current password?",
+    "FORGOT_PASSWORD_HINT": "Click here to reset it"
   },
   "DASHBOARD": {
     "WELCOME_BACK": "Ready to crush today's workout?",
@@ -742,5 +746,25 @@
   "Security": {
     "DEVTOOLS_TITLE": "Site Closed",
     "DEVTOOLS_MSG": "Developer tools cannot be opened on this site."
+  },
+  "ResetPassword": {
+    "TITLE": "Set New Password",
+    "SUBTITLE": "Create a strong new password for your account.",
+    "NEW_PASSWORD": "New Password",
+    "CONFIRM_PASSWORD": "Confirm New Password",
+    "SUBMIT": "Reset Password",
+    "GO_TO_LOGIN": "Go to Login",
+    "REQUEST_NEW_LINK": "Request New Link",
+    "SUCCESS_TITLE": "Password Reset!",
+    "SUCCESS_TEXT": "Your password has been successfully updated. You can now log in with your new password.",
+    "EXPIRED_TITLE": "Link Expired",
+    "EXPIRED_TEXT": "This reset link has expired. Reset links are only valid for 1 hour. Please request a new one.",
+    "INVALID_TITLE": "Invalid Link",
+    "INVALID_TEXT": "This reset link is invalid or has already been used. Please request a new password reset.",
+    "VISUAL_LINE1": "NEW",
+    "VISUAL_LINE2": "PASSWORD",
+    "VISUAL_LINE3": "NEW START",
+    "VISUAL_SUB": "Create a strong new password and get back to your training journey.",
+    "STAT_INSTANT": "Instant"
   }
 }

@@ -13,6 +13,7 @@ import { Profile } from './features/profile/profile';
 import { ExerciseCard } from './shared/components/exercise-card/exercise-card';
 import { AuthGuard } from './core/guards/auth-guard';
 import { GuestGuard } from './core/guards/guest-guard';
+import { ResetPassword } from './features/auth/reset-password/reset-password';
 
 export const routes: Routes = [
   {
@@ -59,9 +60,13 @@ export const routes: Routes = [
   },
 
   {
+    path: 'reset-password',
+    component: ResetPassword
+  },
+
+  {
     path: 'forgot-password',
-    component: ForgotPassword,
-    canActivate: [GuestGuard]
+    component: ForgotPassword
   },
 
   {
