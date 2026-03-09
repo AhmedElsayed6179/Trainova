@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://trainova-api.vercel.app/api',
-  baseUrl: 'https://trainova-api.vercel.app',
+  apiUrl: 'https://trainova-api.up.railway.app/api',
+  baseUrl: 'https://trainova-api.up.railway.app',
   appName: 'Trainova',
   appUrl: 'https://trainova.up.railway.app',
   version: '1.0.0',
