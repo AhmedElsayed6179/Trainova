@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -35,7 +35,8 @@ export class Login implements OnInit, OnDestroy {
     private translate: TranslateService,
     private apiService: ApiService,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       identifier: ['', [Validators.required, Validators.minLength(3)]],
@@ -77,48 +78,57 @@ export class Login implements OnInit, OnDestroy {
 
     this.apiService.login(identifier, password).subscribe({
       next: (response: LoginResponse) => {
-        this.ngZone.run(() => { this.isLoading = false; });
+        this.ngZone.run(() => {
+          this.isLoading = false;
 
-        if (response.success && response.user && response.token) {
-          if (rememberMe) {
-            localStorage.setItem('rememberedIdentifier', identifier);
-            localStorage.setItem('rememberedPassword', password);
+          if (response.success && response.user && response.token) {
+            if (rememberMe) {
+              localStorage.setItem('rememberedIdentifier', identifier);
+              localStorage.setItem('rememberedPassword', password);
+            } else {
+              localStorage.removeItem('rememberedIdentifier');
+              localStorage.removeItem('rememberedPassword');
+            }
+            localStorage.setItem('currentUser', JSON.stringify(response.user));
+            localStorage.setItem('authToken', response.token);
+
+            forkJoin({ title: this.translate.get('SUCCESS'), text: this.translate.get('Login.SUCCESS_MESSAGE') })
+              .subscribe(t => {
+                Swal.fire({ icon: 'success', title: t.title, text: t.text, timer: 1500, showConfirmButton: false })
+                  .then(() => this.router.navigate(['/dashboard']).then(() => window.location.reload()));
+              });
+
+          } else if ((response as any).error === 'email_not_verified') {
+            // Show inline verify prompt immediately
+            this.showVerifyPrompt = true;
+            this.verifyIdentifier = identifier;
+            this.cdr.detectChanges(); // ← فوري بدون تأخير
+
+            const res = response as any;
+            if (res.canResend) {
+              this.sendVerificationEmail(identifier, false);
+            } else if (res.secondsLeft > 0) {
+              this.startCooldown(res.secondsLeft);
+            }
+
           } else {
-            localStorage.removeItem('rememberedIdentifier');
-            localStorage.removeItem('rememberedPassword');
-          }
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
-          localStorage.setItem('authToken', response.token);
-
-          forkJoin({ title: this.translate.get('SUCCESS'), text: this.translate.get('Login.SUCCESS_MESSAGE') })
-            .subscribe(t => {
-              Swal.fire({ icon: 'success', title: t.title, text: t.text, timer: 1500, showConfirmButton: false })
-                .then(() => this.router.navigate(['/dashboard']).then(() => window.location.reload()));
-            });
-
-        } else if ((response as any).error === 'email_not_verified') {
-          // Show inline verify prompt and auto-send verification email
-          this.showVerifyPrompt = true;
-          this.verifyIdentifier = identifier;
-          const res = response as any;
-
-          if (res.canResend) {
-            // Auto-resend immediately
-            this.sendVerificationEmail(identifier, false);
-          } else if (res.secondsLeft > 0) {
-            this.startCooldown(res.secondsLeft);
+            const errorKey = (response as any).error === 'server_error'
+              ? 'Login.ERRORS.SERVER_ERROR'
+              : 'Login.ERRORS.INVALID_CREDENTIALS';
+            forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get(errorKey) })
+              .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
           }
 
-        } else {
-          const errorKey = (response as any).error === 'server_error' ? 'Login.ERRORS.SERVER_ERROR' : 'Login.ERRORS.INVALID_CREDENTIALS';
-          forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get(errorKey) })
-            .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
-        }
+          this.cdr.detectChanges();
+        });
       },
       error: () => {
-        this.ngZone.run(() => { this.isLoading = false; });
-        forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Login.ERRORS.CONNECTION_ERROR') })
-          .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+        this.ngZone.run(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+          forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Login.ERRORS.CONNECTION_ERROR') })
+            .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+        });
       }
     });
   }
@@ -128,6 +138,7 @@ export class Login implements OnInit, OnDestroy {
     this.resendError = '';
     this.resendSuccess = false;
     if (showLoader) this.isResending = true;
+    this.cdr.detectChanges(); // ← تحديث فوري لحالة الزرار
 
     const lang = this.translate.currentLang || 'en';
     this.apiService.resendVerification(identifier, lang).subscribe({
@@ -139,26 +150,39 @@ export class Login implements OnInit, OnDestroy {
         } else if (res.error === 'cooldown') {
           this.startCooldown(res.secondsLeft || 120);
         } else if (res.error === 'already_verified') {
-          this.translate.get('Verify.ERRORS.ALREADY_VERIFIED').subscribe(t => { this.resendError = t; });
+          this.translate.get('Verify.ERRORS.ALREADY_VERIFIED').subscribe(t => {
+            this.resendError = t;
+            this.cdr.detectChanges();
+          });
         } else if (res.error === 'user_not_found') {
-          this.translate.get('Verify.ERRORS.USER_NOT_FOUND').subscribe(t => { this.resendError = t; });
+          this.translate.get('Verify.ERRORS.USER_NOT_FOUND').subscribe(t => {
+            this.resendError = t;
+            this.cdr.detectChanges();
+          });
         }
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isResending = false;
-        this.translate.get('Login.ERRORS.CONNECTION_ERROR').subscribe(t => { this.resendError = t; });
+        this.translate.get('Login.ERRORS.CONNECTION_ERROR').subscribe(t => {
+          this.resendError = t;
+          this.cdr.detectChanges();
+        });
       }
     });
   }
 
   private startCooldown(seconds: number) {
     this.cooldownSeconds = seconds;
+    this.cdr.detectChanges();
     if (this.cooldownTimer) clearInterval(this.cooldownTimer);
     this.cooldownTimer = setInterval(() => {
       this.cooldownSeconds--;
+      this.cdr.detectChanges();
       if (this.cooldownSeconds <= 0) {
         clearInterval(this.cooldownTimer);
         this.cooldownSeconds = 0;
+        this.cdr.detectChanges();
       }
     }, 1000);
   }
@@ -173,6 +197,7 @@ export class Login implements OnInit, OnDestroy {
     this.showVerifyPrompt = false;
     this.resendSuccess = false;
     this.resendError = '';
+    this.cdr.detectChanges();
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
