@@ -1,8 +1,0 @@
-{
-  "buildCommand": "npm run build -- --configuration=production",
-  "outputDirectory": "dist/trainova/browser",
-  "framework": "angular",
-  "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ]
-}
