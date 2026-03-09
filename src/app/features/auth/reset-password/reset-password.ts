@@ -92,11 +92,11 @@ export class ResetPassword implements OnInit {
   }
 
   goToLogin(): void {
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
   }
 
   goToForgotPassword(): void {
-    this.router.navigate(['/auth/forgot-password']);
+    this.router.navigate(['/forgot-password']);
   }
 
   hasError(controlName: string, errorName: string): boolean {
