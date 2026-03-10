@@ -167,7 +167,7 @@
       <div class="d-flex justify-content-center">
         <div class="ab-team-card" *ngFor="let m of team">
           <div class="ab-team-avatar-wrap">
-            <img [src]="m.avatar" [alt]="m.name" class="ab-team-avatar" onerror="this.src='team/Ahmed.png'">
+            <img [src]="m.avatar" [alt]="m.nameKey | translate" class="ab-team-avatar" onerror="this.src='team/Ahmed.png'">
             <div class="ab-team-avatar-glow"></div>
           </div>
           <h5 class="ab-team-name">{{ m.nameKey | translate }}</h5>
