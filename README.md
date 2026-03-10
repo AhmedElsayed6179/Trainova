@@ -1,59 +1,37 @@
-# Trainova
+Trainova 💪
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+Trainova is a modern fitness web application designed to help users discover exercises, build workout routines, and stay consistent with their fitness journey. The platform provides a structured library of exercises organized by muscle groups, allowing users to easily explore and follow effective training routines.
 
-## Development server
+The goal of Trainova is to make fitness training more accessible and organized by offering a clean, user-friendly interface where users can register, browse exercises, and start building their own workout plans.
 
-To start a local development server, run:
+🚀 Live Demo
 
-```bash
-ng serve
-```
+https://trainova.up.railway.app
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+✨ Features
 
-## Code scaffolding
+- User authentication (Register / Login)
+- Exercise library organized by muscle groups
+- Workout navigation for different body parts
+- Multi-language support (English / Arabic)
+- Responsive design for mobile and desktop
+- Modern UI and smooth user experience
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+🛠️ Tech Stack
 
-```bash
-ng generate component component-name
-```
+- Frontend: Angular, TypeScript, HTML, CSS
+- Libraries: ngx-translate, Font Awesome
+- Backend / API: REST API integration
+- Hosting: Railway
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+🎯 Project Purpose
 
-```bash
-ng generate --help
-```
+Trainova was created to simplify the process of learning exercises and organizing workouts. By combining a clear exercise library with an easy-to-use interface, the platform helps users stay motivated and consistent in their fitness routines.
 
-## Building
+👨‍💻 Author
 
-To build the project run:
+Ahmed Mohamed
+Frontend Developer
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Contact with me:
+https://ahmedelsayed6179.github.io/Ahmed-Websites
