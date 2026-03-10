@@ -2,7 +2,8 @@ import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { environment } from '../../../environments/environment';
+import { ApiService } from '../../core/services/api.service';
+import { ReCaptchaV3Service } from '../../core/services/re-captcha-v3-service';
 
 @Component({
   selector: 'app-contact',
@@ -23,15 +24,15 @@ export class Contact {
   submitted = false;
   errorMessage = '';
 
-  private FORMSPREE_URL = `${environment.FORMSPREE_URL}`;
-
   constructor(
     private translate: TranslateService,
     private ngZone: NgZone,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private apiService: ApiService,
+    private recaptchaV3Service: ReCaptchaV3Service
   ) { }
 
-  async onSubmit() {
+  onSubmit() {
     if (!this.form.name || !this.form.email || !this.form.subject || !this.form.message) return;
 
     this.isSubmitting = true;
@@ -39,50 +40,46 @@ export class Contact {
     this.errorMessage = '';
     this.cdr.detectChanges();
 
-    try {
-      const response = await fetch(this.FORMSPREE_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: this.form.name,
-          email: this.form.email,
-          subject: this.form.subject || 'General',
-          message: this.form.message
-        })
-      });
+    this.recaptchaV3Service.execute('contact').subscribe({
+      next: (token: string) => this._submitWithToken(token),
+      error: () => this._submitWithToken('')
+    });
+  }
 
-      const data = await response.json();
-
-      this.ngZone.run(() => {
-        this.isSubmitting = false;
-
-        if (response.ok) {
-          this.submitted = true;
-          this.errorMessage = '';
-          this.form = { name: '', email: '', subject: '', message: '' };
+  private _submitWithToken(recaptchaToken: string): void {
+    this.apiService.sendContactMessage({
+      name: this.form.name.trim(),
+      email: this.form.email.trim(),
+      subject: this.form.subject || 'General',
+      message: this.form.message.trim(),
+      recaptchaToken
+    }).subscribe({
+      next: (res: any) => {
+        this.ngZone.run(() => {
+          this.isSubmitting = false;
+          if (res?.success) {
+            this.submitted = true;
+            this.errorMessage = '';
+            this.form = { name: '', email: '', subject: '', message: '' };
+            setTimeout(() => {
+              this.ngZone.run(() => {
+                this.submitted = false;
+                this.cdr.detectChanges();
+              });
+            }, 8000);
+          } else {
+            this.errorMessage = this.translate.instant('CONTACT.FORM.ERROR');
+          }
           this.cdr.detectChanges();
-
-          setTimeout(() => {
-            this.ngZone.run(() => {
-              this.submitted = false;
-              this.cdr.detectChanges();
-            });
-          }, 8000);
-        } else {
+        });
+      },
+      error: () => {
+        this.ngZone.run(() => {
+          this.isSubmitting = false;
           this.errorMessage = this.translate.instant('CONTACT.FORM.ERROR');
           this.cdr.detectChanges();
-        }
-      });
-
-    } catch (err) {
-      this.ngZone.run(() => {
-        this.isSubmitting = false;
-        this.errorMessage = this.translate.instant('CONTACT.FORM.ERROR');
-        this.cdr.detectChanges();
-      });
-    }
+        });
+      }
+    });
   }
 }

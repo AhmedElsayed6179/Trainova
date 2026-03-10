@@ -57,6 +57,11 @@ export class ApiService {
     return this.http.post<ChangePasswordResponse>(`${this.apiUrl}/change-password/${userId}`, passwordData);
   }
 
+  // ==================== Contact API ====================
+  sendContactMessage(data: { name: string; email: string; subject: string; message: string; recaptchaToken: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/contact`, data);
+  }
+
   // ==================== Profile APIs ====================
   getUserProfile(userId: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/profile/${userId}`);

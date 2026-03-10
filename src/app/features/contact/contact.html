@@ -136,12 +136,25 @@
                     <i class="fas fa-comment-dots"></i>
                     {{ 'CONTACT.FORM.MESSAGE' | translate }}
                   </label>
-                  <textarea style="resize: none;" class="contact-input contact-textarea" [(ngModel)]="form.message" name="message" rows="5"
-                    placeholder="{{ 'CONTACT.FORM.MESSAGE_PH' | translate }}" required></textarea>
+                  <textarea style="resize: none;" class="contact-input contact-textarea" [(ngModel)]="form.message"
+                    name="message" rows="5" placeholder="{{ 'CONTACT.FORM.MESSAGE_PH' | translate }}"
+                    required></textarea>
                 </div>
               </div>
 
               <div class="col-12">
+                <!-- ══ reCAPTCHA v3 Notice (required by Google ToS) ══ -->
+                <div class="recaptcha-notice">
+                  <i class="fas fa-shield-alt recaptcha-notice-icon"></i>
+                  <span>
+                    {{ 'RECAPTCHA.NOTICE' | translate }}
+                    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">{{ 'RECAPTCHA.PRIVACY'
+                      | translate }}</a>
+                    &amp;
+                    <a href="https://policies.google.com/terms" target="_blank" rel="noopener">{{ 'RECAPTCHA.TERMS' |
+                      translate }}</a>
+                  </span>
+                </div>
                 <button type="submit" class="btn-contact-submit" [disabled]="isSubmitting">
                   <span *ngIf="!isSubmitting">
                     <i class="fas fa-paper-plane me-2"></i>
