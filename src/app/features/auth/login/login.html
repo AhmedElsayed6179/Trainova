@@ -53,7 +53,6 @@
         <p>
           {{ 'Login.SUBTITLE' | translate }}
           <span class="auth-heading-no-account">
-            &nbsp;·&nbsp;
             {{ 'Login.NO_ACCOUNT' | translate }}
             <a routerLink="/register">{{ 'Login.REGISTER_NOW' | translate }}</a>
           </span>
@@ -63,28 +62,31 @@
       <!-- ══════════════════════════════════
            EMAIL NOT VERIFIED BANNER
            ══════════════════════════════════ -->
-      <div *ngIf="showVerifyPrompt" class="alert-banner alert-warning" style="margin-bottom:20px;animation:fadeInDown .3s ease both;">
+      <div *ngIf="showVerifyPrompt" class="alert-banner alert-warning"
+        style="margin-bottom:20px;animation:fadeInDown .3s ease both;">
         <div class="alert-icon-wrap alert-icon-warning"><i class="fas fa-envelope"></i></div>
         <div class="alert-body">
-          <strong class="alert-title alert-title-warning">{{ 'Login.ERRORS.EMAIL_NOT_VERIFIED_TITLE' | translate }}</strong>
+          <strong class="alert-title alert-title-warning">{{ 'Login.ERRORS.EMAIL_NOT_VERIFIED_TITLE' | translate
+            }}</strong>
           <p class="alert-text" style="margin-bottom:10px;">{{ 'Login.ERRORS.EMAIL_NOT_VERIFIED' | translate }}</p>
 
           <!-- Resend success -->
-          <div *ngIf="resendSuccess" style="display:flex;align-items:center;gap:6px;color:#4ade80;font-size:0.82rem;margin-bottom:8px;">
+          <div *ngIf="resendSuccess"
+            style="display:flex;align-items:center;gap:6px;color:#4ade80;font-size:0.82rem;margin-bottom:8px;">
             <i class="fas fa-check-circle"></i>
             {{ 'Verify.RESEND_SUCCESS_TITLE' | translate }} — {{ 'Verify.RESEND_SUCCESS_TEXT' | translate }}
           </div>
 
           <!-- Resend error -->
-          <div *ngIf="resendError" style="display:flex;align-items:center;gap:6px;color:#ef4444;font-size:0.82rem;margin-bottom:8px;">
+          <div *ngIf="resendError"
+            style="display:flex;align-items:center;gap:6px;color:#ef4444;font-size:0.82rem;margin-bottom:8px;">
             <i class="fas fa-exclamation-circle"></i>{{ resendError }}
           </div>
 
           <!-- Resend button -->
           <button type="button"
             style="background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);color:#F5A623;border-radius:8px;padding:7px 16px;font-size:0.8rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;"
-            [disabled]="isResending || cooldownSeconds > 0"
-            (click)="sendVerificationEmail(verifyIdentifier, true)">
+            [disabled]="isResending || cooldownSeconds > 0" (click)="sendVerificationEmail(verifyIdentifier, true)">
             <ng-container *ngIf="!isResending && cooldownSeconds === 0">
               <i class="fas fa-paper-plane"></i> {{ 'Login.RESEND_VERIFICATION' | translate }}
             </ng-container>

@@ -215,7 +215,7 @@
   "SUCCESS": "Success!",
   "OK": "OK",
   "Login": {
-    "SUBTITLE": "Welcome back! Sign in to continue.",
+    "SUBTITLE": "Welcome back! Sign in to continue",
     "USERNAME_OR_EMAIL": "Username or Email",
     "IDENTIFIER_PLACEHOLDER": "Enter your username or email",
     "PASSWORD": "Password",
