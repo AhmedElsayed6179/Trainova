@@ -31,11 +31,6 @@ export class SecurityService implements OnDestroy {
       }
     });
 
-    // ── منع التحديد والنسخ ──
-    this.addListener('selectstart', (e) => e.preventDefault());
-    this.addListener('copy', (e) => e.preventDefault());
-    this.addListener('cut', (e) => e.preventDefault());
-
     // ── كشف DevTools عن طريق حجم النافذة ──
     this.devToolsInterval = setInterval(() => {
       const threshold = 160;
