@@ -252,11 +252,11 @@
             <i class="fas fa-shield-alt ai-ico"></i>
             <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
               placeholder="{{ 'Register.CONFIRM_PASSWORD' | translate }}">
-            <i class="fas fa-check-circle ai-ok"
-              *ngIf="!registerForm.hasError('notMatching') && isValid('confirmPassword')"></i>
             <button type="button" class="ai-eye" (click)="showConfirmPassword = !showConfirmPassword">
               <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
             </button>
+            <i class="fas fa-check-circle ai-ok"
+              *ngIf="!registerForm.hasError('notMatching') && isValid('confirmPassword')"></i>
           </div>
           <div class="ae" *ngIf="registerForm.hasError('notMatching') && registerForm.get('confirmPassword')?.touched">
             <i class="fas fa-exclamation-circle"></i>
