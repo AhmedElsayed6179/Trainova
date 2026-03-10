@@ -7,7 +7,6 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideServiceWorker } from '@angular/service-worker';
 import { authInterceptorInterceptor } from './core/interceptors/auth-interceptor';
-import { RECAPTCHA_V3_SITE_KEY, ReCaptchaV3Service } from 'ng-recaptcha';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,11 +16,6 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([authInterceptorInterceptor])
     ),
-    {
-      provide: RECAPTCHA_V3_SITE_KEY,
-      useValue: '6Lc-74UsAAAAAEAhq_TJhF8cb4yFTu851stagtUV'
-    },
-    ReCaptchaV3Service,
     provideSweetAlert2({ fireOnInit: false, dismissOnDestroy: true }),
     provideTranslateService({
       loader: provideTranslateHttpLoader({

@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { LoginResponse } from '../../../core/models/user-profile';
 import { forkJoin } from 'rxjs';
-import { ReCaptchaV3Service } from 'ng-recaptcha';
+import { ReCaptchaV3Service } from '../../../core/services/re-captcha-v3-service';
 
 @Component({
   selector: 'app-login',

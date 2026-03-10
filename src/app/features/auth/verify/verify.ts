@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
-import { ReCaptchaV3Service } from 'ng-recaptcha';
+import { ReCaptchaV3Service } from '../../../core/services/re-captcha-v3-service';
 
 type VerifyStatus = 'loading' | 'success' | 'invalid' | 'expired' | 'no_token' | 'already_verified';
 
@@ -34,7 +34,7 @@ export class Verify implements OnInit, OnDestroy {
     private translate: TranslateService,
     private cdr: ChangeDetectorRef,
     private recaptchaV3Service: ReCaptchaV3Service
-  ) {}
+  ) { }
 
   ngOnInit() {
     const token = this.route.snapshot.queryParamMap.get('token');
@@ -152,6 +152,6 @@ export class Verify implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.countdownTimer) clearInterval(this.countdownTimer);
-    if (this.cooldownTimer)  clearInterval(this.cooldownTimer);
+    if (this.cooldownTimer) clearInterval(this.cooldownTimer);
   }
 }
