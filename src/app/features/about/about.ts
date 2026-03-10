@@ -34,7 +34,7 @@ export class About implements OnInit, OnDestroy {
 
   team = [
     {
-      name: 'Ahmed Mohamed',
+      nameKey: 'About.TEAM1_NAME',
       roleKey: 'About.TEAM1_ROLE',
       avatar: 'team/Ahmed.png',
       Contact: 'https://ahmedelsayed6179.github.io/Ahmed-Websites',
