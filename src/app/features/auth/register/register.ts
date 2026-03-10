@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { Router, RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, forkJoin, takeUntil } from 'rxjs';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +30,8 @@ export class Register implements OnInit, OnDestroy {
     private translate: TranslateService,
     private apiService: ApiService,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private recaptchaV3Service: ReCaptchaV3Service
   ) {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z\u0600-\u06FF\s]+$/)]],
@@ -148,20 +150,34 @@ export class Register implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
+
+    // Execute reCAPTCHA v3 before submitting registration
+    this.recaptchaV3Service.execute('register').subscribe({
+      next: (token: string) => this._submitWithToken(token),
+      error: () => {
+        this.isLoading = false;
+        forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Login.ERRORS.RECAPTCHA_FAILED') })
+          .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+      }
+    });
+  }
+
+  private _submitWithToken(recaptchaToken: string) {
     const formData = { ...this.registerForm.value };
     delete formData.confirmPassword;
-    // Trim all string fields
+
     ['firstName', 'lastName', 'email', 'username', 'phone', 'password'].forEach(key => {
       if (typeof formData[key] === 'string') formData[key] = formData[key].trim();
     });
-    // Merge first + last name into single "name" field for the API
+
     const firstName = (formData.firstName || '').trim();
-    const lastName = (formData.lastName || '').trim();
+    const lastName  = (formData.lastName  || '').trim();
     formData.name = lastName ? `${firstName} ${lastName}` : firstName;
     delete formData.firstName;
     delete formData.lastName;
-    // Send current language so server sends email in correct language
+
     formData.lang = this.translate.currentLang || 'en';
+    formData.recaptchaToken = recaptchaToken;
 
     this.apiService.registerUser(formData).subscribe({
       next: (response) => {
@@ -183,6 +199,10 @@ export class Register implements OnInit, OnDestroy {
               allowOutsideClick: false
             }).then(() => this.router.navigate(['/verify']));
           });
+
+        } else if ((response as any).error === 'recaptcha_failed') {
+          forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Login.ERRORS.RECAPTCHA_FAILED') })
+            .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
 
         } else {
           let errorKey = 'Register.ERRORS.REGISTRATION_FAILED';

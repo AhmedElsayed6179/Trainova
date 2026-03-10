@@ -137,6 +137,18 @@
                 <i class="fas fa-exclamation-circle"></i>{{ resendError }}
               </div>
             </div>
+            <!-- reCAPTCHA notice -->
+            <!-- ══ reCAPTCHA v3 Notice (required by Google ToS) ══ -->
+            <div class="recaptcha-notice">
+              <i class="fas fa-shield-alt recaptcha-notice-icon"></i>
+              <span>
+                {{ 'RECAPTCHA.NOTICE' | translate }}
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">{{ 'RECAPTCHA.PRIVACY' | translate }}</a>
+                &amp;
+                <a href="https://policies.google.com/terms" target="_blank" rel="noopener">{{ 'RECAPTCHA.TERMS' | translate }}</a>
+              </span>
+            </div>
+
             <button class="auth-sub" [disabled]="isResending || cooldownSeconds > 0 || !resendIdentifier"
               (click)="resendVerification()">
               <div class="auth-sub-inner">
@@ -201,6 +213,18 @@
               <div class="ae" *ngIf="resendError">
                 <i class="fas fa-exclamation-circle"></i>{{ resendError }}
               </div>
+            </div>
+
+            <!-- reCAPTCHA notice -->
+            <!-- ══ reCAPTCHA v3 Notice (required by Google ToS) ══ -->
+            <div class="recaptcha-notice">
+              <i class="fas fa-shield-alt recaptcha-notice-icon"></i>
+              <span>
+                {{ 'RECAPTCHA.NOTICE' | translate }}
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">{{ 'RECAPTCHA.PRIVACY' | translate }}</a>
+                &amp;
+                <a href="https://policies.google.com/terms" target="_blank" rel="noopener">{{ 'RECAPTCHA.TERMS' | translate }}</a>
+              </span>
             </div>
 
             <button class="auth-sub" [disabled]="isResending || cooldownSeconds > 0 || !resendIdentifier"

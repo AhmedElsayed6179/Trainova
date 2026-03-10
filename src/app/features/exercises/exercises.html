@@ -143,7 +143,14 @@
 
         <!-- Illustration area -->
         <div class="ex-card-art">
-          <div class="ex-card-art-icon">
+          <div class="ex-card-art-gif" *ngIf="ex.gifUrl">
+            <img [src]="ex.gifUrl" [alt]="getName(ex)" loading="lazy"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <div class="ex-card-art-icon" style="display:none">
+              <i class="fas fa-person-running"></i>
+            </div>
+          </div>
+          <div class="ex-card-art-icon" *ngIf="!ex.gifUrl">
             <i class="fas fa-person-running"></i>
           </div>
           <div class="ex-card-calories">
@@ -239,6 +246,12 @@
 
     <!-- Modal body -->
     <div class="ex-modal-body">
+
+      <!-- GIF Animation -->
+      <div class="ex-modal-gif" *ngIf="selectedExercise.gifUrl">
+        <img [src]="selectedExercise!.gifUrl" [alt]="getName(selectedExercise!)" loading="lazy" class="ex-modal-gif-img"
+          onerror="this.parentElement.style.display='none'">
+      </div>
 
       <!-- Stats row -->
       <div class="ex-modal-stats">

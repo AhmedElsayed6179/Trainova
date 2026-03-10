@@ -5,6 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-reset-password',
@@ -31,7 +32,8 @@ export class ResetPassword implements OnInit {
     private router: Router,
     private apiService: ApiService,
     private translate: TranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private recaptchaV3Service: ReCaptchaV3Service
   ) {
     this.resetForm = this.fb.group({
       password: ['', [
@@ -52,13 +54,11 @@ export class ResetPassword implements OnInit {
       return;
     }
 
-    // Apply language from URL param (respects user's choice at forgot-password time)
     if (lang && (lang === 'ar' || lang === 'en')) {
       this.translate.use(lang);
       localStorage.setItem('lang', lang);
     }
 
-    // Reset same-password error when user types
     this.resetForm.get('password')?.valueChanges.subscribe(() => {
       if (this.showSamePasswordError) {
         this.showSamePasswordError = false;
@@ -80,7 +80,18 @@ export class ResetPassword implements OnInit {
     this.isLoading = true;
     this.cdr.markForCheck();
 
-    this.apiService.resetPassword(this.token, this.resetForm.get('password')!.value.trim()).subscribe({
+    // Execute reCAPTCHA v3 before submitting the new password
+    this.recaptchaV3Service.execute('reset_password').subscribe({
+      next: (recaptchaToken: string) => this._submitWithToken(recaptchaToken),
+      error: () => {
+        // Degrade gracefully — submit without token; server will decide
+        this._submitWithToken('');
+      }
+    });
+  }
+
+  private _submitWithToken(recaptchaToken: string): void {
+    this.apiService.resetPassword(this.token, this.resetForm.get('password')!.value.trim(), recaptchaToken).subscribe({
       next: (res: any) => {
         this.isLoading = false;
         if (res?.success) {
@@ -102,13 +113,8 @@ export class ResetPassword implements OnInit {
     });
   }
 
-  goToLogin(): void {
-    this.router.navigate(['/login']);
-  }
-
-  goToForgotPassword(): void {
-    this.router.navigate(['/forgot-password']);
-  }
+  goToLogin(): void { this.router.navigate(['/login']); }
+  goToForgotPassword(): void { this.router.navigate(['/forgot-password']); }
 
   hasError(controlName: string, errorName: string): boolean {
     const c = this.resetForm.get(controlName);

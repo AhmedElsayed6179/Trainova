@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of, takeUntil } from 'rxjs';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-forgot-password',
@@ -38,7 +39,8 @@ export class ForgotPassword implements OnDestroy {
     private translate: TranslateService,
     private apiService: ApiService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private recaptchaV3Service: ReCaptchaV3Service
   ) {
     this.forgotForm = this.fb.group({
       identifier: ['', [Validators.required, Validators.minLength(3)]]
@@ -107,9 +109,22 @@ export class ForgotPassword implements OnDestroy {
     this.showSuccessMsg = false;
     this.cdr.markForCheck();
 
+    // Execute reCAPTCHA v3 before submitting
+    this.recaptchaV3Service.execute('forgot_password').subscribe({
+      next: (token: string) => this._submitWithToken(identifier, token),
+      error: () => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+        // Silent fail — degrade gracefully, still attempt submission without token
+        this._submitWithToken(identifier, '');
+      }
+    });
+  }
+
+  private _submitWithToken(identifier: string, recaptchaToken: string): void {
     const lang = this.translate.currentLang || 'en';
 
-    this.apiService.forgotPassword(identifier, lang).subscribe({
+    this.apiService.forgotPassword(identifier, lang, recaptchaToken).subscribe({
       next: (res: any) => {
         this.isLoading = false;
         if (res?.error === 'user_not_found') {
@@ -118,17 +133,13 @@ export class ForgotPassword implements OnDestroy {
         } else if (res?.error === 'cooldown') {
           this.startCooldown(res.secondsLeft || 120);
         } else if (res?.error === 'email_not_verified') {
-          // Account exists but not verified — we already sent verification email
           this.showNotVerifiedMsg = true;
           this.showNotFoundMsg = false;
           if (res.cooldown) {
             this.startCooldown(res.secondsLeft || 120);
-          } else if (res.verificationSent) {
-            // Email was sent
           }
           this.forgotForm.get('identifier')?.disable();
         } else {
-          // Show success even on server error to avoid email enumeration
           this.showSuccessMsg = true;
           this.showNotFoundMsg = false;
           this.forgotForm.get('identifier')?.disable();
@@ -159,9 +170,7 @@ export class ForgotPassword implements OnDestroy {
     }, 1000);
   }
 
-  get isCooldown(): boolean {
-    return this.cooldownSeconds > 0;
-  }
+  get isCooldown(): boolean { return this.cooldownSeconds > 0; }
 
   get cooldownDisplay(): string {
     const m = Math.floor(this.cooldownSeconds / 60);
@@ -195,9 +204,7 @@ export class ForgotPassword implements OnDestroy {
     return !!this.forgotForm.get('identifier')?.touched && this.userExists === false;
   }
 
-  get isBusy(): boolean {
-    return this.isChecking || this.isLoading;
-  }
+  get isBusy(): boolean { return this.isChecking || this.isLoading; }
 
   get isSubmitDisabled(): boolean {
     return this.forgotForm.invalid || this.isBusy || this.userExists === false || this.showSuccessMsg || this.isCooldown;

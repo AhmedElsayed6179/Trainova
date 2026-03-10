@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { LoginResponse } from '../../../core/models/user-profile';
 import { forkJoin } from 'rxjs';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-login',
@@ -36,7 +37,8 @@ export class Login implements OnInit, OnDestroy {
     private apiService: ApiService,
     private router: Router,
     private ngZone: NgZone,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private recaptchaV3Service: ReCaptchaV3Service
   ) {
     this.loginForm = this.fb.group({
       identifier: ['', [Validators.required, Validators.minLength(3)]],
@@ -74,11 +76,26 @@ export class Login implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
+    this.cdr.detectChanges();
+
+    // Execute reCAPTCHA v3 — invisible, no user interaction needed
+    this.recaptchaV3Service.execute('login').subscribe({
+      next: (token: string) => this._submitWithToken(token),
+      error: () => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Login.ERRORS.RECAPTCHA_FAILED') })
+          .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+      }
+    });
+  }
+
+  private _submitWithToken(recaptchaToken: string) {
     const { rememberMe } = this.loginForm.value;
     const identifier = (this.loginForm.value.identifier || '').trim();
-    const password = (this.loginForm.value.password || '').trim();
+    const password   = (this.loginForm.value.password   || '').trim();
 
-    this.apiService.login(identifier, password).subscribe({
+    this.apiService.login(identifier, password, recaptchaToken).subscribe({
       next: (response: LoginResponse) => {
         this.ngZone.run(() => {
           this.isLoading = false;
@@ -100,11 +117,14 @@ export class Login implements OnInit, OnDestroy {
                   .then(() => this.router.navigate(['/dashboard']).then(() => window.location.reload()));
               });
 
+          } else if ((response as any).error === 'recaptcha_failed') {
+            forkJoin({ title: this.translate.get('ERROR'), text: this.translate.get('Login.ERRORS.RECAPTCHA_FAILED') })
+              .subscribe(t => Swal.fire({ icon: 'error', title: t.title, text: t.text, confirmButtonColor: '#ffc107' }));
+
           } else if ((response as any).error === 'email_not_verified') {
-            // Show inline verify prompt immediately
             this.showVerifyPrompt = true;
             this.verifyIdentifier = identifier;
-            this.cdr.detectChanges(); // ← فوري بدون تأخير
+            this.cdr.detectChanges();
 
             const res = response as any;
             if (res.canResend) {
@@ -140,7 +160,7 @@ export class Login implements OnInit, OnDestroy {
     this.resendError = '';
     this.resendSuccess = false;
     if (showLoader) this.isResending = true;
-    this.cdr.detectChanges(); // ← تحديث فوري لحالة الزرار
+    this.cdr.detectChanges();
 
     const lang = this.translate.currentLang || 'en';
     this.apiService.resendVerification(identifier, lang).subscribe({

@@ -33,24 +33,24 @@ export class ApiService {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, dataToSend);
   }
 
-  login(identifier: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { identifier, password });
+  login(identifier: string, password: string, recaptchaToken: string = ''): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { identifier, password, recaptchaToken });
   }
 
-  forgotPassword(identifier: string, lang: string = 'en'): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { identifier, lang });
+  forgotPassword(identifier: string, lang: string = 'en', recaptchaToken: string = ''): Observable<any> {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { identifier, lang, recaptchaToken });
   }
 
   verifyEmail(token: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/verify-email?token=${token}`);
   }
 
-  resendVerification(identifier: string, lang: string = 'en'): Observable<any> {
-    return this.http.post(`${this.apiUrl}/resend-verification`, { identifier, lang });
+  resendVerification(identifier: string, lang: string = 'en', recaptchaToken: string = ''): Observable<any> {
+    return this.http.post(`${this.apiUrl}/resend-verification`, { identifier, lang, recaptchaToken });
   }
 
-  resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
+  resetPassword(token: string, newPassword: string, recaptchaToken: string = ''): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword, recaptchaToken });
   }
 
   changePassword(userId: string, passwordData: { currentPassword: string; newPassword: string }): Observable<ChangePasswordResponse> {

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 type VerifyStatus = 'loading' | 'success' | 'invalid' | 'expired' | 'no_token' | 'already_verified';
 
@@ -31,7 +32,8 @@ export class Verify implements OnInit, OnDestroy {
     private router: Router,
     private apiService: ApiService,
     private translate: TranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private recaptchaV3Service: ReCaptchaV3Service
   ) {}
 
   ngOnInit() {
@@ -79,6 +81,7 @@ export class Verify implements OnInit, OnDestroy {
     }, 1000);
   }
 
+  /** Resend verification — protected by reCAPTCHA v3 */
   resendVerification() {
     if (!this.resendIdentifier.trim() || this.isResending || this.cooldownSeconds > 0) return;
     this.resendError = '';
@@ -86,9 +89,16 @@ export class Verify implements OnInit, OnDestroy {
     this.isResending = true;
     this.cdr.markForCheck();
 
+    this.recaptchaV3Service.execute('resend_verification').subscribe({
+      next: (recaptchaToken: string) => this._resendWithToken(recaptchaToken),
+      error: () => this._resendWithToken('') // degrade gracefully
+    });
+  }
+
+  private _resendWithToken(recaptchaToken: string): void {
     const lang = this.translate.currentLang || 'en';
 
-    this.apiService.resendVerification(this.resendIdentifier.trim(), lang).subscribe({
+    this.apiService.resendVerification(this.resendIdentifier.trim(), lang, recaptchaToken).subscribe({
       next: (res: any) => {
         this.isResending = false;
         if (res.success) {
@@ -142,6 +152,6 @@ export class Verify implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.countdownTimer) clearInterval(this.countdownTimer);
-    if (this.cooldownTimer) clearInterval(this.cooldownTimer);
+    if (this.cooldownTimer)  clearInterval(this.cooldownTimer);
   }
 }
