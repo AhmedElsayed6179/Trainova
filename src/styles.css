@@ -802,6 +802,11 @@ input[type="number"] {
   opacity: 0 !important;
   pointer-events: none !important;
   transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  /* Force it to stay fixed at bottom-right, above ALL page content */
+  position: fixed !important;
+  bottom: 14px !important;
+  right: 0 !important;
+  z-index: 99999 !important;
 }
 
 /* Show the badge only on pages that add class "show-recaptcha" to <body>
