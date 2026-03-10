@@ -153,6 +153,8 @@ export class Register implements OnInit, OnDestroy {
     formData.name = lastName ? `${firstName} ${lastName}` : firstName;
     delete formData.firstName;
     delete formData.lastName;
+    // Send current language so server sends email in correct language
+    formData.lang = this.translate.currentLang || 'en';
 
     this.apiService.registerUser(formData).subscribe({
       next: (response) => {
