@@ -52,9 +52,11 @@
         <h1>{{ 'Login.LOGIN_BUTTON' | translate }}</h1>
         <p>
           {{ 'Login.SUBTITLE' | translate }}
-          &nbsp;·&nbsp;
-          {{ 'Login.NO_ACCOUNT' | translate }}
-          <a routerLink="/register">{{ 'Login.REGISTER_NOW' | translate }}</a>
+          <span class="auth-heading-no-account">
+            &nbsp;·&nbsp;
+            {{ 'Login.NO_ACCOUNT' | translate }}
+            <a routerLink="/register">{{ 'Login.REGISTER_NOW' | translate }}</a>
+          </span>
         </p>
       </div>
 

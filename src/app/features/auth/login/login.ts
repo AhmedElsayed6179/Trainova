@@ -74,7 +74,9 @@ export class Login implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    const { identifier, password, rememberMe } = this.loginForm.value;
+    const { rememberMe } = this.loginForm.value;
+    const identifier = (this.loginForm.value.identifier || '').trim();
+    const password = (this.loginForm.value.password || '').trim();
 
     this.apiService.login(identifier, password).subscribe({
       next: (response: LoginResponse) => {

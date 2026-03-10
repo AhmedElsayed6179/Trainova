@@ -68,8 +68,9 @@ export class Register implements OnInit, OnDestroy {
     this.registerForm.get('username')?.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(username => {
-        if (username && username.length >= 3 && !this.registerForm.get('username')?.errors) {
-          this.apiService.checkUsername(username).subscribe({
+        const trimmed = (username || '').trim();
+        if (trimmed && trimmed.length >= 3 && !this.registerForm.get('username')?.errors) {
+          this.apiService.checkUsername(trimmed).subscribe({
             next: (r) => { this.usernameExists = r.exists; },
             error: () => { this.usernameExists = false; }
           });
@@ -81,8 +82,9 @@ export class Register implements OnInit, OnDestroy {
     this.registerForm.get('email')?.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(email => {
-        if (email && email.includes('@') && !this.registerForm.get('email')?.errors) {
-          this.apiService.checkEmail(email).subscribe({
+        const trimmed = (email || '').trim();
+        if (trimmed && trimmed.includes('@') && !this.registerForm.get('email')?.errors) {
+          this.apiService.checkEmail(trimmed).subscribe({
             next: (r) => { this.emailExists = r.exists; },
             error: () => { this.emailExists = false; }
           });
@@ -94,8 +96,9 @@ export class Register implements OnInit, OnDestroy {
     this.registerForm.get('phone')?.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(phone => {
-        if (phone && phone.length === 11 && !this.registerForm.get('phone')?.errors) {
-          this.apiService.checkPhone(phone).subscribe({
+        const trimmed = (phone || '').trim();
+        if (trimmed && trimmed.length === 11 && !this.registerForm.get('phone')?.errors) {
+          this.apiService.checkPhone(trimmed).subscribe({
             next: (r) => { this.phoneExists = r.exists; },
             error: () => { this.phoneExists = false; }
           });
@@ -147,6 +150,10 @@ export class Register implements OnInit, OnDestroy {
     this.isLoading = true;
     const formData = { ...this.registerForm.value };
     delete formData.confirmPassword;
+    // Trim all string fields
+    ['firstName', 'lastName', 'email', 'username', 'phone', 'password'].forEach(key => {
+      if (typeof formData[key] === 'string') formData[key] = formData[key].trim();
+    });
     // Merge first + last name into single "name" field for the API
     const firstName = (formData.firstName || '').trim();
     const lastName = (formData.lastName || '').trim();

@@ -80,7 +80,7 @@ export class ResetPassword implements OnInit {
     this.isLoading = true;
     this.cdr.markForCheck();
 
-    this.apiService.resetPassword(this.token, this.resetForm.get('password')!.value).subscribe({
+    this.apiService.resetPassword(this.token, this.resetForm.get('password')!.value.trim()).subscribe({
       next: (res: any) => {
         this.isLoading = false;
         if (res?.success) {

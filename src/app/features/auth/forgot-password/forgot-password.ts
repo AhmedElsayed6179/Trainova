@@ -49,7 +49,8 @@ export class ForgotPassword implements OnDestroy {
         debounceTime(300),
         distinctUntilChanged(),
         switchMap(value => {
-          if (!value || value.length < 3) {
+          const trimmed = value.trim();
+          if (!trimmed || trimmed.length < 3) {
             this.resetCheckState();
             this.cdr.markForCheck();
             return of(null);
@@ -59,7 +60,7 @@ export class ForgotPassword implements OnDestroy {
           this.showSuccessMsg = false;
           this.userExists = null;
           this.cdr.markForCheck();
-          return this.apiService.checkUserExists(value);
+          return this.apiService.checkUserExists(trimmed);
         }),
         takeUntil(this.destroy$)
       )
