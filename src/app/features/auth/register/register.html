@@ -61,8 +61,7 @@
         <!-- Personal Info Section -->
         <div class="auth-sect"><i class="fas fa-user"></i> {{ 'Register.SECTION_PERSONAL' | translate }}</div>
 
-        <div class="ag2">
-
+        <!-- Row 1: First Name + Last Name -->
         <div class="ag2">
 
           <!-- First Name -->
@@ -95,6 +94,9 @@
 
         </div>
 
+        <!-- Row 2: Age + Gender -->
+        <div class="ag2">
+
           <!-- Age -->
           <div class="af">
             <label>{{ 'Register.AGE' | translate }}<span class="req">*</span></label>
@@ -104,13 +106,8 @@
               <i class="fas fa-check-circle ai-ok" *ngIf="isValid('age')"></i>
             </div>
             <div class="ae" *ngIf="hasError('age','required')">{{ 'Register.ERRORS.age.required' | translate }}</div>
-            <div class="ae" *ngIf="hasError('age','min') || hasError('age','max')">{{ 'Register.ERRORS.age.min' |
-              translate }}</div>
+            <div class="ae" *ngIf="hasError('age','min') || hasError('age','max')">{{ 'Register.ERRORS.age.min' | translate }}</div>
           </div>
-
-        </div>
-
-        <div class="ag2">
 
           <!-- Gender -->
           <div class="af">
@@ -125,28 +122,27 @@
               </select>
               <i class="fas fa-chevron-down ai-arr"></i>
             </div>
-            <div class="ae" *ngIf="hasError('gender','required')">{{ 'Register.ERRORS.gender.required' | translate }}
-            </div>
+            <div class="ae" *ngIf="hasError('gender','required')">{{ 'Register.ERRORS.gender.required' | translate }}</div>
           </div>
 
-          <!-- Goal -->
-          <div class="af">
-            <label>{{ 'Register.GOAL' | translate }}<span class="req">*</span></label>
-            <div class="ai" [class.err]="isInvalid('goal')" [class.ok]="isValid('goal')">
-              <i class="fas fa-bullseye ai-ico"></i>
-              <select formControlName="goal">
-                <option value="">{{ 'Register.SELECT_GOAL' | translate }}</option>
-                <option value="abs">{{ 'Register.GOALS.ABS' | translate }}</option>
-                <option value="legs">{{ 'Register.GOALS.LEGS' | translate }}</option>
-                <option value="full-body">{{ 'Register.GOALS.FULL_BODY' | translate }}</option>
-                <option value="back">{{ 'Register.GOALS.BACK' | translate }}</option>
-                <option value="all">{{ 'Register.GOALS.ALL' | translate }}</option>
-              </select>
-              <i class="fas fa-chevron-down ai-arr"></i>
-            </div>
-            <div class="ae" *ngIf="hasError('goal','required')">{{ 'Register.ERRORS.goal.required' | translate }}</div>
-          </div>
+        </div>
 
+        <!-- Row 3: Goal (full width) -->
+        <div class="af">
+          <label>{{ 'Register.GOAL' | translate }}<span class="req">*</span></label>
+          <div class="ai" [class.err]="isInvalid('goal')" [class.ok]="isValid('goal')">
+            <i class="fas fa-bullseye ai-ico"></i>
+            <select formControlName="goal">
+              <option value="">{{ 'Register.SELECT_GOAL' | translate }}</option>
+              <option value="abs">{{ 'Register.GOALS.ABS' | translate }}</option>
+              <option value="legs">{{ 'Register.GOALS.LEGS' | translate }}</option>
+              <option value="full-body">{{ 'Register.GOALS.FULL_BODY' | translate }}</option>
+              <option value="back">{{ 'Register.GOALS.BACK' | translate }}</option>
+              <option value="all">{{ 'Register.GOALS.ALL' | translate }}</option>
+            </select>
+            <i class="fas fa-chevron-down ai-arr"></i>
+          </div>
+          <div class="ae" *ngIf="hasError('goal','required')">{{ 'Register.ERRORS.goal.required' | translate }}</div>
         </div>
 
         <!-- Account Section -->

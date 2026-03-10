@@ -619,6 +619,12 @@ body:not(.dark-mode) .ai-ok {
   height: 100%;
   display: flex;
   align-items: center;
+  order: 3;
+  flex-shrink: 0;
+}
+
+[dir="rtl"] .ai-eye {
+  order: 0;
 }
 
 .ai-eye {
