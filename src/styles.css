@@ -796,23 +796,34 @@ input[type="number"] {
   }
 }
 
-/* Hide the floating Google badge by default on all pages */
+/* ── reCAPTCHA Badge: collapsed/icon-only, never expands ── */
 .grecaptcha-badge {
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
-  transition: opacity 0.3s ease, visibility 0.3s ease !important;
-  /* Force it to stay fixed at bottom-right, above ALL page content */
   position: fixed !important;
   bottom: 14px !important;
   right: 0 !important;
   z-index: 99999 !important;
+  /* Lock width to icon-only — prevents hover expansion */
+  width: 70px !important;
+  max-width: 70px !important;
+  overflow: hidden !important;
+  transition: none !important;
 }
 
-/* Show the badge only on pages that add class "show-recaptcha" to <body>
-   Pages: login, register, forgot-password, reset-password, contact, verify */
+/* Show on pages with show-recaptcha — stays collapsed */
 body.show-recaptcha .grecaptcha-badge {
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
+  width: 70px !important;
+  max-width: 70px !important;
+  overflow: hidden !important;
+  transition: none !important;
+}
+
+/* Prevent child elements from expanding the badge on hover */
+body.show-recaptcha .grecaptcha-badge * {
+  transition: none !important;
 }
