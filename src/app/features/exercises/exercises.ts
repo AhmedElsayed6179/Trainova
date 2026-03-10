@@ -138,7 +138,7 @@ export class Exercises implements OnInit, OnDestroy {
       id: 'legs-4', name: 'Wall Sit', name_ar: 'الجلوس على الحائط', category: 'legs', difficulty: 'Beginner',
       muscles: ['Quads', 'Glutes', 'Calves'], muscles_ar: ['الرباعية', 'الأرداف', 'الساق'],
       sets: 3, reps: '30–60s', restTime: 60, calories: 8,
-      gifUrl: 'exercises/legs/Wall_Sit.jpg',
+      gifUrl: 'exercises/legs/Wall_Sit.jpeg',
       instructions: ['Back flat against a wall.', 'Slide down until thighs are parallel.', 'Knees at 90°, directly over ankles.', 'Arms crossed or on thighs.', 'Hold without sliding.'],
       instructions_ar: ['ظهر مسطح على الحائط.', 'انزلق حتى تكون الفخذان موازيتان.', 'الركبتان 90°، مباشرة فوق الكاحلين.', 'الذراعان متقاطعتان أو على الفخذين.', 'احتفظ دون الانزلاق.'],
       tips: ['No rounding the lower back.', 'Add weight on thighs for harder version.', 'Build time gradually each session.'],
