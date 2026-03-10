@@ -207,8 +207,8 @@
     "RESEND_COOLDOWN_NOTE": "يمكنك طلب إعادة إرسال رابط التحقق بعد دقيقتين",
     "FIRST_NAME": "الاسم الأول",
     "LAST_NAME": "اسم العائلة",
-    "FIRST_NAME_PH": "مثال: أحمد",
-    "LAST_NAME_PH": "مثال: حسن",
+    "FIRST_NAME_PH": "الاسم الأول",
+    "LAST_NAME_PH": "اسم العائلة",
     "OPTIONAL": "اختياري"
   },
   "ERROR": "خطأ",

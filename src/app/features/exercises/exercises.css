@@ -1133,7 +1133,7 @@ body:not(.dark-mode) .ex-modal-foot {
    ══════════════════════════════════ */
 @media (max-width: 900px) {
   .ex-hero {
-    padding: 88px 0 48px;
+    padding: 110px 0 48px;
   }
 
   .ex-hero-stats {
@@ -1168,7 +1168,7 @@ body:not(.dark-mode) .ex-modal-foot {
 
   /* Hero */
   .ex-hero {
-    padding: 80px 0 40px;
+    padding: 110px 0 40px;
   }
 
   .ex-hero-title {
@@ -1395,7 +1395,7 @@ body:not(.dark-mode) .ex-modal-foot {
 
   /* Hero padding fix for navbar */
   .ex-hero {
-    padding: 72px 0 32px;
+    padding: 110px 0 32px;
   }
 
   /* Hero title bigger breathing */

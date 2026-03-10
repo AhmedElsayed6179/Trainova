@@ -207,8 +207,8 @@
     "RESEND_COOLDOWN_NOTE": "You can request a new verification email after 2 minutes",
     "FIRST_NAME": "First Name",
     "LAST_NAME": "Last Name",
-    "FIRST_NAME_PH": "e.g. Ahmed",
-    "LAST_NAME_PH": "e.g. Hassan",
+    "FIRST_NAME_PH": "First name",
+    "LAST_NAME_PH": "Last name",
     "OPTIONAL": "Optional"
   },
   "ERROR": "Error",
