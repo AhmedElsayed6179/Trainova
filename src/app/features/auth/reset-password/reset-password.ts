@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { ReCaptchaV3Service } from '../../../core/services/re-captcha-v3-service
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, RouterLink]
 })
-export class ResetPassword implements OnInit {
+export class ResetPassword implements OnInit, OnDestroy {
   resetForm: FormGroup;
   token = '';
   isLoading = false;
@@ -45,6 +45,7 @@ export class ResetPassword implements OnInit {
   }
 
   ngOnInit(): void {
+    document.body.classList.add('show-recaptcha');
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
     const lang = this.route.snapshot.queryParamMap.get('lang') || null;
 
@@ -111,6 +112,10 @@ export class ResetPassword implements OnInit {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('show-recaptcha');
   }
 
   goToLogin(): void { this.router.navigate(['/login']); }

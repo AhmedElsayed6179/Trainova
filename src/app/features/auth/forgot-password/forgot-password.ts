@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -16,7 +16,7 @@ import { ReCaptchaV3Service } from '../../../core/services/re-captcha-v3-service
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, RouterLink]
 })
-export class ForgotPassword implements OnDestroy {
+export class ForgotPassword implements OnInit, OnDestroy {
   forgotForm: FormGroup;
   isChecking = false;
   isLoading = false;
@@ -80,6 +80,10 @@ export class ForgotPassword implements OnDestroy {
           this.cdr.markForCheck();
         }
       });
+  }
+
+  ngOnInit(): void {
+    document.body.classList.add('show-recaptcha');
   }
 
   onIdentifierChange(value: string): void {
@@ -215,6 +219,7 @@ export class ForgotPassword implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    document.body.classList.remove('show-recaptcha');
     this.destroy$.next();
     this.destroy$.complete();
     if (this.cooldownTimer) clearInterval(this.cooldownTimer);

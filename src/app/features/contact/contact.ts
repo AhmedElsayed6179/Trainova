@@ -1,4 +1,4 @@
-import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ import { ReCaptchaV3Service } from '../../core/services/re-captcha-v3-service';
   templateUrl: './contact.html',
   styleUrl: './contact.css',
 })
-export class Contact {
+export class Contact implements OnInit, OnDestroy {
   form = {
     name: '',
     email: '',
@@ -31,6 +31,14 @@ export class Contact {
     private apiService: ApiService,
     private recaptchaV3Service: ReCaptchaV3Service
   ) { }
+
+  ngOnInit(): void {
+    document.body.classList.add('show-recaptcha');
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('show-recaptcha');
+  }
 
   onSubmit() {
     if (!this.form.name || !this.form.email || !this.form.subject || !this.form.message) return;

@@ -795,3 +795,19 @@ input[type="number"] {
     padding: 14px 16px;
   }
 }
+
+/* Hide the floating Google badge by default on all pages */
+.grecaptcha-badge {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+/* Show the badge only on pages that add class "show-recaptcha" to <body>
+   Pages: login, register, forgot-password, reset-password, contact, verify */
+body.show-recaptcha .grecaptcha-badge {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}

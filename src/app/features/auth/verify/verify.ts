@@ -37,6 +37,7 @@ export class Verify implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    document.body.classList.add('show-recaptcha');
     const token = this.route.snapshot.queryParamMap.get('token');
     if (!token) {
       this.status = 'no_token';
@@ -151,6 +152,7 @@ export class Verify implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    document.body.classList.remove('show-recaptcha');
     if (this.countdownTimer) clearInterval(this.countdownTimer);
     if (this.cooldownTimer) clearInterval(this.cooldownTimer);
   }

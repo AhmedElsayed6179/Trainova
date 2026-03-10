@@ -50,12 +50,14 @@ export class Register implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    document.body.classList.add('show-recaptcha');
     this.setupUsernameValidation();
     this.setupEmailValidation();
     this.setupPhoneValidation();
   }
 
   ngOnDestroy() {
+    document.body.classList.remove('show-recaptcha');
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -171,7 +173,7 @@ export class Register implements OnInit, OnDestroy {
     });
 
     const firstName = (formData.firstName || '').trim();
-    const lastName  = (formData.lastName  || '').trim();
+    const lastName = (formData.lastName || '').trim();
     formData.name = lastName ? `${firstName} ${lastName}` : firstName;
     delete formData.firstName;
     delete formData.lastName;

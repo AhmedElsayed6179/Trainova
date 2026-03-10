@@ -48,10 +48,12 @@ export class Login implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    document.body.classList.add('show-recaptcha');
     this.checkSavedCredentials();
   }
 
   ngOnDestroy() {
+    document.body.classList.remove('show-recaptcha');
     if (this.cooldownTimer) clearInterval(this.cooldownTimer);
   }
 
