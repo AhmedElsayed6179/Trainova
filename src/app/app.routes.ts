@@ -72,7 +72,8 @@ export const routes: Routes = [
 
   {
     path: 'verify',
-    component: Verify
+    component: Verify,
+    canActivate: [GuestGuard]
   },
 
   {
