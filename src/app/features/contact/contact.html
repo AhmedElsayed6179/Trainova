@@ -143,26 +143,18 @@
               </div>
 
               <div class="col-12">
-                <!-- ══ reCAPTCHA v3 Notice (required by Google ToS) ══ -->
-                <!-- <div class="recaptcha-notice">
-                  <i class="fas fa-shield-alt recaptcha-notice-icon"></i>
-                  <span>
-                    {{ 'RECAPTCHA.NOTICE' | translate }}
-                    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">{{ 'RECAPTCHA.PRIVACY'
-                      | translate }}</a>
-                    &amp;
-                    <a href="https://policies.google.com/terms" target="_blank" rel="noopener">{{ 'RECAPTCHA.TERMS' |
-                      translate }}</a>
-                  </span>
-                </div> -->
-                <button type="submit" class="btn-contact-submit" [disabled]="isSubmitting">
-                  <span *ngIf="!isSubmitting">
+                <button type="submit" class="btn-contact-submit" [disabled]="isSubmitting || isCoolingDown">
+                  <span *ngIf="!isSubmitting && !isCoolingDown">
                     <i class="fas fa-paper-plane me-2"></i>
                     {{ 'CONTACT.FORM.SEND' | translate }}
                   </span>
                   <span *ngIf="isSubmitting">
                     <span class="spinner-border spinner-border-sm me-2"></span>
                     {{ 'CONTACT.FORM.SENDING' | translate }}
+                  </span>
+                  <span *ngIf="!isSubmitting && isCoolingDown">
+                    <i class="fas fa-clock me-2"></i>
+                    {{ cooldownLabel }}
                   </span>
                 </button>
               </div>
