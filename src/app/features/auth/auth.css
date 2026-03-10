@@ -597,7 +597,7 @@ body:not(.dark-mode) .ai-arr {
 }
 
 [dir="rtl"] .ai-ok {
-  order: -1;
+  order: 10;
   padding: 0 12px 0 0;
 }
 
@@ -624,7 +624,7 @@ body:not(.dark-mode) .ai-ok {
 }
 
 [dir="rtl"] .ai-eye {
-  order: 0;
+  order: 3;
 }
 
 .ai-eye {
