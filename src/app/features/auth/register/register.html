@@ -63,18 +63,37 @@
 
         <div class="ag2">
 
-          <!-- Name -->
+        <div class="ag2">
+
+          <!-- First Name -->
           <div class="af">
-            <label>{{ 'Register.NAME' | translate }}<span class="req">*</span></label>
-            <div class="ai" [class.err]="isInvalid('name')" [class.ok]="isValid('name')">
+            <label>{{ 'Register.FIRST_NAME' | translate }}<span class="req">*</span></label>
+            <div class="ai" [class.err]="isInvalid('firstName')" [class.ok]="isValid('firstName')">
               <i class="fas fa-id-card ai-ico"></i>
-              <input type="text" formControlName="name" placeholder="{{ 'Register.NAME' | translate }}">
-              <i class="fas fa-check-circle ai-ok" *ngIf="isValid('name')"></i>
+              <input type="text" formControlName="firstName" placeholder="{{ 'Register.FIRST_NAME_PH' | translate }}">
+              <i class="fas fa-check-circle ai-ok" *ngIf="isValid('firstName')"></i>
             </div>
-            <div class="ae" *ngIf="hasError('name','required')">{{ 'Register.ERRORS.name.required' | translate }}</div>
-            <div class="ae" *ngIf="hasError('name','minlength')">{{ 'Register.ERRORS.name.minlength' | translate }}
-            </div>
+            <div class="ae" *ngIf="hasError('firstName','required')">{{ 'Register.ERRORS.firstName.required' | translate }}</div>
+            <div class="ae" *ngIf="hasError('firstName','minlength')">{{ 'Register.ERRORS.firstName.minlength' | translate }}</div>
+            <div class="ae" *ngIf="hasError('firstName','pattern')">{{ 'Register.ERRORS.firstName.pattern' | translate }}</div>
           </div>
+
+          <!-- Last Name (Optional) -->
+          <div class="af">
+            <label>
+              {{ 'Register.LAST_NAME' | translate }}
+              <span class="auth-optional-badge">{{ 'Register.OPTIONAL' | translate }}</span>
+            </label>
+            <div class="ai" [class.ok]="isValid('lastName')">
+              <i class="fas fa-id-badge ai-ico"></i>
+              <input type="text" formControlName="lastName" placeholder="{{ 'Register.LAST_NAME_PH' | translate }}">
+              <i class="fas fa-check-circle ai-ok" *ngIf="isValid('lastName')"></i>
+            </div>
+            <div class="ae" *ngIf="hasError('lastName','minlength')">{{ 'Register.ERRORS.lastName.minlength' | translate }}</div>
+            <div class="ae" *ngIf="hasError('lastName','pattern')">{{ 'Register.ERRORS.lastName.pattern' | translate }}</div>
+          </div>
+
+        </div>
 
           <!-- Age -->
           <div class="af">

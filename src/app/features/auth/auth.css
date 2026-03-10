@@ -1086,3 +1086,21 @@ body:not(.dark-mode) .alert-text {
   opacity: 0.8;
   text-decoration: underline;
 }
+
+/* ── Optional field badge ── */
+.auth-optional-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: 7px;
+  background: rgba(245, 166, 35, 0.1);
+  border: 1px solid rgba(245, 166, 35, 0.22);
+  color: var(--primary);
+  border-radius: 20px;
+  padding: 1px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  vertical-align: middle;
+  line-height: 1.6;
+}

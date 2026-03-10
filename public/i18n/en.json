@@ -134,7 +134,7 @@
       "name": {
         "required": "Name is required",
         "minlength": "Name must be at least 3 characters",
-        "maxlength": "Name cannot exceed 50 characters"
+        "maxlength": "Name cannot exceed 20 characters"
       },
       "age": {
         "required": "Age is required",
@@ -184,7 +184,16 @@
       "goal": {
         "required": "Please select your fitness goal"
       },
-      "EMAIL_EXISTS_VERIFY": "This email is already registered. If you haven't verified your account yet, check your inbox for the verification email."
+      "EMAIL_EXISTS_VERIFY": "This email is already registered. If you haven't verified your account yet, check your inbox for the verification email.",
+      "firstName": {
+        "required": "First name is required",
+        "minlength": "First name must be at least 2 characters",
+        "pattern": "First name can only contain letters"
+      },
+      "lastName": {
+        "minlength": "Last name must be at least 2 characters",
+        "pattern": "Last name can only contain letters"
+      }
     },
     "SECTION_PERSONAL": "Personal Info",
     "SECTION_ACCOUNT": "Account Details",
@@ -195,7 +204,12 @@
     "VISUAL_LINE3": "CHALLENGE",
     "SUCCESS_VERIFICATION_MESSAGE": "Your account has been created! We've sent a verification link to your email. Please check your inbox to activate your account.",
     "CHECK_EMAIL_BTN": "Check My Email",
-    "RESEND_COOLDOWN_NOTE": "You can request a new verification email after 2 minutes"
+    "RESEND_COOLDOWN_NOTE": "You can request a new verification email after 2 minutes",
+    "FIRST_NAME": "First Name",
+    "LAST_NAME": "Last Name",
+    "FIRST_NAME_PH": "e.g. Ahmed",
+    "LAST_NAME_PH": "e.g. Hassan",
+    "OPTIONAL": "Optional"
   },
   "ERROR": "Error",
   "SUCCESS": "Success!",

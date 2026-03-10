@@ -32,7 +32,8 @@ export class Register implements OnInit, OnDestroy {
     private ngZone: NgZone
   ) {
     this.registerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z\u0600-\u06FF\s]+$/)]],
+      lastName: ['', [Validators.minLength(2), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z\u0600-\u06FF\s]*$/)]],
       age: [null, [Validators.required, Validators.min(10), Validators.max(70)]],
       gender: ['', Validators.required],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
@@ -146,6 +147,12 @@ export class Register implements OnInit, OnDestroy {
     this.isLoading = true;
     const formData = { ...this.registerForm.value };
     delete formData.confirmPassword;
+    // Merge first + last name into single "name" field for the API
+    const firstName = (formData.firstName || '').trim();
+    const lastName = (formData.lastName || '').trim();
+    formData.name = lastName ? `${firstName} ${lastName}` : firstName;
+    delete formData.firstName;
+    delete formData.lastName;
 
     this.apiService.registerUser(formData).subscribe({
       next: (response) => {

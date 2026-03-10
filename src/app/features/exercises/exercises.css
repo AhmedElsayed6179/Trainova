@@ -1181,39 +1181,38 @@ body:not(.dark-mode) .ex-modal-foot {
   }
 
   .ex-hero-stats {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
     gap: 0;
-    padding: 0;
+    padding: 14px 12px;
     border-radius: 14px;
-    overflow: hidden;
     width: 100%;
   }
 
   .ex-hero-stat {
-    padding: 14px 20px;
-    flex-direction: row;
-    justify-content: space-between;
+    padding: 0 10px;
+    flex-direction: column;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  }
-
-  .ex-hero-stat:last-child {
-    border-bottom: none;
+    flex: 1;
   }
 
   .ex-hero-divider {
-    display: none;
+    width: 1px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    display: block;
+    flex-shrink: 0;
   }
 
   .ex-hero-stat-n {
-    font-size: 2rem;
+    font-size: 1.9rem;
   }
 
   .ex-hero-stat-l {
-    font-size: 0.7rem;
-    letter-spacing: 1.5px;
-    text-align: right;
+    font-size: 0.62rem;
+    letter-spacing: 1px;
+    text-align: center;
   }
 
   /* Filter bar stacks vertically */
@@ -1386,5 +1385,171 @@ body:not(.dark-mode) .ex-modal-foot {
 
   .ex-card:active {
     transform: scale(0.98);
+  }
+}
+
+/* ══════════════════════════════════
+   EXTRA MOBILE FIXES (≤ 480px)
+   ══════════════════════════════════ */
+@media (max-width: 480px) {
+
+  /* Hero padding fix for navbar */
+  .ex-hero {
+    padding: 72px 0 32px;
+  }
+
+  /* Hero title bigger breathing */
+  .ex-hero-title {
+    font-size: clamp(2.2rem, 11vw, 3.6rem);
+    margin-bottom: 12px;
+  }
+
+  .ex-hero-sub {
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+
+  /* Stats box stays horizontal, better padding */
+  .ex-hero-stats {
+    padding: 12px 8px;
+  }
+
+  .ex-hero-stat {
+    padding: 0 6px;
+  }
+
+  .ex-hero-stat-n {
+    font-size: 1.6rem;
+  }
+
+  .ex-hero-stat-l {
+    font-size: 0.58rem;
+  }
+
+  /* Filter bar: search full width, pills scroll */
+  .ex-filter-bar {
+    top: 60px;
+    padding: 10px 0;
+  }
+
+  .ex-filter-inner {
+    gap: 8px;
+  }
+
+  .ex-diff-filter {
+    justify-content: flex-start;
+  }
+
+  .ex-diff-btn {
+    flex: 0 0 auto;
+    padding: 7px 12px;
+  }
+
+  /* Result badge inline */
+  .ex-result-badge {
+    width: 100%;
+    justify-content: center;
+    padding: 7px 12px;
+  }
+
+  /* Category tabs compact */
+  .ex-cat-row {
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+
+  .ex-cat-btn {
+    padding: 8px 12px;
+    gap: 6px;
+    font-size: 0.8rem;
+    border-radius: 12px;
+  }
+
+  /* Cards single column tight */
+  .ex-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .ex-card {
+    border-radius: 16px;
+  }
+
+  .ex-card-top {
+    padding: 12px 14px 0;
+  }
+
+  .ex-card-art {
+    height: 80px;
+    margin: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .ex-card-art-icon {
+    font-size: 2.4rem;
+  }
+
+  .ex-card-info {
+    padding: 0 14px;
+  }
+
+  .ex-card-name {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+
+  .ex-card-stats {
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .ex-card-foot {
+    padding: 10px 14px;
+    gap: 5px;
+  }
+
+  /* Empty state */
+  .ex-empty {
+    padding: 40px 16px;
+  }
+
+  /* Modal bottom-sheet tweaks */
+  .ex-modal {
+    max-height: 88dvh;
+  }
+
+  .ex-modal-head {
+    padding: 20px 16px 16px;
+  }
+
+  .ex-modal-title {
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
+  }
+
+  .ex-modal-body {
+    padding: 14px;
+  }
+
+  .ex-modal-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .ex-mstat {
+    padding: 10px 8px;
+    border-radius: 10px;
+  }
+
+  .ex-modal-foot {
+    padding: 10px 14px 18px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ex-modal-foot .btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.9rem;
   }
 }
