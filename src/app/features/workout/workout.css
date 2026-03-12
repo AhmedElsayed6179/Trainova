@@ -1196,3 +1196,421 @@ body:not(.dark-mode) .motivation-section p {
     font-size: 1.3rem;
   }
 }
+
+/* ========== 30 DAYS CHALLENGE SECTION ========== */
+
+@media (max-width: 768px) {
+  .days-progress-section {
+    background: linear-gradient(145deg,
+      rgba(30, 30, 40, 0.95) 0%,
+      rgba(20, 20, 30, 0.98) 100%);
+    border: 1px solid rgba(245, 166, 35, 0.15);
+    border-radius: 28px;
+    padding: 22px 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .days-progress-section::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -20%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle,
+      rgba(245, 166, 35, 0.12) 0%,
+      transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sectionGlow 5s ease-in-out infinite;
+  }
+
+  .days-progress-section::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle,
+      rgba(100, 150, 255, 0.08) 0%,
+      transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  @keyframes sectionGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+  }
+
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    background: linear-gradient(135deg, #fff 0%, #f5a623 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+
+  .section-title i {
+    background: linear-gradient(135deg, #f5a623, #ffc107);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.3rem;
+  }
+
+  .progress-badge {
+    background: linear-gradient(145deg,
+      rgba(245, 166, 35, 0.2),
+      rgba(245, 166, 35, 0.1));
+    border: 1.5px solid rgba(245, 166, 35, 0.3);
+    color: #f5a623;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 5px 15px rgba(245, 166, 35, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+  }
+
+  .progress-badge::before {
+    content: '🏆';
+    font-size: 1.1rem;
+    filter: drop-shadow(0 2px 5px rgba(245, 166, 35, 0.5));
+  }
+
+  .progress {
+    height: 10px !important;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    margin-bottom: 25px !important;
+    position: relative;
+    z-index: 2;
+    overflow: visible;
+    border: 1px solid rgba(245, 166, 35, 0.1);
+  }
+
+  .progress-bar {
+    background: linear-gradient(90deg,
+      #f5a623 0%,
+      #ffc107 50%,
+      #f5a623 100%);
+    border-radius: 20px;
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 0 20px rgba(245, 166, 35, 0.5);
+    animation: progressPulse 2s ease-in-out infinite;
+    background-size: 200% 100%;
+  }
+
+  @keyframes progressPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.9; }
+  }
+
+  .progress-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -5px;
+    margin-bottom: 20px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 0 5px;
+  }
+
+  .progress-stats span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .progress-stats span:first-child i {
+    color: #f5a623;
+    font-size: 0.7rem;
+  }
+
+  .progress-stats span:last-child {
+    background: rgba(245, 166, 35, 0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: #f5a623;
+    font-weight: 600;
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+    margin-top: 5px;
+  }
+
+  .day-card {
+    aspect-ratio: 1;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    gap: 2px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .day-card.available {
+    background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02));
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .day-card.completed {
+    background: linear-gradient(145deg,
+      rgba(40, 167, 69, 0.2),
+      rgba(40, 167, 69, 0.1));
+    border-color: rgba(40, 167, 69, 0.5);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+    animation: completedGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes completedGlow {
+    0%, 100% { box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3); }
+    50% { box-shadow: 0 12px 30px rgba(40, 167, 69, 0.5); }
+  }
+
+  .day-card.completed .day-number {
+    color: #28a745;
+    font-weight: 800;
+  }
+
+  .day-card.completed .day-status i {
+    color: #28a745;
+  }
+
+  .day-card.completed::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: rgba(40, 167, 69, 0.3);
+    font-weight: 900;
+    animation: checkmarkPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes checkmarkPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.5; }
+  }
+
+  .day-card.current {
+    background: linear-gradient(145deg,
+      rgba(245, 166, 35, 0.25),
+      rgba(245, 166, 35, 0.15));
+    border-color: #f5a623;
+    box-shadow: 0 0 25px rgba(245, 166, 35, 0.5);
+    animation: currentDayPulse 1.5s ease-in-out infinite;
+    transform: scale(1.05);
+    z-index: 3;
+  }
+
+  @keyframes currentDayPulse {
+    0%, 100% {
+      box-shadow: 0 0 25px rgba(245, 166, 35, 0.5);
+      transform: scale(1.05);
+    }
+    50% {
+      box-shadow: 0 0 35px rgba(245, 166, 35, 0.8);
+      transform: scale(1.08);
+    }
+  }
+
+  .day-card.current .day-number {
+    color: #f5a623;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .day-card.current .day-status i {
+    color: #f5a623;
+    font-size: 1rem;
+  }
+
+  .day-card.locked {
+    opacity: 0.3;
+    background: rgba(100, 100, 100, 0.1);
+    border-color: rgba(150, 150, 150, 0.2);
+    filter: grayscale(80%);
+  }
+
+  .day-number {
+    font-size: 1rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1;
+    font-family: 'Rajdhani', sans-serif;
+    position: relative;
+    z-index: 2;
+  }
+
+  .day-status i {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.4);
+    position: relative;
+    z-index: 2;
+  }
+
+  .day-progress-stats {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 12px;
+    white-space: nowrap;
+    font-weight: 600;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-reset-day {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(220, 53, 69, 0.2);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    color: #dc3545;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 1;
+    transition: all 0.2s ease;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+  }
+
+  .btn-reset-day:hover {
+    background: rgba(220, 53, 69, 0.4);
+    transform: scale(1.1);
+  }
+
+  .btn-reset-day:active {
+    transform: scale(0.95);
+  }
+}
+
+@media (max-width: 480px) {
+  .days-grid {
+    gap: 8px;
+  }
+
+  .day-card {
+    border-radius: 14px;
+  }
+
+  .day-number {
+    font-size: 0.9rem;
+  }
+
+  .day-status i {
+    font-size: 0.9rem;
+  }
+
+  .day-progress-stats {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+  }
+
+  .day-card.current {
+    transform: scale(1.03);
+  }
+
+  @keyframes currentDayPulse {
+    0%, 100% { transform: scale(1.03); }
+    50% { transform: scale(1.05); }
+  }
+}
+
+body:not(.dark-mode) .days-progress-section {
+  background: linear-gradient(145deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(245, 245, 250, 0.98));
+  border-color: rgba(245, 166, 35, 0.2);
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
+}
+
+body:not(.dark-mode) .section-title {
+  background: linear-gradient(135deg, #1a1a2e 0%, #f5a623 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body:not(.dark-mode) .day-card.available {
+  background: linear-gradient(145deg,
+    rgba(0, 0, 0, 0.03),
+    rgba(0, 0, 0, 0.01));
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body:not(.dark-mode) .day-number {
+  color: #333;
+}
+
+body:not(.dark-mode) .day-card.completed {
+  background: linear-gradient(145deg,
+    rgba(40, 167, 69, 0.1),
+    rgba(40, 167, 69, 0.05));
+}
+
+body:not(.dark-mode) .day-card.current {
+  background: linear-gradient(145deg,
+    rgba(245, 166, 35, 0.15),
+    rgba(245, 166, 35, 0.08));
+}
+
+body:not(.dark-mode) .day-card.locked {
+  background: rgba(200, 200, 200, 0.1);
+  border-color: rgba(0, 0, 0, 0.1);
+}
