@@ -116,20 +116,6 @@
   <!-- CropperJS -->
   <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
 
-  <!-- Force reCAPTCHA to use light theme regardless of language -->
-  <script>
-    window.onload = function () {
-      if (typeof grecaptcha !== 'undefined') {
-        grecaptcha.ready(function () {
-          const badge = document.querySelector('.grecaptcha-badge');
-          if (badge) {
-            badge.style.backgroundColor = 'transparent';
-          }
-        });
-      }
-    };
-  </script>
-
 </head>
 
 <body>

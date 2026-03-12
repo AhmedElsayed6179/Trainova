@@ -796,89 +796,56 @@ input[type="number"] {
   }
 }
 
-/* ── reCAPTCHA Badge: collapsed/icon-only, never expands ── */
+/* ── Hidden by default on all pages ── */
 .grecaptcha-badge {
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
   position: fixed !important;
   bottom: 14px !important;
-  right: 0 !important;
+  right: 14px !important;
   z-index: 99999 !important;
-  /* Lock width to icon-only — prevents hover expansion */
-  width: 70px !important;
-  max-width: 70px !important;
-  overflow: hidden !important;
-  transition: none !important;
-}
-
-/* Show on pages with show-recaptcha — stays collapsed */
-body.show-recaptcha .grecaptcha-badge {
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  width: 70px !important;
-  max-width: 70px !important;
-  overflow: hidden !important;
-  transition: none !important;
-}
-
-/* Prevent child elements from expanding the badge on hover */
-body.show-recaptcha .grecaptcha-badge * {
-  transition: none !important;
-}
-
-/* ///////////// */
-
-.grecaptcha-badge {
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  position: fixed !important;
-  bottom: 14px !important;
-  right: 0 !important;
-  z-index: 99999 !important;
-  width: 70px !important;
-  max-width: 70px !important;
-  overflow: hidden !important;
-  transition: none !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  /* Force light theme inside the iframe at all times */
+  color-scheme: light !important;
   filter: none !important;
   background: transparent !important;
 }
 
+/* ── Visible only on pages with class "show-recaptcha" ── */
 body.show-recaptcha .grecaptcha-badge {
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
-  width: 70px !important;
-  max-width: 70px !important;
-  overflow: hidden !important;
-  transition: none !important;
+  /* Subtle card shadow so it doesn't float awkwardly */
+  border-radius: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
-body.show-recaptcha .grecaptcha-badge iframe {
+/* ── Keep iframe always light — works in dark mode & RTL ── */
+.grecaptcha-badge iframe,
+body.show-recaptcha .grecaptcha-badge iframe,
+body.dark-mode .grecaptcha-badge iframe,
+body[dir="rtl"] .grecaptcha-badge iframe {
   filter: none !important;
-  background: #f9f9f9 !important;
-  border-radius: 2px !important;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2) !important;
-}
-
-body.dark-mode.show-recaptcha .grecaptcha-badge iframe,
-body[dir="rtl"].show-recaptcha .grecaptcha-badge iframe,
-body.dark-mode[dir="rtl"].show-recaptcha .grecaptcha-badge iframe {
-  filter: none !important;
-  background: #f9f9f9 !important;
+  background: #ffffff !important;
   color-scheme: light !important;
+  border-radius: 4px !important;
 }
 
-.grecaptcha-badge,
-.grecaptcha-badge * {
-  color-scheme: light !important;
+/* ── RTL: pin badge to the left instead of right ── */
+body[dir="rtl"] .grecaptcha-badge {
+  right: auto !important;
+  left: 14px !important;
 }
 
+/* ── Prevent OS-level dark scheme from inverting the badge ── */
 @media (prefers-color-scheme: dark) {
+
+  .grecaptcha-badge,
   .grecaptcha-badge iframe {
     filter: none !important;
-    background: #f9f9f9 !important;
+    background: #ffffff !important;
+    color-scheme: light !important;
   }
 }
