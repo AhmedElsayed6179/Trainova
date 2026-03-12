@@ -827,3 +827,58 @@ body.show-recaptcha .grecaptcha-badge {
 body.show-recaptcha .grecaptcha-badge * {
   transition: none !important;
 }
+
+/* ///////////// */
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: fixed !important;
+  bottom: 14px !important;
+  right: 0 !important;
+  z-index: 99999 !important;
+  width: 70px !important;
+  max-width: 70px !important;
+  overflow: hidden !important;
+  transition: none !important;
+  filter: none !important;
+  background: transparent !important;
+}
+
+body.show-recaptcha .grecaptcha-badge {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  width: 70px !important;
+  max-width: 70px !important;
+  overflow: hidden !important;
+  transition: none !important;
+}
+
+body.show-recaptcha .grecaptcha-badge iframe {
+  filter: none !important;
+  background: #f9f9f9 !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.dark-mode.show-recaptcha .grecaptcha-badge iframe,
+body[dir="rtl"].show-recaptcha .grecaptcha-badge iframe,
+body.dark-mode[dir="rtl"].show-recaptcha .grecaptcha-badge iframe {
+  filter: none !important;
+  background: #f9f9f9 !important;
+  color-scheme: light !important;
+}
+
+.grecaptcha-badge,
+.grecaptcha-badge * {
+  color-scheme: light !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .grecaptcha-badge iframe {
+    filter: none !important;
+    background: #f9f9f9 !important;
+  }
+}
