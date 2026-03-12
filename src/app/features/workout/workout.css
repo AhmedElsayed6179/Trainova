@@ -901,29 +901,454 @@ body:not(.dark-mode) .motivation-section p {
   }
 }
 
-/* Responsive */
+/* ========== MOBILE OPTIMIZED ========== */
+
 @media (max-width: 768px) {
-  .days-grid {
-    grid-template-columns: repeat(6, 1fr);
-    gap: 6px;
+  .workout-container {
+    padding: 16px 12px;
+    margin-top: 45px;
   }
 
   .workout-header {
-    padding: 24px 20px;
+    padding: 24px 16px;
+    border-radius: 24px;
+    margin-bottom: 20px;
   }
 
-  .exercises-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .workout-header::before {
+    width: 200px;
+    height: 200px;
+    top: -20%;
+    right: -10%;
   }
-}
 
-@media (max-width: 480px) {
+  .workout-title {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    margin-bottom: 4px;
+  }
+
+  .workout-subtitle {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .workout-timer-badge {
+    padding: 8px 16px;
+    font-size: 1.1rem;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .days-progress-section {
+    padding: 20px 16px;
+    border-radius: 24px;
+    margin-bottom: 20px;
+  }
+
+  .section-header {
+    margin-bottom: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .section-header h5,
+  .section-header h6 {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .progress-badge {
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    align-self: flex-start;
+  }
+
+  .progress {
+    height: 8px !important;
+    margin-bottom: 20px !important;
+    border-radius: 20px;
+  }
+
+  .progress-bar {
+    border-radius: 20px;
+  }
+
   .days-grid {
     grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
+    gap: 8px;
+  }
+
+  .day-card {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    padding: 8px 4px;
+  }
+
+  .day-card:hover:not(.locked) {
+    transform: scale(1.05);
+  }
+
+  .day-number {
+    font-size: 0.85rem;
+  }
+
+  .day-status i {
+    font-size: 0.9rem;
+  }
+
+  .day-progress-stats {
+    font-size: 0.6rem;
+    bottom: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 4px;
+    border-radius: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  .day-card.completed::after {
+    font-size: 1.2rem;
+  }
+
+  /* بطاقات التمرين المصغرة */
+  .selected-day-exercises .card {
+    border-radius: 24px;
+  }
+
+  .card-header {
+    padding: 16px 16px 12px;
+  }
+
+  .card-header h5 {
+    font-size: 1rem;
+  }
+
+  .card-body {
+    padding: 16px;
   }
 
   .exercises-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
+
+  .exercise-mini-card {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 18px;
+  }
+
+  .exercise-mini-header {
+    margin-bottom: 6px;
+  }
+
+  .exercise-mini-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .exercise-mini-title {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .exercise-mini-details {
+    margin-bottom: 8px;
+    display: flex;
+    gap: 6px;
+  }
+
+  .exercise-mini-details .badge {
+    font-size: 0.7rem;
+    padding: 5px 8px;
+    border-radius: 16px !important;
+  }
+
+  .exercise-mini-image img {
+    height: 100px;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+
+  .day-navigation {
+    margin-top: 16px !important;
+    padding-top: 16px !important;
+  }
+
+  .btn-nav-day {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .btn-nav-day i {
+    font-size: 0.7rem;
+  }
+
+  .day-nav-info span:first-child {
+    font-size: 0.7rem;
+  }
+
+  .day-nav-info span:nth-child(2) {
+    font-size: 1.6rem;
+  }
+
+  .day-nav-info span:last-child {
+    font-size: 0.7rem;
+  }
+
+  .current-workout-section .card {
+    border-radius: 24px;
+  }
+
+  .rest-timer {
+    padding: 30px 20px 26px;
+    border-radius: 20px;
+  }
+
+  .rest-timer::before {
+    width: 200px;
+    height: 200px;
+  }
+
+  .rest-timer-label-row {
+    margin-bottom: 12px;
+  }
+
+  .rest-timer-label-row .rest-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .rest-timer-count {
+    font-size: 4rem;
+    min-width: 100px;
+    letter-spacing: 4px;
+  }
+
+  .rest-timer-sublabel {
+    font-size: 0.65rem;
+    margin-bottom: 16px;
+  }
+
+  .rest-timer-info {
+    padding: 10px 14px;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .rest-info-item {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .btn-skip-rest {
+    padding: 8px 20px;
+    font-size: 0.8rem;
+  }
+
+  .exercise-card {
+    padding: 16px;
+    border-radius: 18px;
+    margin-bottom: 10px;
+  }
+
+  .exercise-header {
+    gap: 10px;
+  }
+
+  .exercise-number {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .exercise-info h6 {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .exercise-details {
+    gap: 4px;
+  }
+
+  .exercise-details .badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+
+  .exercise-gif {
+    max-height: 160px;
+    margin-top: 10px;
+  }
+
+  .exercise-card.active {
+    border-width: 2px;
+  }
+
+  .btn-complete-day-wrap {
+    margin-top: 16px;
+  }
+
+  .btn-complete-day-wrap button {
+    width: 100%;
+    padding: 14px !important;
+    font-size: 1rem;
+    border-radius: 16px;
+  }
+
+  /* قسم التحفيز */
+  .motivation-section .card-body {
+    padding: 16px 12px;
+  }
+
+  .motivation-section i {
+    font-size: 1.5rem;
+  }
+
+  .motivation-section p {
+    font-size: 0.9rem;
+  }
+
+  .btn-start-workout {
+    width: 100%;
+    padding: 16px !important;
+    font-size: 1.1rem;
+    border-radius: 18px;
+    margin: 8px 0;
+    background: linear-gradient(135deg, var(--primary), #ffb347);
+    border: none;
+    box-shadow: 0 4px 15px rgba(245, 166, 35, 0.3);
+  }
+}
+
+@media (max-width: 380px) {
+  .days-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .rest-timer-count {
+    font-size: 3.5rem;
+  }
+
+  .rest-timer-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .rest-info-divider {
+    display: none;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+.day-card,
+.exercise-mini-card,
+.btn-nav-day,
+.btn-reset-day {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.btn-reset-day {
+  width: 22px;
+  height: 22px;
+  font-size: 0.7rem;
+  opacity: 1;
+}
+
+.day-card:hover .btn-reset-day {
+  opacity: 1;
+}
+
+.day-card:active:not(.locked) {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+.exercise-mini-card:active {
+  transform: scale(0.98);
+  border-color: var(--primary);
+}
+
+.mt-4 {
+  margin-top: 16px !important;
+}
+
+.mb-4 {
+  margin-bottom: 16px !important;
+}
+
+.gap-3 {
+  gap: 12px !important;
+}
+
+.loading-container {
+  min-height: 70vh;
+}
+
+.loading-container .spinner-border {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.day-complete-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 8px 0;
+}
+
+.day-complete-banner i {
+  font-size: 2rem;
+  color: #28a745;
+}
+
+.day-complete-banner div {
+  display: flex;
+  flex-direction: column;
+}
+
+.day-complete-banner strong {
+  font-size: 1rem;
+  color: #28a745;
+}
+
+.day-complete-banner small {
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
