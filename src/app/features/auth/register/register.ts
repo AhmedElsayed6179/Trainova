@@ -42,8 +42,8 @@ export class Register implements OnInit, OnDestroy {
       username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z0-9_]+$/)]],
       password: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)]],
       confirmPassword: ['', Validators.required],
-      weight: [null, [Validators.required, Validators.min(20), Validators.max(300)]],
-      height: [null, [Validators.required, Validators.min(50), Validators.max(300)]],
+      weight: [null, [Validators.required, Validators.min(30), Validators.max(300)]],
+      height: [null, [Validators.required, Validators.min(50), Validators.max(250)]],
       phone: ['', [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)]],
       goal: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });

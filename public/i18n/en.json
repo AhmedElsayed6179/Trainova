@@ -168,13 +168,13 @@
       },
       "weight": {
         "required": "Weight is required",
-        "min": "Weight must be at least 20 kg",
+        "min": "Weight must be at least 30 kg",
         "max": "Weight cannot exceed 300 kg"
       },
       "height": {
         "required": "Height is required",
         "min": "Height must be at least 50 cm",
-        "max": "Height cannot exceed 300 cm"
+        "max": "Height cannot exceed 250 cm"
       },
       "phone": {
         "required": "Phone number is required",
